@@ -3813,8 +3813,9 @@ function showToast(message, type = 'success') {
                     <label for="isCaptainPlayer" style="margin: 0; cursor: pointer;">©️ Είναι Αρχηγός (Captain);</label>
                 </div>
 
+                <div id="playerEditBanner" style="display:none;"></div>
                 <div class="modal-buttons">
-                    <button class="btn btn-success" onclick="addPlayer()">➕ Προσθήκη Παίκτη</button>
+                    <button class="btn btn-success" id="playerSaveBtn" onclick="addPlayer()">➕ Προσθήκη Παίκτη</button>
                     <button class="btn" onclick="clearPlayerForm()">🔄 Καθαρισμός</button>
                 </div>
 
@@ -5067,6 +5068,42 @@ function displayTopScorers() {
 
     container.appendChild(list);
 }
+// Ποιον παίκτη επεξεργαζόμαστε αυτή τη στιγμή (null = προσθήκη νέου)
+let editingPlayer = null;
+
+function startEditPlayer(name) {
+    const p = (data.roster || []).find(x => x.name === name);
+    if (!p) { showToast('Δεν βρέθηκε ο παίκτης.', 'error'); return; }
+
+    editingPlayer = name;
+    document.getElementById('playerNumber').value    = p.number ?? '';
+    document.getElementById('playerName').value      = p.name || '';
+    document.getElementById('playerBirthYear').value = p.birthYear ?? '';
+    document.getElementById('isCaptainPlayer').checked = !!p.isCaptain;
+
+    // Οι θέσεις είναι χωρισμένες με " / " — ξαναδιαλέγουμε τις ίδιες επιλογές
+    const wanted = String(p.position || '').split('/').map(x => x.trim()).filter(Boolean);
+    const select = document.getElementById('playerPosition');
+    const matched = [];
+    for (const opt of select.options) {
+        opt.selected = wanted.some(w => w === opt.value.trim());
+        if (opt.selected) matched.push(opt.value.trim());
+    }
+    const missing = wanted.filter(w => !matched.includes(w));
+
+    document.getElementById('playerSaveBtn').innerHTML = '💾 Αποθήκευση αλλαγών';
+    const banner = document.getElementById('playerEditBanner');
+    banner.style.display = 'block';
+    banner.innerHTML = `
+        <div class="tint-warn" style="padding:10px; border-radius:var(--r-sm); font-size:.82rem; margin-bottom:10px;">
+            <strong class="tint-warn-text">✏️ Επεξεργασία: ${esc(name)}</strong>
+            ${missing.length ? `<div style="margin-top:4px;">⚠️ Δεν βρέθηκαν στη λίστα: ${esc(missing.join(' / '))} —
+                 διάλεξε ξανά τις θέσεις.</div>` : ''}
+            <button class="btn btn-small" style="margin-top:8px;" onclick="clearPlayerForm()">✖ Ακύρωση</button>
+        </div>`;
+    banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
 function addPlayer() {
     const number = parseInt(document.getElementById('playerNumber').value);
     const name = document.getElementById('playerName').value.trim();
@@ -5081,32 +5118,67 @@ function addPlayer() {
         return;
     }
     
-    // Έλεγχος αριθμού
-    if (number && data.roster && data.roster.some(p => p.number === number)) {
-        showToast(' Ο αριθμός φανέλας υπάρχει ήδη!');
+    if (!data.roster) data.roster = [];
+
+    // Ο αριθμός δεν πρέπει να ανήκει σε ΑΛΛΟΝ παίκτη
+    if (number && data.roster.some(p => p.number === number && p.name !== editingPlayer)) {
+        showToast('Ο αριθμός φανέλας υπάρχει ήδη!', 'error');
         return;
     }
 
-    if (!data.roster) data.roster = [];
+    if (editingPlayer) {
+        const p = data.roster.find(x => x.name === editingPlayer);
+        if (!p) { showToast('Ο παίκτης δεν βρέθηκε πια.', 'error'); clearPlayerForm(); return; }
 
-    data.roster.push({ 
-        number: number || null, 
-        name, 
+        // Αν άλλαξε το όνομα, ακολουθούν και οι καταγραφές στους αγώνες
+        if (p.name !== name) {
+            (data.fixtures || []).forEach(r => (r.matches || []).forEach(m => {
+                if (m.scorers) m.scorers = m.scorers.map(x => x === p.name ? name : x);
+                if (m.cleanSheetHolders) m.cleanSheetHolders = m.cleanSheetHolders.map(x => x === p.name ? name : x);
+            }));
+        }
+        // Αν έγινε αρχηγός, κανείς άλλος δεν είναι
+        if (isCaptain) data.roster.forEach(x => { if (x !== p) x.isCaptain = false; });
+
+        p.number    = number || null;
+        p.name      = name;
+        p.birthYear = birthYear || null;
+        p.position  = position;
+        p.isCaptain = isCaptain;
+
+        recomputePlayerStats();
+        saveData(data);
+        displayRoster(); displayTopScorers(); displayResults(); updateRosterList();
+        clearPlayerForm();
+        showToast('Οι αλλαγές αποθηκεύτηκαν.');
+        return;
+    }
+
+    if (isCaptain) data.roster.forEach(x => { x.isCaptain = false; });
+
+    data.roster.push({
+        number: number || null,
+        name,
         birthYear: birthYear || null,
         position,
         isCaptain: isCaptain,
-        goals: 0 // ΝΕΟ: Αρχικοποίηση γκολ
+        goals: 0
     });
-    
+
     saveData(data);
     displayRoster();
-    displayTopScorers(); // ΝΕΟ
+    displayTopScorers();
     updateRosterList();
     clearPlayerForm();
-    showToast(' Ο παίκτης προστέθηκε επιτυχώς!');
+    showToast('Ο παίκτης προστέθηκε επιτυχώς!');
 }
 
 function clearPlayerForm() {
+    editingPlayer = null;
+    const btn = document.getElementById('playerSaveBtn');
+    if (btn) btn.innerHTML = '➕ Προσθήκη Παίκτη';
+    const banner = document.getElementById('playerEditBanner');
+    if (banner) { banner.style.display = 'none'; banner.innerHTML = ''; }
     document.getElementById('playerNumber').value = '';
     document.getElementById('playerName').value = '';
     document.getElementById('playerBirthYear').value = ''; // Καθαρισμός έτους
@@ -5139,26 +5211,27 @@ function updateRosterList() {
         const icon = isCoach ? '👨‍🏫' : '';
 
         div.innerHTML = `
-            <div style="flex: 1;">
-                <strong>${displayNum}</strong> ${player.name} ${icon}
-                <div style="font-size: 0.8rem; color: #666;">${player.position}</div>
-            </div>
-            
-            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
-                <div style="display:flex; gap:5px;">
-                    <div style="font-weight: bold; color: #1a472a; background: #e8f5e9; padding: 2px 8px; border-radius: var(--r-md); font-size: 0.8rem; border: 1px solid #c8e6c9;">
-                        ⚽ ${currentGoals}
-                    </div>
-                    <div style="font-weight: bold; color: #333; background: #fff; padding: 2px 8px; border-radius: var(--r-md); font-size: 0.8rem; border: 1px solid #ccc;">
-                        🧤 ${currentCS}
-                    </div>
-                </div>
+            <div style="flex:1; min-width:0;">
+                <strong>${displayNum}</strong> ${esc(player.name)} ${icon}
+                <div style="font-size:.8rem; color:var(--ink-muted);">${esc(player.position || '')}</div>
+                ${isCoach ? '' : `
+                <div style="display:flex; gap:5px; margin-top:5px;">
+                    <span class="tint-ok" style="padding:2px 8px; border-radius:var(--r-sm); font-size:.78rem; font-weight:700;">⚽ ${currentGoals}</span>
+                    <span style="padding:2px 8px; border-radius:var(--r-sm); font-size:.78rem; font-weight:700;
+                                 background:var(--surface); color:var(--ink); border:1px solid var(--line);">🧤 ${currentCS}</span>
+                </div>`}
             </div>
 
-            <button class="btn btn-danger btn-small"
-                    style="margin-left: 10px; height: 35px !important; width: 35px !important; padding: 0 !important; display: flex; align-items: center; justify-content: center;"
-                    data-name="${esc(player.name)}"
-                    onclick="deletePlayer(this.dataset.name)">🗑️</button>
+            <div style="display:flex; gap:6px; align-items:center; flex:none;">
+                <button class="btn btn-small" title="Επεξεργασία"
+                        style="height:35px !important; width:35px !important; padding:0 !important; display:flex; align-items:center; justify-content:center;"
+                        data-name="${esc(player.name)}"
+                        onclick="startEditPlayer(this.dataset.name)">✏️</button>
+                <button class="btn btn-danger btn-small" title="Διαγραφή"
+                        style="height:35px !important; width:35px !important; padding:0 !important; display:flex; align-items:center; justify-content:center;"
+                        data-name="${esc(player.name)}"
+                        onclick="deletePlayer(this.dataset.name)">🗑️</button>
+            </div>
         `;
         container.appendChild(div);
     });
