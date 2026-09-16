@@ -1484,8 +1484,6 @@ table thead th:nth-child(2) {
 
     .player-card {
         padding: 0.8rem;
-        /* Στο κινητό η φανέλα είναι 90px αντί 130, άρα η κάρτα θέλει λιγότερο ύψος */
-        min-height: 304px;
     }
 
     .player-photo {
@@ -2573,8 +2571,8 @@ table thead th:nth-child(2) {
     background-color: transparent !important;
     perspective: 1000px;
     cursor: pointer;
-    /* Υπολογισμένο: padding 26 + φανέλα 138 + όνομα 40 + γήπεδο/θέση 115 + ηλικία 21 */
-    min-height: 344px;
+    /* ΧΩΡΙΣ σταθερό ύψος: η μπροστινή όψη είναι πλέον στη ροή και ορίζει
+       μόνη της το ύψος. Έτσι δεν μένει ποτέ νεκρός χώρος, σε καμία οθόνη. */
     border: none !important;
     box-shadow: none !important;
     overflow: visible !important;
@@ -2591,7 +2589,6 @@ table thead th:nth-child(2) {
     width: 100%;
     height: 100%;
     text-align: center;
-    min-height: inherit;
     transition: transform 0.6s;
     transform-style: preserve-3d;
     border-radius: var(--r-md);
@@ -3123,6 +3120,12 @@ table thead th:nth-child(2) {
 }
 
 /* ================= ΓΗΠΕΔΟ ΘΕΣΗΣ ================= */
+/* Η ΜΠΡΟΣΤΙΝΗ όψη στη ροή -> αυτή δίνει το ύψος στην κάρτα.
+   Η ΠΙΣΩ μένει απόλυτη και ακολουθεί το ύψος της μπροστινής. */
+.card-inner{ height:auto !important; }
+.card-front{ position:relative !important; height:auto !important; }
+.card-back { position:absolute !important; height:100% !important; }
+
 .pos-slot{
     min-height: calc(86px + 1.8em);
     display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
@@ -3166,10 +3169,12 @@ table thead th:nth-child(2) {
     transform:translateX(-50%); background:rgba(255,255,255,.45); z-index:4;
 }
 .coach-word{
-    position:absolute; top:26px; right:6px; z-index:6;
+    /* Στο ύψος του στήθους, όπου το μπουφάν έχει πλήρες πλάτος.
+       Ψηλότερα το μανίκι στενεύει και το σήμα ξέφευγε προς τα έξω. */
+    position:absolute; top:56px; right:28px; z-index:6;
     font-family:'Roboto Condensed',sans-serif; font-weight:800; font-style:italic;
-    font-size:.62rem; letter-spacing:.8px; white-space:nowrap;
-    padding:2px 8px; border-radius:999px;
+    font-size:.56rem; letter-spacing:.6px; white-space:nowrap;
+    padding:2px 7px; border-radius:999px;
     background:linear-gradient(180deg,#ffe97a,#d9b53a);
     color:#1b2a33; border:1px solid rgba(0,0,0,.25);
     box-shadow:0 1px 3px rgba(0,0,0,.45);
