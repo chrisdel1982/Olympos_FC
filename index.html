@@ -3126,6 +3126,10 @@ table thead th:nth-child(2) {
 .card-front{ position:relative !important; height:auto !important; }
 .card-back { position:absolute !important; height:100% !important; }
 
+/* Ο προπονητής δεν έχει γήπεδο θέσης — και είναι σε δική του ενότητα,
+   οπότε δεν χρειάζεται να κρατάει τον χώρο για στοίχιση με τους παίκτες. */
+.pos-slot-coach{ min-height:0 !important; }
+
 .pos-slot{
     min-height: calc(86px + 1.8em);
     display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
@@ -4295,6 +4299,13 @@ function positionPitchSVG(codes) {
 }
 
 // Όνομα πάντα σε δύο σειρές: μικρό όνομα πάνω, επώνυμο κάτω
+// Πίσω όψη: «99 | Χριστοφίδης» — νούμερο και επώνυμο, όχι ολόκληρο το όνομα
+function backTitle(p) {
+    const parts = String(p.name || '').trim().split(/\s+/);
+    const surname = parts.length > 1 ? parts.slice(1).join(' ') : (parts[0] || '');
+    return (p.number ? `<span style="opacity:.75">${esc(p.number)}</span> | ` : '') + esc(surname);
+}
+
 function splitName(name) {
   const parts = String(name || '').trim().split(/\s+/);
   const first = parts.shift() || '';
@@ -4989,12 +5000,12 @@ function displayRoster() {
                                 ${captainBadge}
                             </div>
                             <div class="player-name">${splitName(player.name)}</div>
-                            <div class="pos-slot">${positionBlock}</div>
+                            <div class="pos-slot${isCoach ? ' pos-slot-coach' : ''}">${positionBlock}</div>
                             ${ageHTML}
                         </div>
                         <div class="card-back">
                             <div style="position:relative; z-index:10; width:100%; padding: 8px;">
-                                <h4 style="font-size: 0.85rem; font-weight: 800; border-bottom: 1px solid #eee; padding-bottom: 4px; margin-bottom: 8px; color: var(--primary-color); text-align: center;">${esc(player.name)}</h4>
+                                <h4 style="font-size: 0.85rem; font-weight: 800; border-bottom: 1px solid #eee; padding-bottom: 4px; margin-bottom: 8px; color: var(--primary-color); text-align: center;">${backTitle(player)}</h4>
                                 ${backContent}
                             </div>
                         </div>
