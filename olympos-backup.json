@@ -62,17 +62,19 @@
       "number": 2,
       "name": "Άγγελος Κλαδάς",
       "birthYear": 2013,
-      "position": "Πλάγιος Αμυντικός - Αριστερός (LB) / Ακραίος Αμυντικός - Αριστερός (LWB) ",
+      "position": "Πλάγιος Αμυντικός - Αριστερός (LB)",
       "goals": 0,
-      "cleanSheets": 0
+      "cleanSheets": 0,
+      "isCaptain": false
     },
     {
       "number": 3,
       "name": "Ορέστης Δεληγιώργης",
       "birthYear": 2013,
-      "position": "Πλάγιος Αμυντικός - Δεξιός (RB) / Ακραίος Αμυντικός - Δεξιός (RWB)",
+      "position": "Πλάγιος Αμυντικός - Δεξιός (RB)",
       "goals": 0,
-      "cleanSheets": 0
+      "cleanSheets": 0,
+      "isCaptain": false
     },
     {
       "number": 4,
@@ -87,9 +89,10 @@
       "number": 5,
       "name": "Παρασκευάς Τυρεκίδης",
       "birthYear": 2012,
-      "position": "Κεντρικός Αμυντικός (CB)",
+      "position": "Κεντρικός Αμυντικός (CB) / Πλάγιος Αμυντικός - Δεξιός (RB)",
       "goals": 0,
-      "cleanSheets": 0
+      "cleanSheets": 0,
+      "isCaptain": false
     },
     {
       "number": 7,
@@ -178,9 +181,10 @@
       "number": 27,
       "name": "Άγγελος Μπατσακίδης",
       "birthYear": 2015,
-      "position": "Επιθετικός Μέσος (AM)/ Αμυντικός Μέσος (DM)",
+      "position": "Αμυντικός Μέσος (DM) / Επιθετικός Μέσος (AM) / Πλάγιος Επιθετικός - Δεξιός (RW)",
       "goals": 0,
-      "cleanSheets": 0
+      "cleanSheets": 0,
+      "isCaptain": false
     },
     {
       "number": 99,
