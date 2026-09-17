@@ -3130,6 +3130,19 @@ table thead th:nth-child(2) {
    οπότε δεν χρειάζεται να κρατάει τον χώρο για στοίχιση με τους παίκτες. */
 .pos-slot-coach{ min-height:0 !important; }
 
+/* Τίτλος πίσω όψης: πάντα σε ΜΙΑ γραμμή. Τα μεγάλα επώνυμα
+   μικραίνουν μόνα τους αντί να σπάνε στα δύο. */
+.back-title{
+    font-weight:800; text-align:center; white-space:nowrap;
+    font-size:clamp(0.58rem, 2.9vw, 0.85rem);
+    line-height:1.5; letter-spacing:-0.2px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:4px; margin:0 0 8px;
+    color:var(--primary-color);
+    overflow:hidden;
+}
+@media (prefers-color-scheme: dark){ .back-title{ color:var(--accent-color); } }
+
 .pos-slot{
     min-height: calc(86px + 1.8em);
     display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
@@ -3169,13 +3182,13 @@ table thead th:nth-child(2) {
 }
 .coach-kit::after{display:none !important}
 .coach-zip{
-    position:absolute; top:9%; bottom:6%; left:50%; width:2px;
+    /* Σταματά πάνω από το σήμα, να μην περνάει από μέσα του */
+    position:absolute; top:9%; bottom:56%; left:50%; width:2px;
     transform:translateX(-50%); background:rgba(255,255,255,.45); z-index:4;
 }
 .coach-word{
-    /* Στο ύψος του στήθους, όπου το μπουφάν έχει πλήρες πλάτος.
-       Ψηλότερα το μανίκι στενεύει και το σήμα ξέφευγε προς τα έξω. */
-    position:absolute; top:56px; right:28px; z-index:6;
+    /* Κεντραρισμένο στο στήθος. Δεξιά πατούσε το φερμουάρ και έδειχνε στραβό. */
+    position:absolute; top:62px; left:50%; transform:translateX(-50%); z-index:6;
     font-family:'Roboto Condensed',sans-serif; font-weight:800; font-style:italic;
     font-size:.56rem; letter-spacing:.6px; white-space:nowrap;
     padding:2px 7px; border-radius:999px;
@@ -5005,7 +5018,7 @@ function displayRoster() {
                         </div>
                         <div class="card-back">
                             <div style="position:relative; z-index:10; width:100%; padding: 8px;">
-                                <h4 style="font-size: 0.85rem; font-weight: 800; border-bottom: 1px solid #eee; padding-bottom: 4px; margin-bottom: 8px; color: var(--primary-color); text-align: center;">${backTitle(player)}</h4>
+                                <h4 class="back-title">${backTitle(player)}</h4>
                                 ${backContent}
                             </div>
                         </div>
