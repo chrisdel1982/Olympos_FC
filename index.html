@@ -3130,6 +3130,26 @@ table thead th:nth-child(2) {
    οπότε δεν χρειάζεται να κρατάει τον χώρο για στοίχιση με τους παίκτες. */
 .pos-slot-coach{ min-height:0 !important; }
 
+/* Σειρά θέσεων στη φόρμα του admin */
+.posorder{ margin:8px 0 4px; }
+.posorder-head{ font-size:.74rem; color:var(--ink-muted); margin-bottom:6px; line-height:1.35; }
+.posorder-chips{ display:flex; flex-wrap:wrap; gap:6px; }
+.posorder-chip{
+    font:inherit; font-size:.76rem; font-weight:600; cursor:pointer;
+    padding:5px 11px; border-radius:999px;
+    background:var(--surface-alt); color:var(--ink);
+    border:1px solid var(--line);
+}
+.posorder-chip:hover{ background:var(--surface-hover); }
+.posorder-chip.is-main{
+    background:var(--primary-color); color:#fff; border-color:var(--primary-color);
+    font-weight:800; cursor:default;
+}
+@media (prefers-color-scheme: dark){
+    .posorder-chip.is-main{ background:var(--accent-color); color:#111; border-color:var(--accent-color); }
+}
+.posorder-star{ margin-right:4px; }
+
 /* Τίτλος πίσω όψης: πάντα σε ΜΙΑ γραμμή. Τα μεγάλα επώνυμα
    μικραίνουν μόνα τους αντί να σπάνε στα δύο. */
 .back-title{
@@ -3790,7 +3810,8 @@ function showToast(message, type = 'success') {
 </div>
                 <div class="form-group">
     <label>Θέση(εις) - Κράτα Ctrl για πολλαπλές επιλογές:</label>
-    <select id="playerPosition" multiple size="8" style="height: auto;">
+    <div id="positionOrderBox"></div>
+    <select id="playerPosition" multiple size="8" style="height: auto;" onchange="syncPositionOrder()">
         <option value="">-- Επέλεξε Θέση(εις) --</option>
         <optgroup label="👨‍🏫 Προπονητής">
             <option value="Προπονητής">Προπονητής</option>
@@ -5095,6 +5116,50 @@ function displayTopScorers() {
 // Ποιον παίκτη επεξεργαζόμαστε αυτή τη στιγμή (null = προσθήκη νέου)
 let editingPlayer = null;
 
+// ============ ΣΕΙΡΑ ΘΕΣΕΩΝ ============
+// Ο browser επιστρέφει τις επιλογές με τη σειρά της ΛΙΣΤΑΣ, όχι με τη σειρά
+// που τις πάτησες. Κρατάμε εμείς τη σειρά, ώστε η κύρια θέση να είναι επιλογή
+// σου και όχι τυχαίο αποτέλεσμα του μενού.
+let positionOrder = [];
+
+function syncPositionOrder() {
+    const select = document.getElementById('playerPosition');
+    if (!select) return;
+    const chosen = Array.from(select.selectedOptions).map(o => o.value).filter(Boolean);
+    // κρατάμε όσες ήταν ήδη επιλεγμένες με τη σειρά τους, προσθέτουμε τις νέες στο τέλος
+    positionOrder = positionOrder.filter(v => chosen.includes(v));
+    chosen.forEach(v => { if (!positionOrder.includes(v)) positionOrder.push(v); });
+    renderPositionOrder();
+}
+
+function makePrimaryPosition(i) {
+    if (i <= 0 || i >= positionOrder.length) return;
+    positionOrder.unshift(positionOrder.splice(i, 1)[0]);
+    renderPositionOrder();
+}
+
+function renderPositionOrder() {
+    const box = document.getElementById('positionOrderBox');
+    if (!box) return;
+    if (!positionOrder.length) { box.innerHTML = ''; return; }
+    if (positionOrder.length === 1 && positionOrder[0] === 'Προπονητής') { box.innerHTML = ''; return; }
+
+    const shortOf = v => {
+        const m = String(v).match(/\(([A-Z]{2,3})\)/);
+        return (m && POS_GR[m[1]]) ? POS_GR[m[1]] : v;
+    };
+    box.innerHTML = `
+      <div class="posorder">
+        <div class="posorder-head">Σειρά — η πρώτη είναι η κύρια θέση. Πάτα όποια θες για να την κάνεις κύρια.</div>
+        <div class="posorder-chips">` +
+        positionOrder.map((v, i) => `
+          <button type="button" class="posorder-chip ${i === 0 ? 'is-main' : ''}"
+                  onclick="makePrimaryPosition(${i})">
+            ${i === 0 ? '<span class="posorder-star">★</span>' : ''}${esc(shortOf(v))}
+          </button>`).join('') +
+        `</div></div>`;
+}
+
 function startEditPlayer(name) {
     const p = (data.roster || []).find(x => x.name === name);
     if (!p) { showToast('Δεν βρέθηκε ο παίκτης.', 'error'); return; }
@@ -5115,6 +5180,10 @@ function startEditPlayer(name) {
     }
     const missing = wanted.filter(w => !matched.includes(w));
 
+    // Η σειρά έρχεται από το αποθηκευμένο string, όχι από τη λίστα
+    positionOrder = wanted.filter(w => matched.includes(w));
+    renderPositionOrder();
+
     document.getElementById('playerSaveBtn').innerHTML = '💾 Αποθήκευση αλλαγών';
     const banner = document.getElementById('playerEditBanner');
     banner.style.display = 'block';
@@ -5133,8 +5202,11 @@ function addPlayer() {
     const name = document.getElementById('playerName').value.trim();
     const birthYear = parseInt(document.getElementById('playerBirthYear').value);
     const positionSelect = document.getElementById('playerPosition');
-    const selectedOptions = Array.from(positionSelect.selectedOptions).map(opt => opt.value);
-    const position = selectedOptions.filter(p => p !== '').join(' / ');
+    const selectedOptions = Array.from(positionSelect.selectedOptions).map(opt => opt.value).filter(Boolean);
+    // Η σειρά που κράτησες εσύ υπερισχύει· το selectedOptions είναι μόνο δίχτυ ασφαλείας
+    const ordered = positionOrder.filter(v => selectedOptions.includes(v));
+    selectedOptions.forEach(v => { if (!ordered.includes(v)) ordered.push(v); });
+    const position = ordered.join(' / ');
     const isCaptain = document.getElementById('isCaptainPlayer').checked;
 
     if (!name || !position) {
@@ -5211,6 +5283,8 @@ function clearPlayerForm() {
     for (let option of select.options) {
         option.selected = false;
     }
+    positionOrder = [];
+    renderPositionOrder();
 }
 
 function updateRosterList() {
