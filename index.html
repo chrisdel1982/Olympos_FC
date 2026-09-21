@@ -3363,6 +3363,38 @@ table thead th:nth-child(2) {
     .tr-alerts-head { color: #ff8a80; }
     .tr-alert + .tr-alert { border-top-color: #5a3030; }
 }
+/* Ημερολόγιο — διακριτικά */
+.tr-cal{
+    display:inline-flex; align-items:center; gap:4px;
+    margin-top:9px; padding-top:8px; width:100%;
+    border-top:1px dashed var(--line);
+    font-size:.72rem; font-weight:600; letter-spacing:.2px;
+    color:var(--ink-muted); text-decoration:none;
+    transition:color .15s;
+}
+.tr-cal:hover{ color:var(--primary-color); }
+.tr-cal-ic{
+    display:inline-grid; place-items:center; width:15px; height:15px;
+    border-radius:50%; font-size:.7rem; line-height:1;
+    border:1px solid currentColor;
+}
+@media (prefers-color-scheme: dark){ .tr-cal:hover{ color:var(--accent-color); } }
+
+.tr-cal-all{ text-align:center; margin:14px 0 4px; }
+.tr-cal-btn{
+    font:inherit; font-size:.8rem; font-weight:700; cursor:pointer;
+    padding:8px 16px; border-radius:999px;
+    background:transparent; color:var(--primary-color);
+    border:1.5px solid var(--primary-color);
+    transition:background .15s,color .15s;
+}
+.tr-cal-btn:hover{ background:var(--primary-color); color:#fff; }
+@media (prefers-color-scheme: dark){
+    .tr-cal-btn{ color:var(--accent-color); border-color:var(--accent-color); }
+    .tr-cal-btn:hover{ background:var(--accent-color); color:#111; }
+}
+.tr-cal-note{ font-size:.72rem; color:var(--ink-muted); margin-top:7px; line-height:1.45; }
+
 .tr-empty {
     text-align: center; padding: 28px 16px;
     background: var(--surface-alt); color: var(--ink-muted);
@@ -6118,7 +6150,17 @@ function displayTraining() {
                 <div class="tr-day">${esc(GR_DAYS[Number(t.day)] || '')}</div>
                 <div class="tr-time">${esc(t.from || '')}${t.to ? ' – ' + esc(t.to) : ''}</div>
                 ${t.venue ? `<div class="tr-venue">📍 ${esc(t.venue)}</div>` : ''}
-            </div>`).join('') + `</div>`;
+                <a class="tr-cal" href="${esc(googleCalendarLink(t))}" target="_blank" rel="noopener">
+                    <span class="tr-cal-ic">＋</span> Google Calendar
+                </a>
+            </div>`).join('') + `</div>
+        <div class="tr-cal-all">
+            <button type="button" class="tr-cal-btn" onclick="downloadTrainingICS()">
+                📅 Όλο το πρόγραμμα στο ημερολόγιο
+            </button>
+            <div class="tr-cal-note">Ισχύει ως ${esc(fmtDateGR(trainingEndDate()))}.
+                Οι ακυρώσεις λόγω καιρού φαίνονται <strong>μόνο εδώ</strong>.</div>
+        </div>`;
 
     // --- Δεν ξεκίνησαν ακόμα ---
     const todayKey = ymd(new Date());
@@ -6159,6 +6201,110 @@ function displayTraining() {
     }
 
     upcoming.innerHTML = html;
+}
+
+// ============ ΗΜΕΡΟΛΟΓΙΟ (Google / iPhone) ============
+const CAL_TZ = 'Europe/Athens';
+const BYDAY  = ['SU','MO','TU','WE','TH','FR','SA'];
+
+// Τέλος σεζόν: 31 Μαΐου του έτους λήξης. «2026-27» -> 2027-05-31.
+// Βγαίνει από τη σεζόν, οπότε του χρόνου αλλάζει μόνο του.
+function trainingEndDate() {
+    const m = String(SEASON.season || '').match(/^(\d{4})/);
+    const endYear = m ? Number(m[1]) + 1 : new Date().getFullYear() + 1;
+    return `${endYear}-05-31`;
+}
+
+function fmtDateGR(key) {
+    const d = new Date(key + 'T00:00:00');
+    return isNaN(d) ? key : d.toLocaleDateString('el-GR', { day:'numeric', month:'long', year:'numeric' });
+}
+
+// Πρώτη μέρα που ταιριάζει με την ημέρα της προπόνησης, από την έναρξη και μετά
+function firstOccurrence(slot) {
+    const start = data.trainingStart ? new Date(data.trainingStart + 'T00:00:00') : new Date();
+    start.setHours(0,0,0,0);
+    const diff = (Number(slot.day) - start.getDay() + 7) % 7;
+    start.setDate(start.getDate() + diff);
+    return start;
+}
+
+const compactDate = d => `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+const compactTime = t => String(t || '00:00').replace(':','') + '00';
+
+function slotRRule(slot) {
+    const until = trainingEndDate().replace(/-/g,'') + 'T235959Z';
+    return `FREQ=WEEKLY;BYDAY=${BYDAY[Number(slot.day)]};UNTIL=${until}`;
+}
+
+function googleCalendarLink(slot) {
+    const d = compactDate(firstOccurrence(slot));
+    const params = new URLSearchParams({
+        action:   'TEMPLATE',
+        text:     `⚽ Προπόνηση ${SEASON.category || ''} — Όλυμπος`.replace(/\s+/g,' ').trim(),
+        dates:    `${d}T${compactTime(slot.from)}/${d}T${compactTime(slot.to || slot.from)}`,
+        ctz:      CAL_TZ,
+        location: slot.venue || '',
+        details:  'Για ακυρώσεις λόγω καιρού: https://www.olymposfc.gr/#training',
+        recur:    'RRULE:' + slotRRule(slot)
+    });
+    return 'https://calendar.google.com/calendar/render?' + params.toString();
+}
+
+// Ένα αρχείο με ΟΛΕΣ τις μέρες — το ιδανικό για iPhone και Outlook
+function buildTrainingICS() {
+    ensureTrainingData();
+    const esc6 = v => String(v || '').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n');
+    const stamp = new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'');
+    const L = [
+        'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Olympos FC//Proponiseis//EL',
+        'CALSCALE:GREGORIAN','METHOD:PUBLISH',
+        'X-WR-CALNAME:Όλυμπος — Προπονήσεις','X-WR-TIMEZONE:' + CAL_TZ,
+        // Ζώνη ώρας Ελλάδας με θερινή/χειμερινή ώρα
+        'BEGIN:VTIMEZONE','TZID:' + CAL_TZ,
+        'BEGIN:DAYLIGHT','TZOFFSETFROM:+0200','TZOFFSETTO:+0300','TZNAME:EEST',
+        'DTSTART:19700329T030000','RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU','END:DAYLIGHT',
+        'BEGIN:STANDARD','TZOFFSETFROM:+0300','TZOFFSETTO:+0200','TZNAME:EET',
+        'DTSTART:19701025T040000','RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU','END:STANDARD',
+        'END:VTIMEZONE'
+    ];
+    data.trainings.forEach(slot => {
+        const d = compactDate(firstOccurrence(slot));
+        // Οι ακυρώσεις που υπάρχουν ΤΗ ΣΤΙΓΜΗ της λήψης βγαίνουν έξω
+        const ex = data.trainingExceptions.filter(x => x.slotId === slot.id)
+                     .map(x => `${x.date.replace(/-/g,'')}T${compactTime(slot.from)}`);
+        L.push('BEGIN:VEVENT',
+               `UID:${slot.id}-${SEASON.season}@olymposfc.gr`,
+               `DTSTAMP:${stamp}`,
+               `SUMMARY:${esc6(`⚽ Προπόνηση ${SEASON.category || ''} — Όλυμπος`)}`,
+               `DTSTART;TZID=${CAL_TZ}:${d}T${compactTime(slot.from)}`,
+               `DTEND;TZID=${CAL_TZ}:${d}T${compactTime(slot.to || slot.from)}`,
+               `RRULE:${slotRRule(slot)}`);
+        if (ex.length) L.push(`EXDATE;TZID=${CAL_TZ}:${ex.join(',')}`);
+        if (slot.venue) L.push(`LOCATION:${esc6(slot.venue)}`);
+        L.push(`DESCRIPTION:${esc6('Για ακυρώσεις λόγω καιρού: https://www.olymposfc.gr/#training')}`,
+               'END:VEVENT');
+    });
+    L.push('END:VCALENDAR');
+    return L.join('\r\n');
+}
+
+function downloadTrainingICS() {
+    if (!data.trainings || !data.trainings.length) return;
+    const ics = buildTrainingICS();
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (isIOS) {
+        // Στο iPhone το data: URL ανοίγει κατευθείαν το «Προσθήκη στο Ημερολόγιο»
+        window.location.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
+        return;
+    }
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'olympos-proponiseis.ics';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
 }
 
 // ---------- Admin ----------
