@@ -3381,18 +3381,6 @@ table thead th:nth-child(2) {
 @media (prefers-color-scheme: dark){ .tr-cal:hover{ color:var(--accent-color); } }
 
 .tr-cal-all{ text-align:center; margin:14px 0 4px; }
-.tr-cal-btn{
-    font:inherit; font-size:.8rem; font-weight:700; cursor:pointer;
-    padding:8px 16px; border-radius:999px;
-    background:transparent; color:var(--primary-color);
-    border:1.5px solid var(--primary-color);
-    transition:background .15s,color .15s;
-}
-.tr-cal-btn:hover{ background:var(--primary-color); color:#fff; }
-@media (prefers-color-scheme: dark){
-    .tr-cal-btn{ color:var(--accent-color); border-color:var(--accent-color); }
-    .tr-cal-btn:hover{ background:var(--accent-color); color:#111; }
-}
 .tr-cal-note{ font-size:.72rem; color:var(--ink-muted); margin-top:7px; line-height:1.45; }
 
 .tr-empty {
@@ -6155,10 +6143,7 @@ function displayTraining() {
                 </a>
             </div>`).join('') + `</div>
         <div class="tr-cal-all">
-            <button type="button" class="tr-cal-btn" onclick="downloadTrainingICS()">
-                📅 Όλο το πρόγραμμα στο ημερολόγιο
-            </button>
-            <div class="tr-cal-note">Ισχύει ως ${esc(fmtDateGR(trainingEndDate()))}.
+            <div class="tr-cal-note">Το ημερολόγιο ισχύει ως ${esc(fmtDateGR(trainingEndDate()))}.
                 Οι ακυρώσεις λόγω καιρού φαίνονται <strong>μόνο εδώ</strong>.</div>
         </div>`;
 
@@ -6249,62 +6234,6 @@ function googleCalendarLink(slot) {
         recur:    'RRULE:' + slotRRule(slot)
     });
     return 'https://calendar.google.com/calendar/render?' + params.toString();
-}
-
-// Ένα αρχείο με ΟΛΕΣ τις μέρες — το ιδανικό για iPhone και Outlook
-function buildTrainingICS() {
-    ensureTrainingData();
-    const esc6 = v => String(v || '').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n');
-    const stamp = new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'');
-    const L = [
-        'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Olympos FC//Proponiseis//EL',
-        'CALSCALE:GREGORIAN','METHOD:PUBLISH',
-        'X-WR-CALNAME:Όλυμπος — Προπονήσεις','X-WR-TIMEZONE:' + CAL_TZ,
-        // Ζώνη ώρας Ελλάδας με θερινή/χειμερινή ώρα
-        'BEGIN:VTIMEZONE','TZID:' + CAL_TZ,
-        'BEGIN:DAYLIGHT','TZOFFSETFROM:+0200','TZOFFSETTO:+0300','TZNAME:EEST',
-        'DTSTART:19700329T030000','RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU','END:DAYLIGHT',
-        'BEGIN:STANDARD','TZOFFSETFROM:+0300','TZOFFSETTO:+0200','TZNAME:EET',
-        'DTSTART:19701025T040000','RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU','END:STANDARD',
-        'END:VTIMEZONE'
-    ];
-    data.trainings.forEach(slot => {
-        const d = compactDate(firstOccurrence(slot));
-        // Οι ακυρώσεις που υπάρχουν ΤΗ ΣΤΙΓΜΗ της λήψης βγαίνουν έξω
-        const ex = data.trainingExceptions.filter(x => x.slotId === slot.id)
-                     .map(x => `${x.date.replace(/-/g,'')}T${compactTime(slot.from)}`);
-        L.push('BEGIN:VEVENT',
-               `UID:${slot.id}-${SEASON.season}@olymposfc.gr`,
-               `DTSTAMP:${stamp}`,
-               `SUMMARY:${esc6(`⚽ Προπόνηση ${SEASON.category || ''} — Όλυμπος`)}`,
-               `DTSTART;TZID=${CAL_TZ}:${d}T${compactTime(slot.from)}`,
-               `DTEND;TZID=${CAL_TZ}:${d}T${compactTime(slot.to || slot.from)}`,
-               `RRULE:${slotRRule(slot)}`);
-        if (ex.length) L.push(`EXDATE;TZID=${CAL_TZ}:${ex.join(',')}`);
-        if (slot.venue) L.push(`LOCATION:${esc6(slot.venue)}`);
-        L.push(`DESCRIPTION:${esc6('Για ακυρώσεις λόγω καιρού: https://www.olymposfc.gr/#training')}`,
-               'END:VEVENT');
-    });
-    L.push('END:VCALENDAR');
-    return L.join('\r\n');
-}
-
-function downloadTrainingICS() {
-    if (!data.trainings || !data.trainings.length) return;
-    const ics = buildTrainingICS();
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-                  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    if (isIOS) {
-        // Στο iPhone το data: URL ανοίγει κατευθείαν το «Προσθήκη στο Ημερολόγιο»
-        window.location.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
-        return;
-    }
-    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'olympos-proponiseis.ics';
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
 }
 
 // ---------- Admin ----------
