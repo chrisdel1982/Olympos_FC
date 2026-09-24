@@ -16,11 +16,11 @@
   "specialMatch": {
     "type": "Φιλικός Αγώνας Προετοιμασίας ",
     "home": "Όλυμπος",
-    "away": "Ηρακλής Αμπελωκήπων"
+    "away": "Ηρακλής Αμπελοκήπων"
   },
   "crests": {
     "ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ": "crests/olympos.png",
-    "ΗΡΑΚΛΗΣ ΑΜΠΕΛΩΚΗΠΩΝ": "crests/irakls-ampelokipon.png"
+    "ΗΡΑΚΛΗΣ ΑΜΠΕΛΟΚΗΠΩΝ": "crests/irakls-ampelokipon.png"
   },
   "trainingStart": "2026-09-07",
   "trainings": [
