@@ -5914,10 +5914,26 @@ function isMyTeam(name) {
     return a === b || b.startsWith(a) || a.startsWith(b);
 }
 
+// Φωνητική κανονικοποίηση: «Αμπελοκήπων» και «Αμπελωκήπων» είναι το ίδιο.
+// Στα ελληνικά ονόματα ομάδων τα ο/ω και οι/ει/η/υ/ι μπερδεύονται συνέχεια.
+function phonTeam(v) {
+    return normTeam(v)
+        .replace(/ΑΙ/g, 'Ε')
+        .replace(/ΕΙ|ΟΙ|ΥΙ/g, 'Ι')
+        .replace(/[ΗΥ]/g, 'Ι')
+        .replace(/Ω/g, 'Ο')
+        .replace(/[^Α-Ω0-9]/g, '');
+}
+
 // Σήμα ομάδας: από τη λίστα στο JSON, αλλιώς το δικό μας λογότυπο, αλλιώς αρχικά
 function crestFor(name) {
     const map = data.crests || {};
-    const hit = Object.keys(map).find(k => normTeam(k) === normTeam(name));
+    const keys = Object.keys(map);
+    // 1) ακριβές  2) φωνητικό, για ορθογραφικές παραλλαγές
+    const bare = v => phonTeam(v).replace(/\d+/g, '');   // «ΔΟΞΑ ΡΕΤΖΙΚΙΟΥ (2)» = «ΔΟΞΑ ΡΕΤΖΙΚΙΟΥ»
+    const hit = keys.find(k => normTeam(k) === normTeam(name))
+             || keys.find(k => phonTeam(k) === phonTeam(name))
+             || keys.find(k => bare(k) === bare(name));
     if (hit && map[hit]) return map[hit];
     if (isMyTeam(name)) return 'logo_front.png';
     return null;
