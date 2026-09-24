@@ -3392,9 +3392,11 @@ table thead th:nth-child(2) {
   background:var(--primary-color);border-radius:2px}
 .nm-crest{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;
   font-family:'Roboto Condensed',sans-serif;font-weight:700;font-size:1.05rem;letter-spacing:.5px;
-  background:var(--surface-alt);border:2px solid var(--line);color:var(--ink-muted);overflow:hidden}
+  /* ΠΑΝΤΑ λευκός κύκλος, και στα δύο θέματα: έτσι το άσπρο φόντο που έχουν
+     τα περισσότερα λογότυπα χάνεται μέσα του και δεν φαίνεται σαν αυτοκόλλητο. */
+  background:#fff;border:2px solid #d9d9d9;color:#5a5a5a;overflow:hidden}
 .nm-crest img{width:100%;height:100%;object-fit:contain;padding:3px}
-.nm-side.mine .nm-crest{border-color:var(--primary-color);background:#fff}
+.nm-side.mine .nm-crest{border-color:var(--primary-color)}
 .nm-name{font-family:'Roboto Condensed',sans-serif;font-size:.92rem;font-weight:700;
   line-height:1.2;text-transform:uppercase;letter-spacing:.2px;max-width:100%;
   color:var(--ink-muted);overflow-wrap:normal;word-break:keep-all;hyphens:none;
@@ -3434,6 +3436,7 @@ table thead th:nth-child(2) {
   .nm.is-live .nm-kind{background:var(--live);color:#fff}
   .nm-side.mine .nm-name{color:#fff}
   .nm-side.mine::after{background:var(--accent-color)}
+  .nm-crest{border-color:#4a4a4a}
   .nm-side.mine .nm-crest{border-color:var(--accent-color)}
   .nm-cd b{color:#fff}
   .nm-go{background:#2d6a4f;color:#fff}
