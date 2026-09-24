@@ -4084,6 +4084,19 @@ function showToast(message, type = 'success') {
 
                     <hr style="margin:14px 0; border:none; border-top:1px dashed #bbb;">
 
+                    <label class="tools-head">🛡️ Σήματα ομάδων</label>
+                    <p style="font-size:.78rem; color:var(--ink-muted); margin:4px 0 6px;">
+                        Μία γραμμή ανά ομάδα: <code>ΟΝΟΜΑ ΟΜΑΔΑΣ = αρχείο.png</code><br>
+                        Τα αρχεία μπαίνουν στον φάκελο <code>crests/</code> του repo.
+                        Όποια ομάδα δεν έχει σήμα, δείχνει τα αρχικά της.
+                    </p>
+                    <textarea id="crestsInput" rows="6"
+                        placeholder="ΗΡΑΚΛΗΣ ΑΜΠΕΛΟΚΗΠΩΝ = crests/irakls-ampelokipon.png&#10;ΜΑΚΕΔΟΝΙΚΟΣ (4) = crests/makedonikos.png"
+                        style="width:100%; font-family:monospace; font-size:.82rem;"></textarea>
+                    <button class="btn btn-success btn-small" style="margin-top:6px;" onclick="saveCrests()">💾 Αποθήκευση σημάτων</button>
+
+                    <hr style="margin:14px 0; border:none; border-top:1px dashed #bbb;">
+
                     <label class="tools-head">📋 Πρόγραμμα από ΕΠΣΜ</label>
                     <p style="font-size:0.78rem; color:var(--ink-muted); margin:4px 0 6px;">
                         Κάνε επικόλληση το πρόγραμμα όπως το βρήκες. Δέχεται επικεφαλίδες
@@ -4596,6 +4609,7 @@ function updateStorageMeter(usedMB) {
         specialMatch: data.specialMatch || null,
 
         // 🏃 ΠΡΟΠΟΝΗΣΕΙΣ
+        crests:             data.crests || {},
         trainingStart:      data.trainingStart || '',
         trainings:          data.trainings || [],
         trainingExceptions: data.trainingExceptions || [],
@@ -4869,7 +4883,7 @@ function displayStandings() {
                 div.style.display = 'block'; 
                 div.style.padding = '0';
 
-                if (match.home === MY_TEAM || match.away === MY_TEAM) { div.style.background = '#fffdf0'; }
+                if (isMyTeam(match.home) || isMyTeam(match.away)) { div.style.background = '#fffdf0'; }
 
                 // ΑΛΛΑΓΗ ΕΔΩ: Γράφουμε "ΑΝΑΒΟΛΗ" αντί για "ΑΝΑΒΛΗΘΗΚΕ"
                 let centerContent = match.isPostponed ? 
@@ -4952,7 +4966,7 @@ function displayFixtures() {
                 const div = document.createElement('div');
                 div.className = 'match-row';
                 
-                if (match.home === MY_TEAM || match.away === MY_TEAM) {
+                if (isMyTeam(match.home) || isMyTeam(match.away)) {
                     div.style.background = '#fffdf0';
                 }
 
@@ -4991,7 +5005,7 @@ function getPlayerDetailedStats(playerName) {
             // Αν δεν έχει γίνει το ματς (δεν έχει σκορ), το αγνοούμε
             if (match.homeScore === null) return;
 
-            const opponent = (match.home === MY_TEAM) ? match.away : match.home;
+            const opponent = isMyTeam(match.home) ? match.away : match.home;
             const score = `${match.homeScore}-${match.awayScore}`;
             const info = `vs ${opponent} (${score})`;
 
@@ -5884,6 +5898,28 @@ function saveGeneralSettings() {
         let countdownInterval = null; // Μεταβλητή για να σταματάμε το χρονόμετρο αν χρειαστεί
 let currentNextMatch = null;
 
+// Κανονικοποίηση: χωρίς τόνους, κεφαλαία, χωρίς παρενθέσεις
+function normTeam(v) {
+    return String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .toUpperCase().replace(/[«».()]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+// Είναι δική μας ομάδα; Δέχεται και σκέτο «ΟΛΥΜΠΟΣ» στα φιλικά.
+function isMyTeam(name) {
+    const a = normTeam(name), b = normTeam(MY_TEAM);
+    if (!a) return false;
+    return a === b || b.startsWith(a) || a.startsWith(b);
+}
+
+// Σήμα ομάδας: από τη λίστα στο JSON, αλλιώς το δικό μας λογότυπο, αλλιώς αρχικά
+function crestFor(name) {
+    const map = data.crests || {};
+    const hit = Object.keys(map).find(k => normTeam(k) === normTeam(name));
+    if (hit && map[hit]) return map[hit];
+    if (isMyTeam(name)) return 'logo_front.png';
+    return null;
+}
+
 // Αρχικά ομάδας για τον κύκλο, όταν δεν υπάρχει σήμα. Τα «(2)», «(4)» δεν μετράνε.
 function teamInitials(name) {
     const w = String(name || '').replace(/[«»().]/g, ' ').split(/\s+/)
@@ -5892,9 +5928,10 @@ function teamInitials(name) {
 }
 
 function teamSide(name) {
-    const mine = name === MY_TEAM;
-    const crest = mine
-        ? `<div class="nm-crest"><img src="logo_front.png" alt=""
+    const mine = isMyTeam(name);
+    const file = crestFor(name);
+    const crest = file
+        ? `<div class="nm-crest"><img src="${esc(file)}" alt=""
              onerror="this.parentNode.textContent='${esc(teamInitials(name))}'"></div>`
         : `<div class="nm-crest">${esc(teamInitials(name))}</div>`;
     return `<div class="nm-side ${mine ? 'mine' : ''}">${crest}
@@ -5916,7 +5953,7 @@ if (data.specialMatch && data.specialMatch.home) {
     // 2. Εύρεση επόμενου αγώνα (φιλτράροντας και τα αναβληθέντα)
     for (const round of data.fixtures) {
         const m = round.matches.find(m => 
-            (m.home === MY_TEAM || m.away === MY_TEAM) && 
+            (isMyTeam(m.home) || isMyTeam(m.away)) && 
             m.homeScore === null && 
             !m.isPostponed // Μην δείχνεις αναβληθέντα ως "επόμενα"
         );
@@ -5963,7 +6000,7 @@ if (!nextMatch) {
     const countdownStyle = isLive ? 'display: none;' : 'display: block;';
 
     // HTML Κάρτας
-    const isHome = nextMatch.home === MY_TEAM;
+    const isHome = isMyTeam(nextMatch.home);
 
     container.innerHTML = `
         <div class="nm ${isLive ? 'is-live' : ''}">
@@ -6110,6 +6147,26 @@ async function checkPassword() {
     }
 }
 // ================= ΣΤΗΣΙΜΟ ΝΕΑΣ ΣΕΖΟΝ =================
+function saveCrests() {
+    const txt = document.getElementById('crestsInput').value;
+    const map = {};
+    let bad = [];
+    txt.split('\n').map(l => l.trim()).filter(Boolean).forEach(line => {
+        const i = line.indexOf('=');
+        if (i < 1) { bad.push(line); return; }
+        const team = line.slice(0, i).trim();
+        let file = line.slice(i + 1).trim();
+        if (!file) { bad.push(line); return; }
+        if (!file.includes('/')) file = 'crests/' + file;   // βολικό: αρκεί το όνομα αρχείου
+        map[team] = file;
+    });
+    if (bad.length) { showToast('Δεν διαβάστηκε: ' + bad[0], 'error'); return; }
+    data.crests = map;
+    saveData(data);
+    displayNextMatch();
+    showToast(`Αποθηκεύτηκαν ${Object.keys(map).length} σήματα.`);
+}
+
 function saveSeasonSetup() {
     const teams = document.getElementById('teamsInput').value
         .split('\n').map(t => t.trim()).filter(Boolean);
@@ -6181,6 +6238,7 @@ function ensureTrainingData() {
     if (!Array.isArray(data.trainings))          data.trainings = [];
     if (!Array.isArray(data.trainingExceptions)) data.trainingExceptions = [];
     if (typeof data.trainingStart !== 'string')  data.trainingStart = '';
+    if (!data.crests || typeof data.crests !== 'object') data.crests = {};
     // Οι παλιές ακυρώσεις δεν χρειάζονται — καθαρίζουν μόνες τους μετά από 45 μέρες
     const limit = new Date(); limit.setDate(limit.getDate() - 45);
     const cut = ymd(limit);
@@ -6999,6 +7057,8 @@ function refreshAdminForms() {
     document.getElementById('groupInput').value        = data.group        || '';
     document.getElementById('nextCategoryInput').value = data.nextCategory || SEASON.nextCategory;
     document.getElementById('teamsInput').value        = (TEAMS || []).join('\n');
+    const cr = document.getElementById('crestsInput');
+    if (cr) cr.value = Object.entries(data.crests || {}).map(([k, v]) => `${k} = ${v}`).join('\n');
     
     if (data) {
         // Γενικά
