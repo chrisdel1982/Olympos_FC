@@ -3200,25 +3200,56 @@ table thead th:nth-child(2) {
 
 /* ΜΠΟΥΦΑΝ ΠΡΟΠΟΝΗΤΗ — όχι φανέλα ομάδας */
 .coach-kit::before{
-    background-color:#20313a !important;
-    background-image:linear-gradient(180deg, rgba(255,255,255,.07), rgba(0,0,0,.12)) !important;
-    clip-path:polygon(20% 0%,36% 0%,50% 7%,64% 0%,80% 0%,100% 26%,90% 52%,80% 44%,80% 100%,20% 100%,20% 44%,10% 52%,0% 26%) !important;
+    /* ΠΟΛΟ: κοντομάνικο, με ανοιχτόχρωμη μανσέτα στις άκρες των μανικιών */
+    --polo:#1f2224; --polo-trim:#3a4045;
+    background-color:var(--polo) !important;
+    background-image:
+        linear-gradient(var(--polo-trim),var(--polo-trim)),
+        linear-gradient(var(--polo-trim),var(--polo-trim)),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.10)) !important;
+    background-size:22% 5%, 22% 5%, auto !important;
+    background-position:left 0 top 44%, right 0 top 44%, 0 0 !important;
+    background-repeat:no-repeat,no-repeat,no-repeat !important;
+    clip-path:polygon(22% 0%,78% 0%,100% 25%,90% 50%,80% 42%,80% 100%,20% 100%,20% 42%,10% 50%,0% 25%) !important;
 }
-.coach-kit::after{display:none !important}
-.coach-zip{
-    /* Σταματά πάνω από το σήμα, να μην περνάει από μέσα του */
-    position:absolute; top:9%; bottom:56%; left:50%; width:2px;
-    transform:translateX(-50%); background:rgba(255,255,255,.45); z-index:4;
+.coach-kit::after{
+    /* Γιακάς πόλο: δύο πτερύγια με ανοιχτό V στη μέση */
+    display:block !important; content:'' !important;
+    position:absolute; top:-1px; left:50%; transform:translateX(-50%);
+    width:54%; height:27%;
+    background:var(--polo-collar,#343a3e) !important;
+    border-radius:0 !important;
+    /* Δύο μύτες που ανοίγουν προς τα πλάγια πάνω στο στήθος,
+       με το άνοιγμα της πατιλέτας στη μέση — όπως ένα πραγματικό πόλο */
+    clip-path:polygon(8% 0%,92% 0%,100% 30%,76% 100%,56% 52%,50% 44%,44% 52%,24% 100%,0% 30%);
+    z-index:5;
 }
-.coach-word{
-    /* Κεντραρισμένο στο στήθος. Δεξιά πατούσε το φερμουάρ και έδειχνε στραβό. */
-    position:absolute; top:62px; left:50%; transform:translateX(-50%); z-index:6;
-    font-family:'Roboto Condensed',sans-serif; font-weight:800; font-style:italic;
-    font-size:.56rem; letter-spacing:.6px; white-space:nowrap;
-    padding:2px 7px; border-radius:999px;
-    background:linear-gradient(180deg,#ffe97a,#d9b53a);
-    color:#1b2a33; border:1px solid rgba(0,0,0,.25);
-    box-shadow:0 1px 3px rgba(0,0,0,.45);
+/* Ο γενικός κανόνας της φανέλας κλειδώνει το ::after σε 35×8px με !important.
+   Για τον γιακά του πόλο χρειάζεται ειδικότερος κανόνας, αλλιώς πατιέται. */
+.player-photo.coach-kit::after{
+    width:42% !important; height:25% !important; top:-1px !important;
+}
+
+/* Στο σκοτεινό το μαύρο πόλο θα χανόταν: γίνεται ανοιχτό ανθρακί */
+@media (prefers-color-scheme: dark){
+    .player-photo.coach-kit::before{ --polo:#5c6f7c; --polo-trim:#8c9ca6;
+        background-color:var(--polo) !important; }
+    .player-photo.coach-kit{ --polo-collar:#74868f; }
+}
+.polo-placket{
+    /* Πατιλέτα με δύο κουμπιά, κάτω από τον γιακά */
+    position:absolute; top:12%; left:50%; transform:translateX(-50%);
+    width:7px; height:22%; z-index:4;   /* κάτω από τον γιακά, ξεκινά από το άνοιγμά του */
+    background:
+        radial-gradient(circle, #9aa3a8 0 1.2px, transparent 1.6px) 50% 30% / 7px 7px no-repeat,
+        radial-gradient(circle, #9aa3a8 0 1.2px, transparent 1.6px) 50% 80% / 7px 7px no-repeat,
+        rgba(255,255,255,.07);
+    border-left:1px solid rgba(0,0,0,.35); border-right:1px solid rgba(0,0,0,.35);
+}
+.polo-crest{
+    /* Το σήμα στο στήθος, αριστερά του φορούντος — δεξιά για αυτόν που κοιτάει */
+    position:absolute; top:26%; left:60%; width:15%; height:auto; z-index:6;
+    filter:drop-shadow(0 1px 1px rgba(0,0,0,.4));
 }
 
 /* ================= ADMIN — ΑΚΟΡΝΤΕΟΝ ================= */
@@ -5244,7 +5275,7 @@ function displayRoster() {
                             <div style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:80%; height:4px; background:var(--primary-color); border-radius:0 0 6px 6px;"></div>
                             <div class="${photoClass}">
                                 ${isCoach
-                                  ? '<div class="coach-zip"></div><div class="coach-word">Coach</div>'
+                                  ? `<div class="polo-placket"></div><img class="polo-crest" src="${esc(crestFor(MY_TEAM) || 'logo_front.png')}" alt="" onerror="this.remove()">`
                                   : `<div class="jersey-nick" data-fit>${esc(jerseyNick(player))}</div>
                                      <div class="player-number">${displayNumber}</div>
                                      <div class="jersey-team-name">ΟΛΥΜΠΟΣ F.C.</div>`}
