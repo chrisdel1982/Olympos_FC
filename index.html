@@ -2650,7 +2650,9 @@ table thead th:nth-child(2) {
     transform: translate(-50%, -50%);
     width: 80%;
     height: 80%;
-    background-image: url('android-chrome-192x192.png');
+    /* ΗΤΑΝ android-chrome-192x192.png: εικονίδιο εφαρμογής με ΑΔΙΑΦΑΝΕΣ τετράγωνο
+       φόντο, που στο σκοτεινό θέμα φαινόταν σαν γκρι πλαίσιο. Τώρα η καθαρή ασπίδα. */
+    background-image: url('crests/olympos-shield.png');
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
@@ -2893,7 +2895,10 @@ table thead th:nth-child(2) {
                 background-repeat: no-repeat !important;
             }
 
-            /* ΤΟ ΠΕΠΛΟ ΓΙΝΕΤΑΙ ΣΚΟΥΡΟ */
+            /* Στο σκοτεινό το λευκό της ασπίδας λάμπει περισσότερο: λίγο πιο σβηστό */
+.card-back::before { opacity: 0.12 !important; }
+
+/* ΤΟ ΠΕΠΛΟ ΓΙΝΕΤΑΙ ΣΚΟΥΡΟ */
             .card-back::after {
                 background: rgba(20, 20, 20, 0.75) !important;
             }
