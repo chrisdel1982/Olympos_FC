@@ -3367,6 +3367,55 @@ table thead th:nth-child(2) {
     .tr-alerts-head { color: #ff8a80; }
     .tr-alert + .tr-alert { border-top-color: #5a3030; }
 }
+/* ================= ΦΑΝΕΛΑ: ΣΤΑΘΕΡΕΣ ΘΕΣΕΙΣ =================
+   Παρατσούκλι πάνω, νούμερο μέση, «ΟΛΥΜΠΟΣ F.C.» κάτω.
+   Όλα απόλυτα τοποθετημένα: το νούμερο ΔΕΝ μετακινείται ποτέ,
+   ό,τι κι αν γράφει ή δεν γράφει από πάνω. */
+.player-photo:not(.coach-kit) .jersey-nick{
+    position:absolute; top:15%; left:23%; right:23%;
+    text-align:center; white-space:nowrap; overflow:hidden;
+    font-family:'Roboto Condensed',sans-serif; font-weight:700;
+    font-size:.54rem; letter-spacing:.6px; line-height:1.1;
+    color:#000; z-index:15;
+}
+/* Μετρημένο σε πραγματικό browser: η φανέλα είναι 100×90 σε ΚΑΘΕ οθόνη,
+   οπότε ένα μέγεθος για όλες — όχι ξεχωριστό για υπολογιστή. */
+.player-photo:not(.coach-kit) .player-number{
+    position:absolute !important; top:54% !important; left:0; right:0;
+    margin:0 !important; text-align:center;
+    font-size:2.1rem !important;
+    transform:translateY(-50%) scaleY(1.2) !important;
+}
+.player-photo:not(.coach-kit) .jersey-team-name{
+    position:absolute !important; top:81% !important; left:22%; right:22%;
+    margin:0 !important; text-align:center; white-space:nowrap;
+    font-size:.38rem !important; letter-spacing:.3px !important; line-height:1;
+}
+/* Πιο συγκεκριμένο από τον γενικό κανόνα, αλλιώς μένει μαύρο πάνω σε μαύρο */
+.player-photo.gk-kit:not(.coach-kit) .jersey-nick{ color:var(--gk-num); }
+
+/* ================= ΦΑΝΕΛΑ ΤΕΡΜΑΤΟΦΥΛΑΚΑ =================
+   Μαύρη με λαχανί στο φωτεινό θέμα, γαλάζια με σκούρο μπλε στο σκοτεινό.
+   Μακρυμάνικη, με λεπτό σιρίτι κοντά στον καρπό. */
+.gk-kit{ --gk-kit:#111111; --gk-trim:#ccff00; --gk-num:#ccff00; }
+@media (prefers-color-scheme: dark){
+  .gk-kit{ --gk-kit:#6ec1ef; --gk-trim:#0b2239; --gk-num:#0b2239; }
+}
+.gk-kit::before{
+  clip-path:polygon(22% 0%,78% 0%,100% 24%,97% 90%,86% 92%,80% 40%,80% 100%,20% 100%,20% 40%,14% 92%,3% 90%,0% 24%) !important;
+  background-color:var(--gk-kit) !important;
+  background-image:
+    linear-gradient(var(--gk-trim),var(--gk-trim)),
+    linear-gradient(var(--gk-trim),var(--gk-trim)),
+    repeating-linear-gradient(90deg,transparent,transparent 2px,rgba(255,255,255,.04) 2px,rgba(255,255,255,.04) 4px) !important;
+  background-size:20% 3px, 20% 3px, auto !important;
+  background-position:left 0 top 80%, right 0 top 80%, 0 0 !important;
+  background-repeat:no-repeat,no-repeat,repeat !important;
+}
+.gk-kit::after{ background-color:var(--gk-trim) !important; }
+.gk-kit .jersey-team-name,
+.gk-kit .player-number{ color:var(--gk-num) !important; }
+
 /* Μικρό σήμα σε βαθμολογία / πρόγραμμα / αποτελέσματα */
 .crest-mini{
     width:20px;height:20px;flex:none;object-fit:contain;
@@ -3923,6 +3972,11 @@ function showToast(message, type = 'success') {
                     <label>Όνομα Παίκτη:</label>
                     <input type="text" id="playerName" placeholder="π.χ. Γιώργος Παπαδόπουλος">
                 </div>
+
+                <div class="form-group">
+                    <label>Παρατσούκλι στη φανέλα:</label>
+                    <input type="text" id="playerNickname" maxlength="16" placeholder="π.χ. ΚΥΡΤΖΑ — κενό = το επώνυμο">
+                </div>
 <div class="form-group">
     <label>Έτος Γέννησης (για υπολογισμό ηλικίας):</label>
     <input type="number" id="playerBirthYear" placeholder="π.χ. 2011">
@@ -4465,6 +4519,29 @@ function positionPitchSVG(codes) {
 }
 
 // Όνομα πάντα σε δύο σειρές: μικρό όνομα πάνω, επώνυμο κάτω
+// Τι γράφει πάνω η φανέλα: το παρατσούκλι, αλλιώς το επώνυμο.
+// Κεφαλαία ΧΩΡΙΣ τόνους, όπως τυπώνονται οι πραγματικές φανέλες.
+function jerseyNick(p) {
+    let t = String(p.nickname || '').trim();
+    if (!t) {
+        const parts = String(p.name || '').trim().split(/\s+/);
+        t = parts.length > 1 ? parts[parts.length - 1] : (parts[0] || '');
+    }
+    return t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
+}
+
+// Αν το κείμενο δεν χωράει στο πλάτος του, μικραίνει — ποτέ δεν κόβεται
+function fitJerseyText(root) {
+    (root || document).querySelectorAll('[data-fit]').forEach(el => {
+        el.style.fontSize = ''; el.style.letterSpacing = '';
+        let fs = parseFloat(getComputedStyle(el).fontSize) || 11, n = 0;
+        while (el.scrollWidth > el.clientWidth && fs > 5 && n < 40) {
+            fs -= 0.5; el.style.fontSize = fs + 'px'; el.style.letterSpacing = '0'; n++;
+        }
+    });
+}
+window.addEventListener('resize', () => fitJerseyText());
+
 // Πίσω όψη: «99 | Χριστοφίδης» — νούμερο και επώνυμο, όχι ολόκληρο το όνομα
 function backTitle(p) {
     const parts = String(p.name || '').trim().split(/\s+/);
@@ -5054,6 +5131,8 @@ function getPlayerDetailedStats(playerName) {
     return { goalsLog, cleanSheetsLog };
 }
 function displayRoster() {
+    // προσαρμογή μεγέθους παρατσουκλιών αμέσως μόλις ζωγραφιστούν
+    requestAnimationFrame(() => fitJerseyText(document.getElementById('rosterContainer')));
     const container = document.getElementById('rosterContainer');
     container.className = ''; 
     container.innerHTML = '';
@@ -5110,7 +5189,11 @@ function displayRoster() {
                 card.className = 'player-card';
                 card.setAttribute('onclick', "this.classList.toggle('flipped')");
 
-                const photoClass = isCoach ? 'player-photo coach-kit' : 'player-photo';
+                // Τερματοφύλακας = κύρια θέση GK. Φοράει δική του στολή.
+                const isKeeper = !isCoach && (posCodes[0] === 'GK');
+                const photoClass = isCoach ? 'player-photo coach-kit'
+                                 : isKeeper ? 'player-photo gk-kit'
+                                 : 'player-photo';
                 const displayNumber = player.number || (isCoach ? '' : '-');
                 const captainBadge = player.isCaptain ? `<div class="captain-badge">C</div>` : '';
 
@@ -5162,8 +5245,9 @@ function displayRoster() {
                             <div class="${photoClass}">
                                 ${isCoach
                                   ? '<div class="coach-zip"></div><div class="coach-word">Coach</div>'
-                                  : `<div class="jersey-team-name">ΟΛΥΜΠΟΣ F.C.</div>
-                                     <div class="player-number">${displayNumber}</div>`}
+                                  : `<div class="jersey-nick" data-fit>${esc(jerseyNick(player))}</div>
+                                     <div class="player-number">${displayNumber}</div>
+                                     <div class="jersey-team-name">ΟΛΥΜΠΟΣ F.C.</div>`}
                                 ${captainBadge}
                             </div>
                             <div class="player-name">${splitName(player.name)}</div>
@@ -5300,6 +5384,8 @@ function startEditPlayer(name) {
     editingPlayer = name;
     document.getElementById('playerNumber').value    = p.number ?? '';
     document.getElementById('playerName').value      = p.name || '';
+    const nk = document.getElementById('playerNickname');
+    if (nk) nk.value = p.nickname || '';
     document.getElementById('playerBirthYear').value = p.birthYear ?? '';
     document.getElementById('isCaptainPlayer').checked = !!p.isCaptain;
 
@@ -5333,6 +5419,8 @@ function startEditPlayer(name) {
 function addPlayer() {
     const number = parseInt(document.getElementById('playerNumber').value);
     const name = document.getElementById('playerName').value.trim();
+    const nickEl = document.getElementById('playerNickname');
+    const nickname = nickEl ? nickEl.value.trim() : '';
     const birthYear = parseInt(document.getElementById('playerBirthYear').value);
     const positionSelect = document.getElementById('playerPosition');
     const selectedOptions = Array.from(positionSelect.selectedOptions).map(opt => opt.value).filter(Boolean);
@@ -5371,6 +5459,7 @@ function addPlayer() {
 
         p.number    = number || null;
         p.name      = name;
+        p.nickname  = nickname;
         p.birthYear = birthYear || null;
         p.position  = position;
         p.isCaptain = isCaptain;
@@ -5388,6 +5477,7 @@ function addPlayer() {
     data.roster.push({
         number: number || null,
         name,
+        nickname,
         birthYear: birthYear || null,
         position,
         isCaptain: isCaptain,
@@ -5410,6 +5500,8 @@ function clearPlayerForm() {
     if (banner) { banner.style.display = 'none'; banner.innerHTML = ''; }
     document.getElementById('playerNumber').value = '';
     document.getElementById('playerName').value = '';
+    const nk = document.getElementById('playerNickname');
+    if (nk) nk.value = '';
     document.getElementById('playerBirthYear').value = ''; // Καθαρισμός έτους
     document.getElementById('isCaptainPlayer').checked = false;
     const select = document.getElementById('playerPosition');
@@ -5825,6 +5917,8 @@ document.querySelectorAll('.nav-link').forEach(link => {
         document.getElementById(targetPage).classList.add('active');
 
         if (targetPage === 'history') initHistory();   // lazy: μόνο εδώ κατεβαίνει
+        // Κρυμμένα στοιχεία δεν έχουν πλάτος: προσαρμογή όταν η καρτέλα γίνει ορατή
+        if (targetPage === 'roster') requestAnimationFrame(() => fitJerseyText(document.getElementById('rosterContainer')));
         
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
