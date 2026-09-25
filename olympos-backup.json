@@ -60,7 +60,9 @@
       "birthYear": 2013,
       "position": "Τερματοφύλακας (GK)",
       "goals": 0,
-      "cleanSheets": 0
+      "cleanSheets": 0,
+      "nickname": "ΣΑΒΒΑΣ",
+      "isCaptain": false
     },
     {
       "number": 2,
@@ -78,7 +80,8 @@
       "position": "Πλάγιος Αμυντικός - Δεξιός (RB)",
       "goals": 0,
       "cleanSheets": 0,
-      "isCaptain": false
+      "isCaptain": false,
+      "nickname": "ΟRE"
     },
     {
       "number": 4,
@@ -102,17 +105,21 @@
       "number": 7,
       "name": "Μιχάλης Τσοτουλίδης",
       "birthYear": 2012,
-      "position": "Πλάγιος Μέσος - Δεξιός (RM)/ Δεύτερος Επιθετικός (SS)",
+      "position": "Πλάγιος Μέσος - Δεξιός (RM) / Δεύτερος Επιθετικός (SS)",
       "goals": 0,
-      "cleanSheets": 0
+      "cleanSheets": 0,
+      "nickname": "ΜΙΧΑΛΗΣ",
+      "isCaptain": false
     },
     {
       "number": 8,
       "name": "Παναγιώτης Παπαδόπουλος",
       "birthYear": 2013,
-      "position": "Πλάγιος Επιθετικός - Δεξιός (RW)/ Επιθετικός Μέσος (AM)",
+      "position": "Πλάγιος Επιθετικός - Δεξιός (RW) / Επιθετικός Μέσος (AM)",
       "goals": 0,
-      "cleanSheets": 0
+      "cleanSheets": 0,
+      "nickname": "ΠΑΝΟΣ",
+      "isCaptain": false
     },
     {
       "number": 9,
@@ -120,7 +127,9 @@
       "birthYear": 2012,
       "position": "Κεντρικός Αμυντικός (CB)",
       "goals": 0,
-      "cleanSheets": 0
+      "cleanSheets": 0,
+      "nickname": "ΦΑΝΗΣ",
+      "isCaptain": false
     },
     {
       "number": 11,
@@ -128,15 +137,18 @@
       "birthYear": 2012,
       "position": "Κεντρικός Μέσος (CM)/ Επιθετικός Μέσος (AM)",
       "goals": 0,
-      "cleanSheets": 0
+      "cleanSheets": 0,
+      "isCaptain": false
     },
     {
       "number": 12,
       "name": "Χρήστος Μπατσακίδης",
       "birthYear": 2012,
-      "position": "Αμυντικός Μέσος (DM)/ Ακραίος Αμυντικός - Αριστερός (LWB)",
+      "position": "Αμυντικός Μέσος (DM) / Ακραίος Αμυντικός - Αριστερός (LWB)",
       "goals": 0,
-      "cleanSheets": 0
+      "cleanSheets": 0,
+      "isCaptain": false,
+      "nickname": "ΧΡΗΣΤΟΣ"
     },
     {
       "number": 13,
@@ -153,7 +165,9 @@
       "birthYear": 2014,
       "position": "Πλάγιος Επιθετικός - Αριστερός (LW)",
       "goals": 0,
-      "cleanSheets": 0
+      "cleanSheets": 0,
+      "nickname": "LEO",
+      "isCaptain": false
     },
     {
       "number": 15,
@@ -161,7 +175,9 @@
       "birthYear": 2012,
       "position": "Πλάγιος Επιθετικός - Αριστερός (LW)",
       "goals": 0,
-      "cleanSheets": 0
+      "cleanSheets": 0,
+      "nickname": "GIO",
+      "isCaptain": false
     },
     {
       "number": 19,
@@ -179,7 +195,8 @@
       "position": "Κεντρικός Μέσος (CM) / Αμυντικός Μέσος (DM) / Επιθετικός Μέσος (AM)",
       "isCaptain": true,
       "goals": 0,
-      "cleanSheets": 0
+      "cleanSheets": 0,
+      "nickname": "ΚΥΡΤΖΑ"
     },
     {
       "number": 27,
@@ -188,7 +205,8 @@
       "position": "Επιθετικός Μέσος (AM) / Αμυντικός Μέσος (DM) / Πλάγιος Επιθετικός - Δεξιός (RW)",
       "goals": 0,
       "cleanSheets": 0,
-      "isCaptain": false
+      "isCaptain": false,
+      "nickname": "ΑΓΓΕΛΟΣ"
     },
     {
       "number": 99,
@@ -196,14 +214,16 @@
       "birthYear": 2012,
       "position": "Πλάγιος Επιθετικός - Δεξιός (RW)/ Κεντρικός Επιθετικός (CF)",
       "goals": 0,
-      "cleanSheets": 0
+      "cleanSheets": 0,
+      "isCaptain": false
     },
     {
       "number": null,
       "name": "Γιώργος Δελημαράς",
       "position": "Προπονητής",
       "goals": 0,
-      "cleanSheets": 0
+      "cleanSheets": 0,
+      "isCaptain": false
     }
   ],
   "news": [
