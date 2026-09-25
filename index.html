@@ -5275,7 +5275,8 @@ function displayRoster() {
                             <div style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:80%; height:4px; background:var(--primary-color); border-radius:0 0 6px 6px;"></div>
                             <div class="${photoClass}">
                                 ${isCoach
-                                  ? `<div class="polo-placket"></div><img class="polo-crest" src="${esc(crestFor(MY_TEAM) || 'logo_front.png')}" alt="" onerror="this.remove()">`
+                                  ? `<div class="polo-placket"></div><img class="polo-crest" src="${esc(poloCrest())}" alt=""
+                                        onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='logo_front.png'}else{this.remove()}">`
                                   : `<div class="jersey-nick" data-fit>${esc(jerseyNick(player))}</div>
                                      <div class="player-number">${displayNumber}</div>
                                      <div class="jersey-team-name">ΟΛΥΜΠΟΣ F.C.</div>`}
@@ -6074,6 +6075,15 @@ function crestFor(name) {
     if (hit && map[hit]) return map[hit];
     if (isMyTeam(name)) return 'logo_front.png';
     return null;
+}
+
+// Σήμα για το πόλο του προπονητή. Θέλει ΔΙΑΦΑΝΕΣ σήμα, γιατί κάθεται
+// πάνω σε σκούρο ύφασμα. Σειρά: σήμα από τη λίστα → crests/olympos.png →
+// (μόνο αν λείπουν και τα δύο) logo_front.png, που έχει λευκό φόντο.
+function poloCrest() {
+    const f = crestFor(MY_TEAM);
+    if (f && f !== 'logo_front.png') return f;
+    return 'crests/olympos.png';
 }
 
 // Μικρό σήμα για βαθμολογία και πρόγραμμα.
