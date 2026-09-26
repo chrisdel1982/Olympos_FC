@@ -164,7 +164,7 @@
       "number": 14,
       "name": "Λεωνίδας Τσιότσικας",
       "birthYear": 2014,
-      "position": "Πλάγιος Επιθετικός - Αριστερός (LW)",
+      "position": "Πλάγιος Επιθετικός - Αριστερός (LW) / Πλάγιος Επιθετικός - Δεξιός (RW)",
       "goals": 0,
       "cleanSheets": 0,
       "nickname": "LEO",
@@ -204,10 +204,11 @@
       "number": 99,
       "name": "Δημήτρης Χριστοφίδης",
       "birthYear": 2012,
-      "position": "Πλάγιος Επιθετικός - Δεξιός (RW)/ Κεντρικός Επιθετικός (CF)",
+      "position": "Κεντρικός Επιθετικός (CF) / Πλάγιος Επιθετικός - Δεξιός (RW)",
       "goals": 0,
       "cleanSheets": 0,
-      "isCaptain": false
+      "isCaptain": false,
+      "nickname": ""
     },
     {
       "number": null,
