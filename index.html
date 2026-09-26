@@ -37,7 +37,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="shortcut icon" href="favicon.ico">
     
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&family=Inter:wght@400;600;700;900&family=Saira+Stencil+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <!-- Firebase SDK -->
@@ -3430,6 +3430,50 @@ table thead th:nth-child(2) {
 /* Πιο συγκεκριμένο από τον γενικό κανόνα, αλλιώς μένει μαύρο πάνω σε μαύρο */
 .player-photo.gk-kit:not(.coach-kit) .jersey-nick{ color:var(--gk-num); }
 
+/* ================= ΦΑΝΕΛΑ ΟΠΩΣ Η ΠΡΑΓΜΑΤΙΚΗ =================
+   Φαρδύ βαρύ παρατσούκλι, νούμερο stencil, δύο γραμμές συλλόγου,
+   μαύρες άκρες στα μανίκια, διχτυωτό ύφασμα αντί για ρίγες. */
+.player-photo:not(.coach-kit) .jersey-nick{
+    font-family:'Inter',sans-serif !important; font-weight:900 !important;
+    letter-spacing:1.4px; top:13% !important;
+    left:13% !important; right:13% !important;   /* από ώμο σε ώμο */
+    overflow:visible !important; height:1.2em;
+}
+/* Το κείμενο κεντραρισμένο πάνω στο δικό του κέντρο, ώστε αν χρειαστεί
+   να στενέψει, να στενεύει ομοιόμορφα προς τα μέσα και όχι να κόβεται */
+.player-photo:not(.coach-kit) .jersey-nick > span{
+    position:absolute; left:50%; top:0; white-space:nowrap;
+    transform:translateX(-50%); transform-origin:center top;
+}
+.player-photo:not(.coach-kit) .player-number{
+    font-family:'Saira Stencil One','Impact','Roboto Condensed',sans-serif !important;
+    font-weight:400 !important; top:47% !important;
+    font-size:2rem !important;
+    /* Ψηλό και στενό, όπως στην πραγματική φανέλα */
+    transform:translateY(-50%) scale(.86,1.42) !important;
+}
+.player-photo:not(.coach-kit) .jersey-team-name{
+    top:74% !important; font-size:.42rem !important; letter-spacing:.2px !important;
+}
+.player-photo:not(.coach-kit) .jersey-academy{
+    position:absolute; top:83%; left:18%; right:18%;
+    text-align:center; white-space:nowrap; line-height:1;
+    font-family:'Roboto Condensed',sans-serif; font-weight:700;
+    font-size:.34rem; letter-spacing:.1px; color:#000; z-index:15;
+}
+.gk-kit .jersey-academy{ color:var(--gk-num) !important; }
+/* Μαύρες άκρες στα κοντά μανίκια — ένα στοιχείο, δύο λωρίδες κατά μήκος της άκρης */
+.jersey-cuffs{
+    position:absolute; inset:0; background:#111; z-index:2; pointer-events:none;
+    clip-path:polygon(0% 25%,10% 50%,13.7% 48.2%,3.7% 23.2%,0% 25%,
+                      100% 25%,96.3% 23.2%,86.3% 48.2%,90% 50%,100% 25%);
+}
+/* Διχτυωτό ύφασμα αντί για κάθετες ρίγες */
+.player-photo:not(.coach-kit):not(.gk-kit)::before{
+    background-image:radial-gradient(rgba(0,0,0,.08) .7px, transparent .9px) !important;
+    background-size:3px 3px !important;
+}
+
 /* ================= ΦΑΝΕΛΑ ΤΕΡΜΑΤΟΦΥΛΑΚΑ =================
    Μαύρη με λαχανί στο φωτεινό θέμα, γαλάζια με σκούρο μπλε στο σκοτεινό.
    Μακρυμάνικη, με λεπτό σιρίτι κοντά στον καρπό. */
@@ -4568,15 +4612,40 @@ function jerseyNick(p) {
 
 // Αν το κείμενο δεν χωράει στο πλάτος του, μικραίνει — ποτέ δεν κόβεται
 function fitJerseyText(root) {
+    const MIN_PX = 6.5;   // κάτω από αυτό τα γράμματα δεν διαβάζονται στο κινητό
     (root || document).querySelectorAll('[data-fit]').forEach(el => {
-        el.style.fontSize = ''; el.style.letterSpacing = '';
-        let fs = parseFloat(getComputedStyle(el).fontSize) || 11, n = 0;
-        while (el.scrollWidth > el.clientWidth && fs > 5 && n < 40) {
-            fs -= 0.5; el.style.fontSize = fs + 'px'; el.style.letterSpacing = '0'; n++;
+        const t = el.firstElementChild || el;
+        const box = el.clientWidth;
+        if (!box) return;                              // κρυμμένο: μετράμε όταν φανεί
+        el.style.removeProperty('font-size');
+        el.style.removeProperty('letter-spacing');
+        t.style.setProperty('transform', 'translateX(-50%)');
+        const w = () => t.scrollWidth;                 // πλάτος χωρίς το στένεμα
+        if (w() <= box) return;
+
+        // 1) πρώτα βγαίνουν τα κενά ανάμεσα στα γράμματα
+        el.style.setProperty('letter-spacing', '0', 'important');
+        // 2) μετά μικραίνουμε ως ένα όριο που διαβάζεται
+        let fs = parseFloat(getComputedStyle(el).fontSize) || 9, n = 0;
+        while (w() > box && fs > MIN_PX && n < 40) {
+            fs = Math.max(MIN_PX, fs - 0.5);
+            el.style.setProperty('font-size', fs + 'px', 'important'); n++;
+        }
+        // 3) αν ακόμα δεν χωράει, στενεύουν τα γράμματα αντί να μικρύνουν κι άλλο
+        if (w() > box) {
+            const k = (box / w()).toFixed(3);
+            t.style.setProperty('transform', `translateX(-50%) scaleX(${k})`);
         }
     });
 }
 window.addEventListener('resize', () => fitJerseyText());
+// Οι βαριές γραμματοσειρές κατεβαίνουν αργότερα από τη σελίδα. Αν μετρήσουμε
+// πριν έρθουν, τα πλάτη βγαίνουν λάθος και μετά το κείμενο ξεχειλίζει.
+// Γι' αυτό ξαναμετράμε μόλις φορτωθούν.
+if (document.fonts) {
+    document.fonts.ready.then(() => fitJerseyText());
+    document.fonts.addEventListener && document.fonts.addEventListener('loadingdone', () => fitJerseyText());
+}
 
 // Πίσω όψη: «99 | Χριστοφίδης» — νούμερο και επώνυμο, όχι ολόκληρο το όνομα
 function backTitle(p) {
@@ -5283,9 +5352,11 @@ function displayRoster() {
                                   ? `<div class="polo-placket"></div><img class="polo-crest" src="${esc(poloCrestChain()[0])}" alt=""
                                         data-next="${esc(poloCrestChain().slice(1).join('|'))}"
                                         onerror="const n=(this.dataset.next||'').split('|').filter(Boolean);if(n.length){this.dataset.next=n.slice(1).join('|');this.src=n[0]}else{this.remove()}">`
-                                  : `<div class="jersey-nick" data-fit>${esc(jerseyNick(player))}</div>
+                                  : `<div class="jersey-nick" data-fit><span>${esc(jerseyNick(player))}</span></div>
                                      <div class="player-number">${displayNumber}</div>
-                                     <div class="jersey-team-name">ΟΛΥΜΠΟΣ F.C.</div>`}
+                                     <div class="jersey-team-name">ΟΛΥΜΠΟΣ F.C</div>
+                                     <div class="jersey-academy">FOOTBALL ACADEMY</div>
+                                     ${isKeeper ? '' : '<div class="jersey-cuffs"></div>'}`}
                                 ${captainBadge}
                             </div>
                             <div class="player-name">${splitName(player.name)}</div>
