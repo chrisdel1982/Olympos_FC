@@ -154,10 +154,11 @@
       "number": 13,
       "name": "Βασίλης Μέλλιος",
       "birthYear": 2013,
-      "position": "Κεντρικός Επιθετικός (CF) / Δεύτερος Επιθετικός (SS) / Πλάγιος Επιθετικός - Δεξιός (RW)",
+      "position": "Πλάγιος Επιθετικός - Δεξιός (RW) / Κεντρικός Επιθετικός (CF) / Δεύτερος Επιθετικός (SS)",
       "isCaptain": false,
       "goals": 0,
-      "cleanSheets": 0
+      "cleanSheets": 0,
+      "nickname": ""
     },
     {
       "number": 14,
@@ -180,19 +181,10 @@
       "isCaptain": false
     },
     {
-      "number": 19,
-      "name": "Χρήστος Τοπούζης",
-      "birthYear": 2012,
-      "position": "Πλάγιος Αμυντικός - Αριστερός (LB) / Πλάγιος Αμυντικός - Δεξιός (RB)",
-      "isCaptain": false,
-      "goals": 0,
-      "cleanSheets": 0
-    },
-    {
       "number": 21,
       "name": "Νίκος Κυρτζαλιώτης",
       "birthYear": 2012,
-      "position": "Κεντρικός Μέσος (CM) / Αμυντικός Μέσος (DM) / Επιθετικός Μέσος (AM)",
+      "position": "Επιθετικός Μέσος (AM) / Αμυντικός Μέσος (DM) / Κεντρικός Μέσος (CM)",
       "isCaptain": true,
       "goals": 0,
       "cleanSheets": 0,
