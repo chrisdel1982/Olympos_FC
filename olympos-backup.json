@@ -8,15 +8,15 @@
     "startTime": ""
   },
   "announcement": "",
-  "matchDate": "Σαβ 26/9",
-  "matchTime": "09:00",
-  "matchStadium": "Δημοτικό Γήπεδο «Κωνσταντίνος Μιγκοτζίδης»",
-  "matchMapLink": "https://maps.app.goo.gl/VGuNzMG9jJkS9Zv6A?g_st=ic",
-  "countdownTarget": "2026-09-26T09:00",
+  "matchDate": "",
+  "matchTime": "",
+  "matchStadium": "",
+  "matchMapLink": "",
+  "countdownTarget": "",
   "specialMatch": {
-    "type": "Φιλικός Αγώνας Προετοιμασίας ",
-    "home": "Όλυμπος",
-    "away": "Ηρακλής Αμπελοκήπων"
+    "type": "",
+    "home": "",
+    "away": ""
   },
   "crests": {
     "ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ": "crests/olympos.png",
