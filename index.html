@@ -723,37 +723,25 @@ table thead th:nth-child(2) {
 }
 
 /* --- ΠΕΡΙΒΡΑΧΙΟΝΙΟ ΑΡΧΗΓΟΥ ---
-   Κάθεται ΠΑΝΩ στο μανίκι, παράλληλα με τη μαύρη άκρη, με λίγο λαχανί ανάμεσα.
-   Το σχήμα κόβεται με τις ίδιες συντεταγμένες (%) της φανέλας, οπότε ποτέ
-   δεν εξέχει. Αριστερό χέρι του παίκτη = δεξιά μας, όπως στο γήπεδο. */
+   Ένα διανυσματικό σχέδιο (SVG) στο μέγεθος της φανέλας (100×90):
+   κόκκινη ταινία με σκούρες άκρες, λευκές ρίγες λίγο πριν τις άκρες,
+   και το «C» ζωγραφισμένο ως σχήμα στο ακριβές κέντρο της ταινίας.
+   Στην κανονική φανέλα πατάει λίγο πάνω στη μαύρη άκρη του μανικιού·
+   στον τερματοφύλακα κάθεται ψηλά στο μπράτσο, κάτω από τον ώμο.
+   Το clip-path είναι το περίγραμμα της φανέλας: ποτέ δεν εξέχει.
+   Αριστερό χέρι του παίκτη = δεξιά μας, όπως στο γήπεδο. */
 .captain-badge{
     position:absolute; inset:0; z-index:20; pointer-events:none;
-    font-size:0; color:transparent;          /* το «C» το ζωγραφίζει το ::after */
+    font-size:0; color:transparent;          /* το «C» του HTML κρύβεται, ζωγραφίζεται στο SVG */
 }
 .captain-badge::before{
     content:''; position:absolute; inset:0;
-    clip-path:polygon(96.4% 20.9%, 86% 46.8%, 80% 42%, 90.9% 14.7%);
-    /* σκουρότερες άκρες, σαν λάστιχο που σφίγγει το μπράτσο */
-    background:linear-gradient(114deg,
-        #a61e1e 69.1%, #a61e1e 70%, #e0292b 70%,
-        #e0292b 73.9%, #a61e1e 73.9%, #a61e1e 74.8%);
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 90'%3E%3Cpolygon fill='%23a61e1e' points='98.35,20.81 88.18,43.69 87.54,43.23 97.77,20.21'/%3E%3Cpolygon fill='%23e0292b' points='97.77,20.21 87.54,43.23 86.98,42.82 97.26,19.69'/%3E%3Cpolygon fill='%23ffffff' points='97.26,19.69 86.98,42.82 86.33,42.36 96.67,19.10'/%3E%3Cpolygon fill='%23e0292b' points='96.67,19.10 86.33,42.36 82.00,39.24 92.74,15.07'/%3E%3Cpolygon fill='%23ffffff' points='92.74,15.07 82.00,39.24 81.35,38.78 92.15,14.48'/%3E%3Cpolygon fill='%23e0292b' points='92.15,14.48 81.35,38.78 80.79,38.37 91.64,13.96'/%3E%3Cpolygon fill='%23a61e1e' points='91.64,13.96 80.79,38.37 80.15,37.91 91.06,13.36'/%3E%3Cg transform='translate%2889.44 28.94%29 rotate%28-66.0%29'%3E%3Crect x='-4.60' y='-3.49' width='9.21' height='6.98' fill='%23e0292b'/%3E%3Cpath d='M1.73 1.56A2.33 2.33 0 1 1 1.73 -1.56' fill='none' stroke='%23fff' stroke-width='1.26' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") center/100% 100% no-repeat;
+    clip-path:polygon(22% 0%,78% 0%,100% 25%,90% 50%,80% 42%,80% 100%,20% 100%,20% 42%,10% 50%,0% 25%);
 }
-.captain-badge::after{
-    content:'C'; position:absolute; left:88.4%; top:31.1%;
-    transform:translate(-50%,-50%) rotate(-66deg);   /* ίσιο πάνω στο μπράτσο */
-    font:900 6.2px/1 'Roboto Condensed','Arial Narrow',Arial,sans-serif;
-    color:#fff;
-}
-/* Τερματοφύλακας: μακρύ μανίκι, το περιβραχιόνιο πάει στο μπράτσο, σχεδόν οριζόντιο */
 .gk-kit .captain-badge::before{
-    clip-path:polygon(80.2% 42%, 99.2% 42%, 98.7% 52%, 81.4% 52%);
-    background:linear-gradient(180deg,
-        #9e1b1b 42%, #9e1b1b 43.4%, #e0292b 43.4%,
-        #e0292b 50.6%, #9e1b1b 50.6%, #9e1b1b 52%);
-}
-.gk-kit .captain-badge::after{
-    left:89.9%; top:47%; font-size:7px;
-    transform:translate(-50%,-50%) rotate(-2deg);
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 90'%3E%3Cpolygon fill='%23a61e1e' points='78.96,27.90 99.68,27.90 99.64,28.76 79.07,28.76'/%3E%3Cpolygon fill='%23e0292b' points='79.07,28.76 99.64,28.76 99.60,29.52 79.17,29.52'/%3E%3Cpolygon fill='%23ffffff' points='79.17,29.52 99.60,29.52 99.56,30.38 79.28,30.38'/%3E%3Cpolygon fill='%23e0292b' points='79.28,30.38 99.56,30.38 99.26,36.22 80.03,36.22'/%3E%3Cpolygon fill='%23ffffff' points='80.03,36.22 99.26,36.22 99.22,37.08 80.14,37.08'/%3E%3Cpolygon fill='%23e0292b' points='80.14,37.08 99.22,37.08 99.18,37.84 80.24,37.84'/%3E%3Cpolygon fill='%23a61e1e' points='80.24,37.84 99.18,37.84 99.14,38.70 80.35,38.70'/%3E%3Cg transform='translate%2889.53 33.30%29 rotate%280.0%29'%3E%3Crect x='-5.13' y='-3.89' width='10.26' height='7.78' fill='%23e0292b'/%3E%3Cpath d='M1.93 1.73A2.59 2.59 0 1 1 1.93 -1.73' fill='none' stroke='%23fff' stroke-width='1.40' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") center/100% 100% no-repeat;
+    clip-path:polygon(22% 0%,78% 0%,100% 24%,97% 90%,86% 92%,80% 40%,80% 100%,20% 100%,20% 40%,14% 92%,3% 90%,0% 24%);
 }
 
 /* --- ΠΡΟΠΟΝΗΤΗΣ (COACH - ΨΗΛΑ) --- */
