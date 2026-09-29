@@ -6189,11 +6189,85 @@ function teamInitials(name) {
     return w.slice(0, 2).map(x => x[0]).join('') || '?';
 }
 
+// Εξισορρόπηση σημάτων στο VS. Κάθε αρχείο έρχεται αλλιώς: άλλο με αέρα γύρω του,
+// άλλο κολλημένο στις άκρες, άλλο στρογγυλό, άλλο ασπίδα. Εδώ:
+//  1) κόβουμε το κενό γύρω γύρω (διάφανο ή, σε αρχεία χωρίς διαφάνεια, λευκό)
+//  2) μικραίνουμε λίγο τα «γεμάτα» σχήματα (κύκλους, τετράγωνα), ώστε οπτικά
+//     να ζυγίζουν όσο μια ασπίδα και να μη φαίνονται φουσκωμένα.
+// Αν ο browser δεν επιτρέπει ανάγνωση της εικόνας (π.χ. άλλο domain), μένει ως έχει.
+const CREST_NORM = new Map();
+const CREST_TARGET = 0.62;   // πόσο «γεμίζει» το κουτί μια τυπική ασπίδα
+function normCrest(img) {
+    if (img.dataset.norm) return;
+    img.dataset.norm = '1';
+    const key = img.src;
+    const apply = r => {
+        if (!r) return;
+        if (r.url) img.src = r.url;
+        img.style.transform = r.k < 0.999 ? `scale(${r.k.toFixed(3)})` : '';
+    };
+    if (CREST_NORM.has(key)) return apply(CREST_NORM.get(key));
+    let r = null;
+    try {
+        const W = img.naturalWidth, H = img.naturalHeight;
+        if (!W || !H) return;
+        const cv = document.createElement('canvas');
+        cv.width = W; cv.height = H;
+        const cx = cv.getContext('2d', { willReadFrequently: true });
+        cx.drawImage(img, 0, 0);
+        const d = cx.getImageData(0, 0, W, H).data;
+
+        // Έχει πραγματική διαφάνεια; (αλλιώς το φόντο θεωρείται το λευκό)
+        let clear = 0;
+        for (let i = 3; i < d.length; i += 4) if (d[i] < 24) clear++;
+        const transparent = clear > W * H * 0.01;
+        const isBg = i => transparent
+            ? d[i + 3] < 24
+            : (d[i] > 235 && d[i + 1] > 235 && d[i + 2] > 235);
+
+        let x0 = W, y0 = H, x1 = -1, y1 = -1;
+        for (let y = 0; y < H; y++) {
+            for (let x = 0; x < W; x++) {
+                if (isBg((y * W + x) * 4)) continue;
+                if (x < x0) x0 = x; if (x > x1) x1 = x;
+                if (y < y0) y0 = y; if (y > y1) y1 = y;
+            }
+        }
+        if (x1 < 0) return;
+        const w = x1 - x0 + 1, h = y1 - y0 + 1;
+
+        // Πόσο γεμάτο είναι το σχήμα μέσα στο δικό του πλαίσιο
+        let fill = 0.8;                        // λογική εκτίμηση για αρχεία χωρίς διαφάνεια
+        if (transparent) {
+            let solid = 0;
+            for (let y = y0; y <= y1; y++)
+                for (let x = x0; x <= x1; x++)
+                    if (d[(y * W + x) * 4 + 3] >= 128) solid++;
+            fill = solid / (w * h);
+        }
+        const area = fill * Math.min(w, h) / Math.max(w, h);   // πόσο κουτί πιάνει μετά το contain
+        const k = Math.min(1, Math.sqrt(CREST_TARGET / area));
+
+        let url = null;
+        if (w < W - 1 || h < H - 1) {
+            const out = document.createElement('canvas');
+            out.width = w; out.height = h;
+            out.getContext('2d').drawImage(cv, x0, y0, w, h, 0, 0, w, h);
+            url = out.toDataURL('image/png');
+        }
+        r = { url, k };
+    } catch (e) {
+        r = null;                              // tainted canvas κ.λπ.: αφήνουμε το σήμα όπως είναι
+    }
+    CREST_NORM.set(key, r);
+    apply(r);
+}
+
 function teamSide(name) {
     const mine = isMyTeam(name);
     const file = crestFor(name);
     const crest = file
-        ? `<div class="nm-crest has-img"><img src="${esc(file)}" alt=""
+        ? `<div class="nm-crest has-img"><img src="${esc(file)}" alt="" onload="normCrest(this)"
              onerror="const p=this.parentNode;p.classList.remove('has-img');p.textContent='${esc(teamInitials(name))}'"></div>`
         : `<div class="nm-crest">${esc(teamInitials(name))}</div>`;
     return `<div class="nm-side ${mine ? 'mine' : ''}">${crest}
