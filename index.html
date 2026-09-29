@@ -722,37 +722,38 @@ table thead th:nth-child(2) {
     text-shadow: none;
 }
 
-/* --- CAPTAIN BADGE (ΔΙΟΡΘΩΜΕΝΗ ΘΕΣΗ ΣΤΟ ΜΑΝΙΚΙ) --- */
-.captain-badge {
-    position: absolute;
-    
-    /* Θέση (όπως τη ρύθμισες και σου άρεσε) */
-    top: 60px;    
-    right: -5px;   
-    left: auto;   
-    /* Διαστάσεις */
-    width: 15px;
-    height: 32px; /* Λίγο πιο κοντό για να μην εξέχει */
-    
-    background-color: #ff0000;
-    color: #000000;
-   /* Κεντράρισμα του γράμματος στη μέση της λωρίδας */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-   
-    
-    /* Μέγεθος γραμματοσειράς */
-    font-size: 0.7rem; 
-    font-weight: 900;
-    font-family: 'Roboto Condensed', sans-serif;
-    
-    /* Εφέ */
-    box-shadow: -1px 1px 2px rgba(0,0,0,0.2);
-    text-shadow: 1px 1px 0 rgba(0,0,0,0.2); /* Μικρή σκιά στο γράμμα για να ξεχωρίζει */
-    
-    transform: rotate(30deg) !important; 
-    z-index: 20;
+/* --- ΠΕΡΙΒΡΑΧΙΟΝΙΟ ΑΡΧΗΓΟΥ ---
+   Κάθεται ΠΑΝΩ στο μανίκι, παράλληλα με τη μαύρη άκρη, με λίγο λαχανί ανάμεσα.
+   Το σχήμα κόβεται με τις ίδιες συντεταγμένες (%) της φανέλας, οπότε ποτέ
+   δεν εξέχει. Αριστερό χέρι του παίκτη = δεξιά μας, όπως στο γήπεδο. */
+.captain-badge{
+    position:absolute; inset:0; z-index:20; pointer-events:none;
+    font-size:0; color:transparent;          /* το «C» το ζωγραφίζει το ::after */
+}
+.captain-badge::before{
+    content:''; position:absolute; inset:0;
+    clip-path:polygon(96.4% 20.9%, 86% 46.8%, 80% 42%, 90.9% 14.7%);
+    /* σκουρότερες άκρες, σαν λάστιχο που σφίγγει το μπράτσο */
+    background:linear-gradient(114deg,
+        #a61e1e 69.1%, #a61e1e 70%, #e0292b 70%,
+        #e0292b 73.9%, #a61e1e 73.9%, #a61e1e 74.8%);
+}
+.captain-badge::after{
+    content:'C'; position:absolute; left:88.4%; top:31.1%;
+    transform:translate(-50%,-50%) rotate(-66deg);   /* ίσιο πάνω στο μπράτσο */
+    font:900 6.2px/1 'Roboto Condensed','Arial Narrow',Arial,sans-serif;
+    color:#fff;
+}
+/* Τερματοφύλακας: μακρύ μανίκι, το περιβραχιόνιο πάει στο μπράτσο, σχεδόν οριζόντιο */
+.gk-kit .captain-badge::before{
+    clip-path:polygon(80.2% 42%, 99.2% 42%, 98.7% 52%, 81.4% 52%);
+    background:linear-gradient(180deg,
+        #9e1b1b 42%, #9e1b1b 43.4%, #e0292b 43.4%,
+        #e0292b 50.6%, #9e1b1b 50.6%, #9e1b1b 52%);
+}
+.gk-kit .captain-badge::after{
+    left:89.9%; top:47%; font-size:7px;
+    transform:translate(-50%,-50%) rotate(-2deg);
 }
 
 /* --- ΠΡΟΠΟΝΗΤΗΣ (COACH - ΨΗΛΑ) --- */
@@ -1523,14 +1524,6 @@ table thead th:nth-child(2) {
     }
 /* --- MOBILE FIXES ΓΙΑ ΤΗ ΦΑΝΕΛΑ & BADGE --- */
     
-    /* 1. Προσαρμογή του σήματος Αρχηγού για μικρή φανέλα */
-    .captain-badge {
-        top: 20px !important;    /* Το ανεβάζουμε πιο ψηλά (ήταν 55px) */
-        right: 2px !important;  /* Το φέρνουμε πιο κοντά */
-        width: 8px !important;   /* Το κάνουμε πιο στενό */
-        height: 25px !important; /* Το κάνουμε πιο κοντό */
-    }
-
     /* 2. Προσαρμογή Ονόματος Ομάδας */
     .jersey-team-name {
         font-size: 0.4rem !important; /* Πολύ μικρά γράμματα για να χωράνε */
