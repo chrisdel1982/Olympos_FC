@@ -8,19 +8,20 @@
     "startTime": ""
   },
   "announcement": "",
-  "matchDate": "",
-  "matchTime": "",
-  "matchStadium": "",
-  "matchMapLink": "",
-  "countdownTarget": "",
+  "matchDate": "ΣΑΒ 3/10",
+  "matchTime": "10:00",
+  "matchStadium": "Γήπεδο Δενδροποτάαμου",
+  "matchMapLink": "https://maps.app.goo.gl/QtNjJb1CkygCVCQQ8",
+  "countdownTarget": "2026-10-03T10:00",
   "specialMatch": {
-    "type": "",
-    "home": "",
-    "away": ""
+    "type": "ΦΙΛΙΚΟΣ ΑΓΩΝΑΣ ΠΡΟΕΤΟΙΜΑΣΙΑΣ",
+    "home": "ΟΛΥΜΠΟΣ",
+    "away": "ΕΣΠΕΡΟΣ ΤΕΡΨΙΘΕΑΣ"
   },
   "crests": {
     "ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ": "crests/olympos.png",
-    "ΗΡΑΚΛΗΣ ΑΜΠΕΛΟΚΗΠΩΝ": "crests/irakls-ampelokipon.png"
+    "ΗΡΑΚΛΗΣ ΑΜΠΕΛΟΚΗΠΩΝ": "crests/irakls-ampelokipon.png",
+    "ΕΣΠΕΡΟΣ ΤΕΡΨΙΘΕΑΣ": "crests/esperos-terpsitheas.png"
   },
   "trainingStart": "2026-09-07",
   "trainings": [
