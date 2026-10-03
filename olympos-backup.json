@@ -8,15 +8,15 @@
     "startTime": ""
   },
   "announcement": "",
-  "matchDate": "ΣΑΒ 3/10",
-  "matchTime": "10:00",
-  "matchStadium": "Γήπεδο Δενδροποτάμου",
-  "matchMapLink": "https://maps.app.goo.gl/QtNjJb1CkygCVCQQ8",
-  "countdownTarget": "2026-10-03T10:00",
+  "matchDate": "",
+  "matchTime": "",
+  "matchStadium": "",
+  "matchMapLink": "",
+  "countdownTarget": "",
   "specialMatch": {
-    "type": "ΦΙΛΙΚΟΣ ΑΓΩΝΑΣ ΠΡΟΕΤΟΙΜΑΣΙΑΣ",
-    "home": "ΟΛΥΜΠΟΣ",
-    "away": "ΕΣΠΕΡΟΣ ΤΕΡΨΙΘΕΑΣ"
+    "type": "",
+    "home": "",
+    "away": ""
   },
   "crests": {
     "ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ": "crests/olympos.png",
