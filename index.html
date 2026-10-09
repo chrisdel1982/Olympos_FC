@@ -400,6 +400,154 @@ table thead th:nth-child(2) {
 .indicator-green::before { background-color: #006400; } /* 1ος - Σκούρο Πράσινο */
 .indicator-blue::before { background-color: #00daff; }  /* 2ος & 3ος - Μπλε */
 .indicator-red::before { background-color: #ff0046; }   /* Τελευταίοι - Κόκκινο */
+
+/* --- ΝΕΟ ΣΥΣΤΗΜΑ: ζώνη πρόκρισης, κενά, πρόοδος αγωνιστικής --- */
+#standingsTable tr.st-zone td {
+    padding: 6px 10px !important;
+    font-size: .78rem;
+    font-weight: 700;
+    text-align: left;
+    color: var(--ink-muted);
+    background: var(--surface-alt);
+    border-top: 2px dashed var(--primary-color);
+}
+#standingsTable tr.st-gap td {
+    padding: 4px 10px 4px 1.6rem !important;
+    font-size: .8rem;
+    text-align: left;
+    color: var(--ink-muted);
+    cursor: pointer;
+    background: var(--surface-alt);
+}
+#standingsTable tr.st-gap:hover td { background: var(--surface-hover); }
+.st-toggle { text-align: center; margin-top: .8rem; }
+.st-toggle button {
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    border-radius: var(--r-sm);
+    padding: .5rem 1rem;
+    font: inherit;
+    font-size: .9rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+.st-toggle button:focus-visible, .view-toggle button:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+.round-progress {
+    margin-top: .8rem;
+    font-size: .88rem;
+    color: var(--ink-muted);
+}
+.round-progress strong { color: var(--ink); }
+
+/* Διακόπτης «Όλυμπος / Όλοι οι αγώνες» */
+.view-toggle {
+    display: inline-flex;
+    border: 1px solid var(--primary-color);
+    border-radius: var(--r-sm);
+    overflow: hidden;
+    margin: .2rem 0 1.2rem;
+}
+.view-toggle button {
+    background: var(--surface);
+    color: var(--primary-color);
+    border: none;
+    padding: .5rem 1rem;
+    font: inherit;
+    font-size: .9rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+.view-toggle button + button { border-left: 1px solid var(--primary-color); }
+.view-toggle button.active { background: var(--primary-color); color: #fff; }
+@media (prefers-color-scheme: dark) {
+    .view-toggle { border-color: #4caf50; }
+    .view-toggle button { color: #81c784; }
+    .view-toggle button + button { border-left-color: #4caf50; }
+    .view-toggle button.active { background: #2e7d32; color: #fff; }
+}
+
+/* Αγωνιστικές που ανοιγοκλείνουν (στο «Όλοι οι αγώνες») */
+details.round-section { margin-bottom: .6rem; }
+details.round-section > summary.round-header {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    cursor: pointer;
+    list-style: none;
+}
+details.round-section > summary.round-header::-webkit-details-marker { display: none; }
+details.round-section > summary.round-header::after {
+    content: '▾';
+    transition: transform .2s ease;
+}
+details.round-section:not([open]) > summary.round-header { border-bottom: none; }
+details.round-section:not([open]) > summary.round-header::after { transform: rotate(-90deg); }
+.round-count { margin-left: auto; font-size: .8rem; font-weight: 600; color: var(--ink-muted); }
+@media (prefers-reduced-motion: reduce) {
+    details.round-section > summary.round-header::after { transition: none; }
+}
+
+/* Φόρμα αποτελεσμάτων (admin): μετρητής και κατάσταση κάθε γραμμής */
+.round-counter {
+    position: sticky;
+    top: -1px;
+    z-index: 2;
+    padding: .6rem .8rem;
+    margin-bottom: 1rem;
+    border-radius: var(--r-sm);
+    background: #fff3e0;
+    border: 1px solid #ffcc80;
+    font-size: .9rem;
+}
+.round-counter.complete { background: #e8f5e9; border-color: #a5d6a7; }
+@media (prefers-color-scheme: dark) {
+    .round-counter { background: #3e2c14; border-color: #8d6e3f; color: #ffe0b2; }
+    .round-counter.complete { background: #1b3a24; border-color: #2e7d32; color: #c8e6c9; }
+}
+.admin-divider {
+    margin: 1.2rem 0 .8rem;
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--ink-muted);
+    border-top: 1px dashed var(--line);
+    padding-top: .6rem;
+}
+.match-input-row[data-state="empty"] { border-left: 4px solid #f0ad4e !important; }
+.match-input-row[data-state="half"]  { border-left: 4px solid #d32f2f !important; }
+.match-input-row[data-state="done"]  { border-left: 4px solid #2e7d32 !important; }
+.match-input-row[data-state="post"]  { border-left: 4px solid #9e9e9e !important; }
+/* Ονόματα ομάδων στη φόρμα: κείμενο που αναδιπλώνεται (όχι κομμένο input) —
+   με 58 ομάδες το «ΠΟ ΜΑΛ…» και το «ΠΟΤ ΗΡ…» πρέπει να διαβάζονται ολόκληρα */
+.adm-team {
+    font-weight: 600;
+    font-size: .85rem;
+    line-height: 1.25;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+}
+.adm-home { text-align: right; }
+.adm-away { text-align: left; }
+.adm-team.is-us { color: var(--primary-color); font-weight: 800; }
+@media (prefers-color-scheme: dark) { .adm-team.is-us { color: #81c784; } }
+.adm-match-grid {
+    display: grid;
+    grid-template-columns: 1fr 140px 1fr;
+    gap: 1rem;
+    align-items: center;
+    width: 100%;
+}
+/* Κινητό: τα δύο ονόματα δίπλα-δίπλα σε όλο το πλάτος, το σκορ από κάτω */
+@media (max-width: 768px) {
+    .adm-match-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: "home away" "score score";
+        gap: .5rem .8rem;
+    }
+    .adm-match-grid .adm-home { grid-area: home; }
+    .adm-match-grid .adm-away { grid-area: away; }
+    .adm-match-grid .score-inputs-wrapper { grid-area: score; }
+}
 /* --- FORM BADGES (Κυκλάκια) --- */
 .form-container {
     display: flex;
@@ -3774,9 +3922,11 @@ function showToast(message, type = 'success') {
                         <tbody id="standingsBody"></tbody>
                     </table>
                 </div>
+                <div id="standingsToggle" class="st-toggle"></div>
+                <div id="roundProgress" class="round-progress"></div>
 
                 <div style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
-                    <strong>Υπόμνημα:</strong> Αγ=Αγώνες, Ν=Νίκες, Ι=Ισοπαλίες, Η=Ήττες, ΓΥ=Γκολ Υπέρ, ΓΚ=Γκολ Κατά, Β=Βαθμοί
+                    <strong>Υπόμνημα:</strong> Αγ=Αγώνες, Ν=Νίκες, Ι=Ισοπαλίες, Η=Ήττες, ΓΥ=Γκολ Υπέρ, ΓΚ=Γκολ Κατά, Β=Βαθμοί<span id="standingsZoneLegend"></span>
                 </div>
             </div> 
 
@@ -4242,7 +4392,10 @@ function showToast(message, type = 'success') {
                         Κάνε επικόλληση το πρόγραμμα όπως το βρήκες. Δέχεται επικεφαλίδες
                         («1η ΑΓΩΝΙΣΤΙΚΗ», «ΑΓΩΝΙΣΤΙΚΗ 1», ή σκέτο «1»), ημερομηνίες, ώρες,
                         αρίθμηση, τόνους, πεζά, σκορ και αναβολές. Πάτα πρώτα
-                        <strong>Έλεγχος</strong> για να δεις τι κατάλαβε.
+                        <strong>Έλεγχος</strong> για να δεις τι κατάλαβε.<br>
+                        Ό,τι υπάρχει ήδη στο site <strong>μένει</strong>: προστίθενται μόνο νέες αγωνιστικές
+                        και νέοι αγώνες, και συμπληρώνονται μόνο κενά σκορ. Σκόρερ και clean sheets
+                        δεν πειράζονται ποτέ.
                     </p>
                     <textarea id="fixturesPasteInput" rows="10"
                         placeholder="1η ΑΓΩΝΙΣΤΙΚΗ&#10;ΣΑΒ 12/09 10:00 ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ - ΜΑΚΕΔΟΝΙΚΟΣ (4)&#10;ΑΕ ΦΙΛΥΡΟΥ - ΑΜΣ ΝΙΚΟΠΟΛΗ&#10;&#10;2η ΑΓΩΝΙΣΤΙΚΗ&#10;..."
@@ -4427,9 +4580,28 @@ function showToast(message, type = 'success') {
             category:     'Κ15',
             nextCategory: 'Κ16',
             group:        '',
-            league:       'ΕΠΣ ΜΑΚΕΔΟΝΙΑΣ'
+            league:       'ΕΠΣ ΜΑΚΕΔΟΝΙΑΣ',
+            qualify:      16      // θέσεις που προκρίνονται (πράσινη μπάρα)
         };
         let SEASON = { ...SEASON_DEFAULTS };
+
+        // =========================================================
+        // ΣΗΜΕΙΩΣΕΙΣ — ΝΕΟ ΣΥΣΤΗΜΑ ΕΠΣΜ (σεζόν 2026-27, Κ15 LEAGUE 1)
+        // 58 ομάδες σε ενιαία βαθμολογία (League Phase), 16-20 μονοί αγώνες.
+        // Θέσεις 1-16 -> συνεχίζουν για τον τίτλο. Θέσεις 17+ -> αγώνες κατάταξης.
+        // (Ονομασίες: στις 1/10 και 8/10 «Β' Φάση» λεγόταν η κατάταξη 17+· στην ανακοίνωση
+        //  της 9/10 «β' φάση» λέγεται η συνέχεια των 16. Γι' αυτό οι ετικέτες είναι ουδέτερες.)
+        // Αλλαγές Οκτ. 2026:
+        //  - Πράσινη μπάρα στις θέσεις 1..SEASON.qualify, γραμμή «αγώνες κατάταξης» από κάτω.
+        //  - Κινητό: συμπαγής βαθμολογία (16 πρώτοι + Όλυμπος ±2) με κουμπί «όλη».
+        //  - Σημείωση «Νη αγωνιστική: Χ/Υ αποτελέσματα» κάτω από τη βαθμολογία.
+        //  - Πρόγραμμα/Αποτελέσματα: διακόπτης «Όλυμπος / Όλοι οι αγώνες».
+        //  - Επικόλληση προγράμματος: ΣΥΓΧΩΝΕΥΕΙ (mergeFixtures), δεν σβήνει.
+        //  - Αναγνώστης ονομάτων: ρωτάει όταν ένα όνομα ταιριάζει σε >1 ομάδες.
+        //  - Φόρμα αποτελεσμάτων: ο Όλυμπος πρώτος + μετρητής συμπληρωμένων.
+        // ΑΝΟΙΧΤΟ: κουμπί «Μετάβαση σε νέα φάση» (χειμώνας) — πρέπει να κρατά
+        // τους αγώνες της Α' Φάσης, γιατί από αυτούς μετριούνται τα γκολ των παιδιών.
+        // =========================================================
 
         const MY_TEAM = SEASON_DEFAULTS.team;
         const ADMIN_PASSWORD = 'olympos';
@@ -4499,7 +4671,8 @@ const database = firebase.database();
                 category:     data.category     || SEASON_DEFAULTS.category,
                 nextCategory: data.nextCategory || SEASON_DEFAULTS.nextCategory,
                 group:        data.group        ?? SEASON_DEFAULTS.group,
-                league:       data.league       || SEASON_DEFAULTS.league
+                league:       data.league       || SEASON_DEFAULTS.league,
+                qualify:      Number(data.qualify) || SEASON_DEFAULTS.qualify
             };
             TEAMS = resolveTeams(data);
             ensureTrainingData();
@@ -5001,18 +5174,50 @@ function displayStandings() {
     const tbody = document.getElementById('standingsBody');
     tbody.innerHTML = '';
 
+    // --- Νέο σύστημα: πράσινη ζώνη 1..Q, γραμμή «αγώνες κατάταξης», συμπαγής προβολή στο κινητό ---
+    const Q = SEASON.qualify || 16;
+    const totalTeams = standings.length;
+    const hasZone = totalTeams > Q;
+    const myIdx = standings.findIndex(t => t.team === MY_TEAM);
+    const canCompact = isNarrowScreen() && totalTeams > Q + 8;
+    const compact = canCompact && !standingsExpanded;
+
+    const visible = new Set();
+    if (compact) {
+        for (let i = 0; i < Q; i++) visible.add(i);
+        if (myIdx >= 0) for (let i = myIdx - 2; i <= myIdx + 2; i++) if (i >= 0 && i < totalTeams) visible.add(i);
+    }
+    const COLS = 11;
+    let hidden = 0;
+    const flushGap = () => {
+        if (!hidden) return;
+        const g = document.createElement('tr');
+        g.className = 'st-gap';
+        g.title = 'Δείξε όλη τη βαθμολογία';
+        g.onclick = () => toggleStandingsExpanded(true);
+        g.innerHTML = `<td colspan="${COLS}">⋮ ${hidden} ${hidden === 1 ? 'ομάδα' : 'ομάδες'}</td>`;
+        tbody.appendChild(g);
+        hidden = 0;
+    };
+
     standings.forEach((team, index) => {
+        if (hasZone && index === Q) {
+            flushGap();
+            const z = document.createElement('tr');
+            z.className = 'st-zone';
+            z.innerHTML = `<td colspan="${COLS}">Θέσεις ${Q + 1}–${totalTeams}: αγώνες κατάταξης</td>`;
+            tbody.appendChild(z);
+        }
+        if (compact && !visible.has(index)) { hidden++; return; }
+        flushGap();
+
         const row = document.createElement('tr');
         if (team.team === MY_TEAM) {
             row.classList.add('my-team');
         }
 
-        // Χρώματα Μπάρας
-        let indicatorClass = '';
-        const totalTeams = standings.length;
-        if (index === 0) indicatorClass = 'indicator-green';
-        else if (index === 1 || index === 2) indicatorClass = 'indicator-blue';
-        else if (index >= totalTeams - 2) indicatorClass = 'indicator-red';
+        // Χρώματα Μπάρας: πράσινο = ζώνη πρόκρισης (δεν υπάρχει πια υποβιβασμός)
+        const indicatorClass = (hasZone && index < Q) ? 'indicator-green' : '';
 
         // Φόρμα (Form)
         const last5 = team.history.slice(-5);
@@ -5045,25 +5250,118 @@ function displayStandings() {
 
         tbody.appendChild(row);
     });
+    flushGap();
+
+    // Κουμπί «όλη / λιγότερη» (μόνο όταν έχει νόημα, δηλαδή στο κινητό)
+    const tg = document.getElementById('standingsToggle');
+    if (tg) tg.innerHTML = canCompact
+        ? `<button type="button" onclick="toggleStandingsExpanded(${compact})">${compact
+              ? `Δείξε όλη τη βαθμολογία (${totalTeams})`
+              : 'Δείξε λιγότερες ομάδες'}</button>`
+        : '';
+
+    const lg = document.getElementById('standingsZoneLegend');
+    if (lg) lg.textContent = hasZone
+        ? `. Πράσινη μπάρα: θέσεις 1–${Q}, συνεχίζουν για τον τίτλο. Θέσεις ${Q + 1}–${totalTeams}: αγώνες κατάταξης.` : '';
+
+    renderRoundProgress();
 }
-  function displayResults() {
+
+// ===== Συμπαγής βαθμολογία (κινητό) =====
+var standingsExpanded = false; // var: διαθέσιμο ακόμα κι αν κληθεί νωρίς
+function isNarrowScreen() {
+    return !!(window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
+}
+function toggleStandingsExpanded(open) {
+    standingsExpanded = !!open;
+    displayStandings();
+    if (!open) {
+        const t = document.getElementById('standingsTable');
+        if (t) t.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
+}
+if (window.matchMedia) {
+    const _mq = window.matchMedia('(max-width: 768px)');
+    const _onMq = () => { if (data) displayStandings(); };
+    if (_mq.addEventListener) _mq.addEventListener('change', _onMq);
+    else if (_mq.addListener) _mq.addListener(_onMq);
+}
+
+// ===== «8η αγωνιστική: 27/29 αποτελέσματα» =====
+function roundProgressInfo() {
+    const played = m => !m.isPostponed && m.homeScore !== null && m.awayScore !== null;
+    const withResults = (data.fixtures || []).filter(r => (r.matches || []).some(played));
+    if (!withResults.length) return null;
+    const r = withResults.reduce((a, b) => (b.round > a.round ? b : a));
+    const ms = (r.matches || []).filter(m => m.home && m.away);
+    const done = ms.filter(played).length;
+    const post = ms.filter(m => m.isPostponed).length;
+    return { round: r.round, total: ms.length, done, post, pending: ms.length - done - post };
+}
+function renderRoundProgress() {
+    const box = document.getElementById('roundProgress');
+    if (!box) return;
+    const p = roundProgressInfo();
+    if (!p) { box.innerHTML = ''; return; }
+    const postTxt = p.post ? `, ${p.post} ${p.post === 1 ? 'αναβολή' : 'αναβολές'}` : '';
+    box.innerHTML = p.pending
+        ? `⏳ ${p.round}η αγωνιστική: <strong>${p.done}/${p.total}</strong> αποτελέσματα${postTxt}. Η βαθμολογία συμπληρώνεται.`
+        : `✅ Ενημερωμένη μέχρι και την <strong>${p.round}η αγωνιστική</strong>${p.post ? ` (${p.post} ${p.post === 1 ? 'αναβολή' : 'αναβολές'})` : ''}.`;
+}
+// ===== Διακόπτης «Όλυμπος / Όλοι οι αγώνες» (κοινός για Πρόγραμμα & Αποτελέσματα) =====
+var matchView = 'mine';
+try { matchView = localStorage.getItem('olymposMatchView') === 'all' ? 'all' : 'mine'; } catch (e) { /* χωρίς μνήμη, απλώς Όλυμπος */ }
+
+function setMatchView(v) {
+    matchView = v === 'all' ? 'all' : 'mine';
+    try { localStorage.setItem('olymposMatchView', matchView); } catch (e) {}
+    displayResults();
+    displayFixtures();
+}
+
+function matchViewToggleHTML() {
+    const b = (v, label) =>
+        `<button type="button" class="${matchView === v ? 'active' : ''}" aria-pressed="${matchView === v}"
+                 onclick="setMatchView('${v}')">${label}</button>`;
+    return `<div class="view-toggle" role="group" aria-label="Ποιους αγώνες να δείχνει">
+              ${b('mine', 'Όλυμπος')}${b('all', 'Όλοι οι αγώνες')}
+            </div>`;
+}
+
+function involvesUs(m) { return isMyTeam(m.home) || isMyTeam(m.away); }
+
+// Στο «Όλοι» οι αγωνιστικές ανοιγοκλείνουν· ανοιχτή μένει μόνο η τρέχουσα.
+function makeRoundSection(roundNum, collapsible, open, count) {
+    const section = document.createElement(collapsible ? 'details' : 'div');
+    section.className = 'round-section';
+    if (collapsible && open) section.open = true;
+    const header = document.createElement(collapsible ? 'summary' : 'div');
+    header.className = 'round-header';
+    header.textContent = `Αγωνιστική ${roundNum}`;
+    if (collapsible) {
+        const c = document.createElement('span');
+        c.className = 'round-count';
+        c.textContent = `${count} ${count === 1 ? 'αγώνας' : 'αγώνες'}`;
+        header.appendChild(c);
+    }
+    section.appendChild(header);
+    return section;
+}
+
+function displayResults() {
     const container = document.getElementById('resultsContainer');
-    container.innerHTML = '';
-    let hasResults = false;
+    container.innerHTML = matchViewToggleHTML();
+    const all = matchView === 'all';
+    let shown = 0;
     const reversedFixtures = [...data.fixtures].reverse();
 
     reversedFixtures.forEach(round => {
-        const roundMatches = round.matches.filter(m => (m.homeScore !== null && m.awayScore !== null) || m.isPostponed);
+        const roundMatches = round.matches.filter(m =>
+            ((m.homeScore !== null && m.awayScore !== null) || m.isPostponed) && (all || involvesUs(m)));
 
         if (roundMatches.length > 0) {
-            hasResults = true;
-            const section = document.createElement('div');
-            section.className = 'round-section';
-            
-            const header = document.createElement('div');
-            header.className = 'round-header';
-            header.textContent = `Αγωνιστική ${round.round}`;
-            section.appendChild(header);
+            const section = makeRoundSection(round.round, all, shown === 0, roundMatches.length);
+            shown++;
 
             roundMatches.forEach(match => {
                 const div = document.createElement('div');
@@ -5125,35 +5423,31 @@ function displayStandings() {
         }
     });
 
-    if (!hasResults) { container.innerHTML = '<div class="empty-state"><p>⚽ Δεν υπάρχουν αποτελέσματα ακόμα.</p></div>'; }
+    if (!shown) {
+        container.insertAdjacentHTML('beforeend', all
+            ? '<div class="empty-state"><p>⚽ Δεν υπάρχουν αποτελέσματα ακόμα.</p></div>'
+            : '<div class="empty-state"><p>⚽ Ο Όλυμπος δεν έχει αγωνιστεί ακόμα.</p></div>');
+    }
 }
 function displayFixtures() {
     const container = document.getElementById('fixturesContainer');
-    container.innerHTML = '';
-
-    let hasFixtures = false;
+    container.innerHTML = matchViewToggleHTML();
+    const all = matchView === 'all';
+    let shown = 0;
 
     data.fixtures.forEach(round => {
-        // Βρίσκουμε αγώνες που ΔΕΝ έχουν σκορ και ΔΕΝ είναι αναβληθέντες
-        const roundMatches = round.matches.filter(m => 
-            m.homeScore === null && m.awayScore === null && !m.isPostponed
-        );
+        // Αγώνες χωρίς σκορ και χωρίς αναβολή
+        const roundMatches = round.matches.filter(m =>
+            m.homeScore === null && m.awayScore === null && !m.isPostponed && (all || involvesUs(m)));
 
         if (roundMatches.length > 0) {
-            hasFixtures = true;
-            
-            const section = document.createElement('div');
-            section.className = 'round-section';
-            
-            const header = document.createElement('div');
-            header.className = 'round-header';
-            header.textContent = `Αγωνιστική ${round.round}`;
-            section.appendChild(header);
+            const section = makeRoundSection(round.round, all, shown === 0, roundMatches.length);
+            shown++;
 
             roundMatches.forEach(match => {
                 const div = document.createElement('div');
                 div.className = 'match-row';
-                
+
                 if (isMyTeam(match.home) || isMyTeam(match.away)) {
                     div.style.background = '#fffdf0';
                 }
@@ -5173,8 +5467,13 @@ function displayFixtures() {
         }
     });
 
-    if (!hasFixtures) {
-        container.innerHTML = '<div class="empty-state"><p>🏁 Όλοι οι αγώνες έχουν ολοκληρωθεί!</p></div>';
+    if (!shown) {
+        const noFixtures = !data.fixtures || !data.fixtures.length;
+        container.insertAdjacentHTML('beforeend', noFixtures
+            ? '<div class="empty-state"><p>📅 Το πρόγραμμα δεν έχει βγει ακόμα.</p></div>'
+            : all
+                ? '<div class="empty-state"><p>🏁 Όλοι οι αγώνες έχουν ολοκληρωθεί!</p></div>'
+                : '<div class="empty-state"><p>📅 Δεν υπάρχει προγραμματισμένος αγώνας του Ολύμπου. Δες το «Όλοι οι αγώνες».</p></div>');
     }
 }
 // ΝΕΑ ΣΥΝΑΡΤΗΣΗ: Βρίσκει αναλυτικά τα στατιστικά ενός παίκτη
@@ -7147,21 +7446,40 @@ function parseFixturesText(text, teams) {
     const index = new Map();
     teams.forEach(t => index.set(_norm(t), t));
 
-    // Ταιριάζει ονόματα ακόμα κι αν γράφτηκαν συντομευμένα ή με τόνους
-    const resolve = raw => {
-        const k = _norm(raw);
-        if (!k) return null;
-        if (index.has(k)) return index.get(k);
+    // Ταιριάζει ονόματα ακόμα κι αν γράφτηκαν συντομευμένα ή με τόνους.
+    // ΚΑΝΟΝΑΣ (Οκτ. 2026, 58 ομάδες): όταν ένα όνομα ταιριάζει σε >1 ομάδες,
+    // ΔΕΝ μαντεύουμε — επιστρέφουμε τις επιλογές και ρωτάμε τον admin.
+    // π.χ. «ΗΡΑΚΛΗΣ» -> ΗΡΑΚΛΗΣ ΑΜΠΕΛΟΚΗΠΩΝ ή ΠΟΤ ΗΡΑΚΛΗΣ (1);
+    const _tok = v => v.replace(/[.,()\/«»'"\-–]/g, ' ').split(/\s+/).filter(Boolean);
+    const keyTokens = new Map([...index.keys()].map(x => [x, _tok(x)]));
+    // Ομάδες όπου ΚΑΘΕ λέξη του κειμένου είναι αρχή κάποιας λέξης του ονόματος
+    const candidates = k => {
+        const toks = _tok(k);
+        if (!toks.length) return [];
+        return [...index.keys()].filter(x => toks.every(t => keyTokens.get(x).some(w => w.startsWith(t))));
+    };
+    const looseMatch = k => {
         let h = [...index.keys()].filter(x => x.startsWith(k) || k.startsWith(x));
-        if (h.length === 1) return index.get(h[0]);
+        if (h.length === 1) return h[0];
         h = [...index.keys()].filter(x => x.includes(k) || k.includes(x));
-        if (h.length === 1) return index.get(h[0]);
+        if (h.length === 1) return h[0];
         const f = k.split(' ')[0];
         if (f.length >= 4) {
             h = [...index.keys()].filter(x => x.split(' ')[0] === f);
-            if (h.length === 1) return index.get(h[0]);
+            if (h.length === 1) return h[0];
         }
         return null;
+    };
+    const resolve = raw => {
+        const k = _norm(raw);
+        if (!k) return { team: null };
+        if (index.has(k)) return { team: index.get(k) };
+        const c = candidates(k);
+        if (c.length > 1) return { team: null, options: c.map(x => index.get(x)) };
+        const hit = looseMatch(k);
+        if (hit && c.length === 1 && c[0] !== hit) return { team: null, options: [index.get(hit), index.get(c[0])] };
+        const key = hit || (c.length === 1 ? c[0] : null);
+        return { team: key ? index.get(key) : null };
     };
 
     const rounds = [], problems = [];
@@ -7202,9 +7520,15 @@ function parseFixturesText(text, teams) {
         const parts = body.split(RE_SEP);
         if (parts.length !== 2) { problems.push(`γρ.${ln}: δεν διαβάζεται → «${rawLine.trim()}»`); return; }
 
-        const home = resolve(parts[0]), away = resolve(parts[1]);
-        if (!home) problems.push(`γρ.${ln}: άγνωστη ομάδα → «${parts[0].trim()}»`);
-        if (!away) problems.push(`γρ.${ln}: άγνωστη ομάδα → «${parts[1].trim()}»`);
+        const rh = resolve(parts[0]), ra = resolve(parts[1]);
+        const home = rh.team, away = ra.team;
+        const why = (r, raw) => r.options
+            ? `γρ.${ln}: «${raw.trim()}» ταιριάζει σε ${r.options.length} ομάδες (` +
+              r.options.slice(0, 5).join(', ') + (r.options.length > 5 ? ', …' : '') +
+              `). Γράψ' το ολόκληρο.`
+            : `γρ.${ln}: άγνωστη ομάδα → «${raw.trim()}»`;
+        if (!home) problems.push(why(rh, parts[0]));
+        if (!away) problems.push(why(ra, parts[1]));
         if (!home || !away) return;
         if (home === away) { problems.push(`γρ.${ln}: ίδια ομάδα και στις δύο πλευρές`); return; }
 
@@ -7222,6 +7546,68 @@ function parseFixturesText(text, teams) {
 
 let _pendingFixtures = null;
 
+// ============ ΣΥΓΧΩΝΕΥΣΗ ΠΡΟΓΡΑΜΜΑΤΟΣ ============
+// Ό,τι υπάρχει μένει. Μπαίνουν μόνο τα καινούργια. Σκόρερ/clean sheets δεν αγγίζονται.
+//  - Νέα αγωνιστική -> προστίθεται ολόκληρη.
+//  - Ίδιος αγώνας (ίδια γηπεδούχος/φιλοξενούμενη) -> μένει. Αν το κείμενο έχει σκορ
+//    και το site όχι, συμπληρώνεται. Αν έχουν ΔΙΑΦΟΡΕΤΙΚΟ σκορ, κρατάμε του site και το αναφέρουμε.
+//  - Νέος αγώνας σε υπάρχουσα αγωνιστική, ενώ κάποια ομάδα του έχει ήδη αγώνα εκεί:
+//    διόρθωση προγράμματος. Αν ο παλιός είναι «άδειος» αντικαθίσταται, αλλιώς αναφέρεται.
+function mergeFixtures(target, incoming) {
+    const rep = { newRounds: 0, newMatches: 0, filled: 0, postponed: 0, replaced: [], conflicts: [] };
+    const hasScore = m => m.homeScore !== null && m.awayScore !== null;
+    const hasData = m => m.homeScore !== null || m.awayScore !== null || m.isPostponed
+        || (m.scorers || []).length || (m.cleanSheetHolders || []).length;
+    const fresh = m => ({ home: m.home, away: m.away,
+        homeScore: m.homeScore, awayScore: m.awayScore, isPostponed: !!m.isPostponed });
+
+    incoming.forEach(pr => {
+        const er = target.find(r => r.round === pr.round);
+        if (!er) {
+            target.push({ round: pr.round, matches: pr.matches.map(fresh) });
+            rep.newRounds++;
+            rep.newMatches += pr.matches.length;
+            return;
+        }
+        if (!Array.isArray(er.matches)) er.matches = [];
+
+        pr.matches.forEach(pm => {
+            const label = `Αγ.${pr.round}: ${pm.home} - ${pm.away}`;
+            const em = er.matches.find(m => m.home === pm.home && m.away === pm.away);
+            if (em) {
+                if (hasScore(pm) && !hasScore(em)) {
+                    em.homeScore = pm.homeScore; em.awayScore = pm.awayScore; em.isPostponed = false;
+                    rep.filled++;
+                } else if (hasScore(pm) && hasScore(em) &&
+                           (em.homeScore !== pm.homeScore || em.awayScore !== pm.awayScore)) {
+                    rep.conflicts.push(`${label}: στο site είναι ${em.homeScore}-${em.awayScore}, ` +
+                        `το κείμενο λέει ${pm.homeScore}-${pm.awayScore}. Έμεινε το ${em.homeScore}-${em.awayScore}.`);
+                } else if (pm.isPostponed && !hasScore(em) && !em.isPostponed) {
+                    em.isPostponed = true;
+                    rep.postponed++;
+                }
+                return;
+            }
+            const clash = er.matches.filter(m =>
+                [m.home, m.away].some(t => t === pm.home || t === pm.away));
+            const locked = clash.filter(hasData);
+            if (locked.length) {
+                rep.conflicts.push(`${label}: δεν μπήκε, γιατί στην ίδια αγωνιστική ο αγώνας ` +
+                    locked.map(m => `${m.home} - ${m.away}`).join(', ') + ` έχει ήδη σκορ, σκόρερ ή αναβολή.`);
+                return;
+            }
+            clash.forEach(m => {
+                er.matches.splice(er.matches.indexOf(m), 1);
+                rep.replaced.push(`Αγ.${pr.round}: ${m.home} - ${m.away}  →  ${pm.home} - ${pm.away}`);
+            });
+            er.matches.push(fresh(pm));
+            rep.newMatches++;
+        });
+    });
+    target.sort((a, b) => a.round - b.round);
+    return rep;
+}
+
 function previewPastedFixtures() {
     const box = document.getElementById('fixturesPreview');
     const btn = document.getElementById('applyFixturesBtn');
@@ -7235,17 +7621,7 @@ function previewPastedFixtures() {
 
     const { rounds, problems } = parseFixturesText(text, TEAMS);
 
-    // Ποιες ομάδες λείπουν τελείως / ποια ζευγάρια γράφτηκαν δύο φορές
-    const seen = new Set(), pairs = new Map();
-    rounds.forEach(r => r.matches.forEach(m => {
-        seen.add(m.home); seen.add(m.away);
-        const k = m.home + ' | ' + m.away;
-        pairs.set(k, (pairs.get(k) || 0) + 1);
-    }));
-    const missing = TEAMS.filter(t => !seen.has(t));
-    const dupes = [...pairs.entries()].filter(([, v]) => v > 1).map(([k]) => k);
-
-    // Ομάδα δύο φορές στην ίδια αγωνιστική
+    // Ομάδα δύο φορές στην ίδια αγωνιστική (μέσα στο ίδιο το κείμενο)
     const clashes = [];
     rounds.forEach(r => {
         const c = {};
@@ -7254,11 +7630,35 @@ function previewPastedFixtures() {
               .forEach(([t]) => clashes.push(`Αγ.${r.round}: ${t}`));
     });
 
-    const total = rounds.reduce((a, r) => a + r.matches.length, 0);
+    // Δοκιμαστική συγχώνευση σε αντίγραφο: τι ΘΑ γίνει αν πατήσεις Εφαρμογή
+    const dry = JSON.parse(JSON.stringify(data.fixtures || []));
+    const rep = mergeFixtures(dry, rounds);
 
-    let html = `<div style="border:1px solid #ddd; border-radius:var(--r-sm); padding:10px; background:#fff; max-height:320px; overflow:auto;">
+    // Μετά τη συγχώνευση: ζευγάρια που συναντιούνται >1 φορά, ομάδες που λείπουν
+    const pairCount = new Map();
+    const seen = new Set();
+    dry.forEach(r => (r.matches || []).forEach(m => {
+        seen.add(m.home); seen.add(m.away);
+        const k = [m.home, m.away].sort((x, y) => x.localeCompare(y, 'el')).join(' & ');
+        pairCount.set(k, (pairCount.get(k) || 0) + 1);
+    }));
+    const twice = [...pairCount.entries()].filter(([, v]) => v > 1).map(([k, v]) => `${k} (${v} φορές)`);
+    const missing = TEAMS.filter(t => !seen.has(t));
+
+    const total = rounds.reduce((a, r) => a + r.matches.length, 0);
+    const changes = rep.newMatches + rep.filled + rep.postponed;
+
+    let html = `<div style="border:1px solid #ddd; border-radius:var(--r-sm); padding:10px; background:#fff; max-height:360px; overflow:auto;">
         <div style="font-weight:800; margin-bottom:6px;">
             Διαβάστηκαν ${rounds.length} αγωνιστικές / ${total} αγώνες
+        </div>
+        <div style="padding:8px; margin-bottom:8px; background:#2e7d321a; border-left:3px solid #2e7d32; font-size:0.82rem;">
+            <strong>Με την Εφαρμογή:</strong><br>
+            Νέες αγωνιστικές: <strong>${rep.newRounds}</strong><br>
+            Νέοι αγώνες: <strong>${rep.newMatches}</strong><br>
+            Σκορ που θα συμπληρωθούν: <strong>${rep.filled}</strong><br>
+            Αναβολές που θα σημειωθούν: <strong>${rep.postponed}</strong><br>
+            Ό,τι υπάρχει ήδη (σκορ, σκόρερ, clean sheets) <strong>μένει ως έχει</strong>.
         </div>`;
 
     rounds.forEach(r => {
@@ -7276,28 +7676,35 @@ function previewPastedFixtures() {
 
     html += warn('⚠️ Γραμμές που δεν διαβάστηκαν', problems, '#c62828');
     html += warn('⚠️ Ομάδα δύο φορές στην ίδια αγωνιστική', clashes, '#c62828');
-    html += warn('⚠️ Ζευγάρι που γράφτηκε δύο φορές', dupes, '#ef6c00');
-    html += warn('ℹ️ Ομάδες που δεν εμφανίστηκαν πουθενά', missing, '#ef6c00');
+    html += warn('⚠️ Διαφορές που ΔΕΝ θα περαστούν (έλεγξέ τες με το χέρι)', rep.conflicts, '#c62828');
+    html += warn('🔁 Αλλαγές προγράμματος (αγώνες χωρίς σκορ που θα αντικατασταθούν)', rep.replaced, '#ef6c00');
+    html += warn('ℹ️ Ζευγάρια που συναντιούνται πάνω από μία φορά (στο νέο σύστημα κάθε ζευγάρι παίζει μία)', twice, '#ef6c00');
+    html += warn('ℹ️ Ομάδες που δεν εμφανίζονται πουθενά στο πρόγραμμα', missing, '#ef6c00');
     html += '</div>';
 
     box.innerHTML = html;
 
     if (total === 0) { showToast('Δεν αναγνωρίστηκε κανένας αγώνας.', 'error'); return; }
+    if (changes === 0) { showToast('Δεν υπάρχει κάτι καινούργιο να μπει.'); return; }
 
     _pendingFixtures = rounds;
     btn.style.display = 'inline-block';
-    showToast(problems.length ? `${total} αγώνες, αλλά ${problems.length} γραμμές θέλουν ματάκι.`
-                              : `${total} αγώνες, όλα καθαρά.`);
+    showToast(problems.length ? `${changes} αλλαγές, αλλά ${problems.length} γραμμές θέλουν ματάκι.`
+                              : `${changes} αλλαγές, όλα καθαρά.`);
 }
 
 function applyPastedFixtures() {
     if (!_pendingFixtures) { showToast('Πάτα πρώτα Έλεγχο.', 'error'); return; }
+    if (!Array.isArray(data.fixtures)) data.fixtures = [];
 
-    if (data.fixtures && data.fixtures.length) {
-        if (!confirm('⚠️ Θα αντικατασταθεί το υπάρχον πρόγραμμα (μαζί με σκορ και σκόρερ).\n\nΈκανες Export πρώτα;')) return;
-    }
+    // Πρώτα «στεγνά», για να ρωτήσουμε πριν αλλάξει οτιδήποτε υπαρκτό
+    const dry = mergeFixtures(JSON.parse(JSON.stringify(data.fixtures)), _pendingFixtures);
+    if (dry.replaced.length && !confirm(
+        `Θα αλλάξουν ${dry.replaced.length} αγώνες που ΔΕΝ είχαν ακόμα σκορ:\n\n` +
+        dry.replaced.slice(0, 15).join('\n') + (dry.replaced.length > 15 ? '\n…' : '') +
+        `\n\nΣυνέχεια;`)) return;
 
-    data.fixtures = _pendingFixtures;
+    const rep = mergeFixtures(data.fixtures, _pendingFixtures);
     _pendingFixtures = null;
     document.getElementById('applyFixturesBtn').style.display = 'none';
     document.getElementById('fixturesPreview').innerHTML = '';
@@ -7309,7 +7716,7 @@ function applyPastedFixtures() {
     displayResults();
     displayFixtures();
     displayNextMatch();
-    showToast(`Το πρόγραμμα μπήκε: ${data.fixtures.length} αγωνιστικές.`);
+    showToast(`Μπήκαν ${rep.newMatches} αγώνες και ${rep.filled} σκορ. Τα υπόλοιπα έμειναν ως είχαν. Μην ξεχάσεις Export!`);
 }
 
 // Προσωρινός σκελετός (round-robin, μέθοδος Berger) — ΟΧΙ το επίσημο πρόγραμμα.
@@ -7431,9 +7838,23 @@ function refreshAdminForms() {
 
     const round = data.fixtures.find(r => r.round === roundNum);
     const container = document.getElementById('matchInputs');
-    container.innerHTML = '<h4 style="margin-bottom: 1rem;">Αποτελέσματα & Στατιστικά:</h4>';
+    container.innerHTML = '<h4 style="margin-bottom: 1rem;">Αποτελέσματα & Στατιστικά:</h4>' +
+                          '<div id="roundCounter" class="round-counter" aria-live="polite"></div>';
 
-    round.matches.forEach((match, index) => {
+    // Ο Όλυμπος πρώτος, μετά οι υπόλοιποι. Τα index μένουν τα αρχικά:
+    // από αυτά δουλεύουν η αποθήκευση και οι σκόρερ.
+    const order = round.matches.map((m, i) => i);
+    const ours = order.filter(i => round.matches[i].home === MY_TEAM || round.matches[i].away === MY_TEAM);
+    const others = order.filter(i => !ours.includes(i));
+
+    [...ours, ...others].forEach((index, pos) => {
+        const match = round.matches[index];
+        if (ours.length && others.length && pos === ours.length) {
+            const d = document.createElement('div');
+            d.className = 'admin-divider';
+            d.textContent = `Υπόλοιποι αγώνες (${others.length})`;
+            container.appendChild(d);
+        }
         const div = document.createElement('div');
         div.className = 'match-input-row';
         div.style.flexDirection = 'column'; 
@@ -7507,8 +7928,8 @@ function refreshAdminForms() {
         }
 
         div.innerHTML = `
-            <div style="display: grid; grid-template-columns: 1fr 140px 1fr; gap: 1rem; align-items: center; width:100%;">
-                <div><input type="text" value="${esc(homeTeam)}" disabled style="font-weight: 600; background: #f5f5f5; width: 100%;"></div>
+            <div class="adm-match-grid">
+                <div class="adm-team adm-home${isMyTeam(homeTeam) ? ' is-us' : ''}">${esc(homeTeam)}</div>
                 <div class="score-inputs-wrapper">
                     <div class="score-inputs">
                         <input type="number" class="score-input" id="home-${roundNum}-${index}" value="${match.homeScore !== null ? match.homeScore : ''}" min="0" placeholder="0" style="${bgStyle}">
@@ -7517,12 +7938,44 @@ function refreshAdminForms() {
                     </div>
                     <label class="postpone-label"><input type="checkbox" id="postponed-${roundNum}-${index}" ${isPostponed}> Αναβλήθηκε</label>
                 </div>
-                <div><input type="text" value="${esc(awayTeam)}" disabled style="font-weight: 600; background: #f5f5f5; width: 100%;"></div>
+                <div class="adm-team adm-away${isMyTeam(awayTeam) ? ' is-us' : ''}">${esc(awayTeam)}</div>
             </div>
             ${statsHTML}
         `;
         container.appendChild(div);
     });
+
+    updateRoundCounter(roundNum);
+    // Ζωντανή ενημέρωση καθώς γράφεις (property, όχι listener: δεν μαζεύονται διπλοί)
+    container.oninput = container.onchange = () => updateRoundCounter(roundNum);
+}
+
+// Μετρητής «22/29 συμπληρωμένα» + χρώμα σε κάθε γραμμή:
+// πορτοκαλί = κενό, κόκκινο = μισό σκορ, πράσινο = έτοιμο, γκρι = αναβολή
+function updateRoundCounter(roundNum) {
+    const box = document.getElementById('roundCounter');
+    const round = (data.fixtures || []).find(r => r.round === roundNum);
+    if (!box || !round) return;
+    let done = 0, post = 0, half = 0, total = 0;
+    round.matches.forEach((m, i) => {
+        if (!m.home || !m.away) return;
+        total++;
+        const h = document.getElementById(`home-${roundNum}-${i}`);
+        const a = document.getElementById(`away-${roundNum}-${i}`);
+        const pp = document.getElementById(`postponed-${roundNum}-${i}`);
+        if (!h || !a) return;
+        let state = 'empty';
+        if (pp && pp.checked) { post++; state = 'post'; }
+        else if (h.value !== '' && a.value !== '') { done++; state = 'done'; }
+        else if (h.value !== '' || a.value !== '') { half++; state = 'half'; }
+        const row = h.closest('.match-input-row');
+        if (row) row.dataset.state = state;
+    });
+    const left = total - done - post;
+    box.classList.toggle('complete', left === 0);
+    box.innerHTML = `<strong>${done}/${total}</strong> συμπληρωμένα` +
+        (post ? `, ${post} ${post === 1 ? 'αναβολή' : 'αναβολές'}` : '') +
+        (left ? `. Λείπουν ${left}${half ? ` (${half} με μισό σκορ)` : ''}.` : '. Όλα έτοιμα ✅ Πάτα Αποθήκευση.');
 }
 // Βοηθητικές Συναρτήσεις (ΠΡΟΣΘΕΣΕ ΤΕΣ ΚΑΤΩ ΑΠΟ ΤΗΝ loadMatchesForRound)
 function toggleScorerPanel(index) {
