@@ -1076,9 +1076,37 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
 }
 
 .news-item.collapsed .news-content,
-.news-item.collapsed .news-image {
+.news-item.collapsed .news-image,
+.news-item.collapsed .news-video {
     display: none;
 }
+
+/* Βίντεο YouTube σε είδηση: μικρογραφία + ▶, το βίντεο φορτώνει μόνο στο πάτημα */
+.news-video {
+    position: relative;
+    margin-top: 1rem;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--r-md);
+    overflow: hidden;
+    background: #000;
+    cursor: pointer;
+}
+.news-video.is-short { aspect-ratio: 9 / 16; max-width: 340px; margin-left: auto; margin-right: auto; }
+.news-video img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: .9; }
+.news-video:hover img { opacity: 1; }
+.news-video .nv-play {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 68px; height: 48px; border-radius: 12px; border: 0;
+    background: rgba(26, 71, 42, .92); color: #fff; font-size: 1.4rem; line-height: 48px;
+    text-align: center; pointer-events: none;
+}
+.news-video:hover .nv-play { background: var(--primary-color); }
+.news-video:focus-visible { outline: 3px solid var(--accent-color); outline-offset: 2px; }
+.news-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.nv-hint { margin-top: 4px; font-size: .78rem; min-height: 1.1em; }
+.nv-hint.ok { color: #2e7d32; }
+.nv-hint.bad { color: #c62828; }
+@media (prefers-color-scheme: dark) { .nv-hint.ok { color: #81c784; } .nv-hint.bad { color: #ff8a80; } }
 
 .news-toggle {
     display: inline-block;
@@ -4395,6 +4423,14 @@ function showToast(message, type = 'success') {
 </div>
 
 <div class="form-group">
+    <label for="newsVideo">Βίντεο από YouTube (Προαιρετικό):</label>
+    <input type="url" id="newsVideo" inputmode="url" autocomplete="off"
+           placeholder="π.χ. https://youtu.be/… ή https://www.youtube.com/shorts/…"
+           oninput="checkNewsVideoInput()">
+    <div id="newsVideoHint" class="nv-hint" aria-live="polite"></div>
+</div>
+
+<div class="form-group">
     <label>Φωτογραφία (Προαιρετικό):</label>
     <div class="file-input-wrapper">
         <input type="file" id="newsPhoto" accept="image/*" onchange="previewNewsPhoto(event)">
@@ -6382,6 +6418,71 @@ function removeNewsPhoto() {
     document.getElementById('newsPhotoPreview').style.display = 'none';
     document.getElementById('newsPhotoPreviewImg').src = '';
 }
+    // ===== Βίντεο YouTube στις ειδήσεις =====
+    // Δέχεται κάθε μορφή link: youtu.be/…, youtube.com/watch?v=…, /shorts/…, /live/…, /embed/…
+    // και κρατά μόνο το id (11 χαρακτήρες). Shorts = κάθετο κάδρο. «t=90» = ξεκινά στο 1:30.
+    function youtubeInfo(url) {
+        const s = String(url || '').trim();
+        if (!s) return null;
+        let m = s.match(/(?:youtube(?:-nocookie)?\.com\/(?:watch\?(?:[^#]*&)?v=|embed\/|shorts\/|live\/|v\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+        if (!m && /^[A-Za-z0-9_-]{11}$/.test(s)) m = [s, s];
+        if (!m) return null;
+        const t = s.match(/[?&](?:t|start)=(?:(\d+)m)?(\d+)s?(?:[&#]|$)/);
+        const start = t ? (parseInt(t[1] || 0, 10) * 60 + parseInt(t[2], 10)) : 0;
+        return { id: m[1], short: /\/shorts\//.test(s), start };
+    }
+    function youtubeWatchUrl(v) {
+        return v.short ? `https://www.youtube.com/shorts/${v.id}`
+                       : `https://www.youtube.com/watch?v=${v.id}${v.start ? '&t=' + v.start + 's' : ''}`;
+    }
+    function newsVideoHTML(v) {
+        if (!v || !/^[A-Za-z0-9_-]{11}$/.test(v.id || '')) return '';
+        return `<div class="news-video${v.short ? ' is-short' : ''}" role="button" tabindex="0"
+                     aria-label="Παίξε το βίντεο" data-yt="${esc(v.id)}" data-start="${Number(v.start) || 0}"
+                     onclick="event.stopPropagation(); playNewsVideo(this)"
+                     onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.stopPropagation(); playNewsVideo(this); }">
+                    <img src="https://i.ytimg.com/vi/${esc(v.id)}/hqdefault.jpg" alt="" loading="lazy">
+                    <span class="nv-play" aria-hidden="true">▶</span>
+                </div>`;
+    }
+    // Το πραγματικό βίντεο μπαίνει μόνο όταν το πατήσει κάποιος (γρήγορη σελίδα, λιγότερα cookies)
+    function playNewsVideo(el) {
+        if (!el || el.querySelector('iframe')) return;
+        const id = el.dataset.yt, start = Number(el.dataset.start) || 0;
+        if (!/^[A-Za-z0-9_-]{11}$/.test(id)) return;
+        el.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1${start ? '&start=' + start : ''}"
+            title="Βίντεο YouTube" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+        el.removeAttribute('role'); el.removeAttribute('tabindex'); el.onclick = e => e.stopPropagation();
+    }
+    // Admin: ζωντανός έλεγχος του link καθώς γράφεις
+    function checkNewsVideoInput() {
+        const inp = document.getElementById('newsVideo'), hint = document.getElementById('newsVideoHint');
+        if (!inp || !hint) return;
+        const v = youtubeInfo(inp.value);
+        hint.className = 'nv-hint' + (inp.value.trim() ? (v ? ' ok' : ' bad') : '');
+        hint.textContent = !inp.value.trim() ? ''
+            : v ? `✓ Βίντεο YouTube${v.short ? ' (Shorts, κάθετο)' : ''}${v.start ? `, ξεκινά στο ${Math.floor(v.start / 60)}:${String(v.start % 60).padStart(2, '0')}` : ''}`
+                : 'Δεν μοιάζει με link από YouTube.';
+    }
+    // Admin: βίντεο σε είδηση που υπάρχει ήδη (κρατά likes και ημερομηνία)
+    function setNewsVideo(id) {
+        const item = (data.news || []).find(n => String(n.id) === String(id));
+        if (!item) return;
+        const cur = item.video ? youtubeWatchUrl(item.video) : '';
+        const ans = prompt('Link βίντεο από YouTube για την είδηση:\n«' + item.title + '»\n\n(άδειο = αφαίρεση βίντεο)', cur);
+        if (ans === null) return;
+        if (!ans.trim()) { delete item.video; }
+        else {
+            const v = youtubeInfo(ans);
+            if (!v) { showToast('Δεν μοιάζει με link από YouTube.', 'error'); return; }
+            item.video = v;
+        }
+        saveData(data);
+        displayNews();
+        updateNewsList();
+        showToast(item.video ? 'Το βίντεο μπήκε στην είδηση. Μην ξεχάσεις Export!' : 'Το βίντεο αφαιρέθηκε.');
+    }
+
     async function displayNews() {
     const container = document.getElementById('newsContainer');
     container.innerHTML = '';
@@ -6455,6 +6556,7 @@ function removeNewsPhoto() {
             </div>
             <div class="news-content">${esc(newsItem.content).replace(/\n/g, '<br>')}</div>
             ${imageHTML}
+            ${newsVideoHTML(newsItem.video)}
 
           <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid #f0f0f0; display: flex; align-items: center; gap: 8px;">
              <button class="like-btn" data-id="${safeId}"
@@ -6482,6 +6584,12 @@ function removeNewsPhoto() {
                 showToast(' Συμπλήρωσε τίτλο και περιεχόμενο!');
                 return;
             }
+            const videoRaw = (document.getElementById('newsVideo') || {}).value || '';
+            const video = youtubeInfo(videoRaw);
+            if (videoRaw.trim() && !video) {
+                showToast('Το link του βίντεο δεν μοιάζει με YouTube. Διόρθωσέ το ή σβήσ\' το.', 'error');
+                return;
+            }
 
             if (!data.news) {
                 data.news = [];
@@ -6493,7 +6601,8 @@ function removeNewsPhoto() {
     content: content,
     date: new Date().toISOString(),
     season: SEASON.season,
-    photo: newsPhotoPath
+    photo: newsPhotoPath,
+    ...(video ? { video } : {})
 };
 
             data.news.push(newsItem);
@@ -6517,6 +6626,8 @@ function removeNewsPhoto() {
         function clearNewsForm() {
     document.getElementById('newsTitle').value = '';
     document.getElementById('newsContent').value = '';
+    const nv = document.getElementById('newsVideo');
+    if (nv) { nv.value = ''; checkNewsVideoInput(); }
     removeNewsPhoto();
 }
 
@@ -6544,10 +6655,14 @@ function removeNewsPhoto() {
                 
                 div.innerHTML = `
                     <div>
-                        <strong>${esc(newsItem.title)}</strong><br>
+                        <strong>${newsItem.video ? '🎬 ' : ''}${esc(newsItem.title)}</strong><br>
                         <span style="color: #666; font-size: 0.85rem;">${esc(shortContent)}</span>
                     </div>
-                    <button class="btn btn-danger btn-small" data-id="${esc(newsItem.id)}" onclick="deleteNews(this.dataset.id)">🗑️</button>
+                    <div style="display:flex; gap:6px; flex:none;">
+                        <button class="btn btn-secondary btn-small" data-id="${esc(newsItem.id)}" onclick="setNewsVideo(this.dataset.id)"
+                                title="${newsItem.video ? 'Αλλαγή ή αφαίρεση βίντεο' : 'Προσθήκη βίντεο YouTube'}">🎬</button>
+                        <button class="btn btn-danger btn-small" data-id="${esc(newsItem.id)}" onclick="deleteNews(this.dataset.id)">🗑️</button>
+                    </div>
                 `;
                 container.appendChild(div);
             });
@@ -7611,6 +7726,8 @@ function renderHistorySeason(d) {
                 <summary>${esc(item.title)}<div class="hist-news-date">${dt}</div></summary>
                 <div class="hist-news-body">${esc(item.content)}</div>
                 ${img}
+                ${item.video && item.video.id ? `<a class="hist-news-video" href="${esc(youtubeWatchUrl(item.video))}"
+                    target="_blank" rel="noopener">▶ Δες το βίντεο στο YouTube</a>` : ''}
               </details>`;
         });
     }
