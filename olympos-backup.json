@@ -8,15 +8,15 @@
     "startTime": ""
   },
   "announcement": "",
-  "matchDate": "ΣΑΒ 10/10",
-  "matchTime": "17:00",
-  "matchStadium": "Γήπεδο Δενδροποτάμου ",
-  "matchMapLink": "https://maps.app.goo.gl/5B8EQgF2XR32jc7e8",
-  "countdownTarget": "2026-10-10T17:00",
+  "matchDate": "",
+  "matchTime": "",
+  "matchStadium": "",
+  "matchMapLink": "",
+  "countdownTarget": "",
   "specialMatch": {
     "type": "ΦΙΛΙΚΟΣ ΑΓΩΝΑΣ",
-    "home": "ΟΛΥΜΠΟΣ",
-    "away": "Α.Σ. ΙΩΝΙΚΟΣ"
+    "home": null,
+    "away": null
   },
   "crests": {
     "ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ": "crests/olympos.png",
