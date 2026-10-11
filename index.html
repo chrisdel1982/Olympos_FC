@@ -3742,10 +3742,11 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
     width:20px;height:20px;flex:none;object-fit:contain;
     background:transparent;border:0;border-radius:0;padding:0;
     mix-blend-mode:multiply;vertical-align:-5px}
-/* Σκούρο θέμα: ο λευκός κύκλος ΜΕΝΕΙ. Χωρίς αυτόν τα λογότυπα με λευκό φόντο
-   γίνονται άσπρα τετραγωνάκια και τα μαύρα χάνονται στο σκοτάδι. */
+/* Σκούρο θέμα: χωρίς κύκλο κι εδώ (απόφαση 11/10). Ένα αχνό φωτεινό περίγραμμα
+   γύρω από το σχήμα κρατά ορατά τα μαύρα σήματα. Λογότυπα με ΛΕΥΚΟ φόντο (όχι
+   διάφανο PNG) θα φαίνονται σαν άσπρο τετραγωνάκι — η λύση είναι διάφανο αρχείο. */
 @media (prefers-color-scheme: dark){
-    .crest-mini{mix-blend-mode:normal;background:#fff;border-radius:50%;padding:1px;border:1px solid #4a4a4a}
+    .crest-mini{mix-blend-mode:normal;filter:drop-shadow(0 0 1px rgba(255,255,255,.45))}
 }
 .team-left  .crest-mini{margin-left:7px}
 .team-right .crest-mini{margin-right:7px}
