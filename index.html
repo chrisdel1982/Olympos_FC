@@ -3770,7 +3770,11 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
 .crest-mini{
     width:28px;height:28px;flex:none;object-fit:contain;
     background:transparent;border:0;border-radius:0;padding:0;
-    mix-blend-mode:multiply;vertical-align:middle}
+    mix-blend-mode:normal;vertical-align:middle}
+/* Το multiply «σβήνει» το λευκό φόντο, αλλά βάφει και τα λευκά ΜΕΣΑ στο σήμα με το
+   χρώμα της γραμμής (π.χ. κρεμ στους αγώνες μας). Γι' αυτό μπαίνει ΜΟΝΟ σε αρχεία
+   χωρίς διαφάνεια: την κλάση crest-flat τη βάζει η normCrest όταν το διαπιστώσει. */
+@media (prefers-color-scheme: light){ .crest-mini.crest-flat{mix-blend-mode:multiply} }
 /* Σκούρο θέμα: χωρίς κύκλο κι εδώ (απόφαση 11/10). Ένα αχνό φωτεινό περίγραμμα
    γύρω από το σχήμα κρατά ορατά τα μαύρα σήματα. Λογότυπα με ΛΕΥΚΟ φόντο (όχι
    διάφανο PNG) θα φαίνονται σαν άσπρο τετραγωνάκι — η λύση είναι διάφανο αρχείο. */
@@ -6868,6 +6872,7 @@ function normCrest(img) {
     const apply = r => {
         if (!r) return;
         if (r.url) img.src = r.url;
+        img.classList.toggle('crest-flat', !!r.flat);   // αρχείο με λευκό φόντο
         img.style.transform = r.k < 0.999 ? `scale(${r.k.toFixed(3)})` : '';
     };
     if (CREST_NORM.has(key)) return apply(CREST_NORM.get(key));
@@ -6919,7 +6924,7 @@ function normCrest(img) {
             out.getContext('2d').drawImage(cv, x0, y0, w, h, 0, 0, w, h);
             url = out.toDataURL('image/png');
         }
-        r = { url, k };
+        r = { url, k, flat: !transparent };
     } catch (e) {
         r = null;                              // tainted canvas κ.λπ.: αφήνουμε το σήμα όπως είναι
     }
