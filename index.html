@@ -511,7 +511,7 @@ table thead th:nth-child(2) {
 .ko-tie.is-us { border-color: var(--accent-dark); box-shadow: inset 3px 0 0 var(--accent-dark); }
 .ko-team {
     display: grid;
-    grid-template-columns: 1.4em 20px minmax(0, 1fr) 1.6em;
+    grid-template-columns: 1.4em 24px minmax(0, 1fr) 1.6em;
     align-items: center;
     gap: 6px;
     padding: 6px 8px;
@@ -560,6 +560,7 @@ table thead th:nth-child(2) {
     .ko-ties { justify-content: flex-start; }
     .ko-team { font-size: .88rem; padding: 8px 10px; }
 }
+.ko-crest .crest-mini { width: 24px; height: 24px; }   /* στενές στήλες: λίγο μικρότερο */
 @media (prefers-color-scheme: dark) {
     .ko-team.mine .ko-name { color: #81c784; }
     .ko-champ { color: #1a472a; }
@@ -3767,9 +3768,9 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
    Σκέτη ασπίδα, χωρίς κύκλο και περίγραμμα: ίδια λογική με την κάρτα του επόμενου αγώνα.
    multiply = το λευκό φόντο των λογοτύπων χάνεται στο φωτεινό θέμα. */
 .crest-mini{
-    width:20px;height:20px;flex:none;object-fit:contain;
+    width:28px;height:28px;flex:none;object-fit:contain;
     background:transparent;border:0;border-radius:0;padding:0;
-    mix-blend-mode:multiply;vertical-align:-5px}
+    mix-blend-mode:multiply;vertical-align:middle}
 /* Σκούρο θέμα: χωρίς κύκλο κι εδώ (απόφαση 11/10). Ένα αχνό φωτεινό περίγραμμα
    γύρω από το σχήμα κρατά ορατά τα μαύρα σήματα. Λογότυπα με ΛΕΥΚΟ φόντο (όχι
    διάφανο PNG) θα φαίνονται σαν άσπρο τετραγωνάκι — η λύση είναι διάφανο αρχείο. */
@@ -3780,7 +3781,11 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
 .team-right .crest-mini{margin-right:7px}
 .team-cell{display:inline-flex;align-items:center;gap:7px;min-width:0}
 .team-cell > span{overflow:hidden;text-overflow:ellipsis}
-@media(max-width:560px){ .crest-mini{width:17px;height:17px} }
+@media(max-width:560px){ .crest-mini{width:24px;height:24px} }
+/* Σήμα δίπλα στο όνομα, κεντραρισμένο κάθετα (και όταν το όνομα σπάει σε 2 γραμμές) */
+.team-left, .team-right{display:flex;align-items:center}
+.team-left{justify-content:flex-end}
+.team-right{justify-content:flex-start}
 
 /* ================= ΚΑΡΤΑ ΕΠΟΜΕΝΟΥ ΑΓΩΝΑ ================= */
 .nm{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
@@ -6838,7 +6843,7 @@ function crestMini(name) {
     const file = crestFor(name);
     if (!file) return '';
     return `<img class="crest-mini" src="${esc(file)}" alt="" loading="lazy"
-              onerror="this.remove()">`;
+              onload="normCrest(this)" onerror="this.remove()">`;
 }
 
 // Αρχικά ομάδας για τον κύκλο, όταν δεν υπάρχει σήμα. Τα «(2)», «(4)» δεν μετράνε.
