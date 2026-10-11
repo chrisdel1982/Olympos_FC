@@ -467,6 +467,116 @@ table thead th:nth-child(2) {
     .view-toggle button.active { background: #2e7d32; color: #fff; }
 }
 
+/* --- Ρεπό & πέναλτι μέσα στις αγωνιστικές --- */
+.rest-row {
+    padding: .7rem 1rem;
+    font-size: .85rem;
+    font-style: italic;
+    color: var(--ink-muted);
+    border-top: 1px dashed var(--line);
+}
+.pen-line { margin-top: 3px; font-size: .72rem; color: var(--ink-muted); text-align: center; white-space: nowrap; }
+.adm-rest { margin: -.4rem 0 .8rem; font-size: .82rem; color: var(--ink-muted); }
+.pen-inputs {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding-top: 6px; border-top: 1px dashed var(--line);
+}
+.pen-inputs small { font-size: .72rem; line-height: 1.2; color: var(--ink-muted); text-align: center; }
+.pen-inputs .score-input { width: 44px !important; font-size: .95rem; }
+
+/* --- ΝΟΚ ΑΟΥΤ: δημόσια προβολή --- */
+.ko-board {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(210px, 1fr));
+    gap: 14px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+.ko-col { display: flex; flex-direction: column; min-width: 0; }
+.ko-stage {
+    font-size: .95rem;
+    color: var(--primary-color);
+    margin: 0 0 8px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid var(--line);
+}
+.ko-final .ko-stage { border-bottom-color: var(--accent-color); }
+.ko-ties { flex: 1; display: flex; flex-direction: column; justify-content: space-around; gap: 10px; }
+.ko-tie {
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    background: var(--surface);
+    overflow: hidden;
+}
+.ko-tie.is-us { border-color: var(--accent-dark); box-shadow: inset 3px 0 0 var(--accent-dark); }
+.ko-team {
+    display: grid;
+    grid-template-columns: 1.4em 20px minmax(0, 1fr) 1.6em;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--ink);
+}
+.ko-team + .ko-team { border-top: 1px solid var(--line); }
+.ko-team.win { font-weight: 800; }
+.ko-team.out { color: var(--ink-muted); font-weight: 500; }
+.ko-team.mine .ko-name { color: var(--primary-color); }
+.ko-seed { font-size: .7rem; font-weight: 600; color: var(--ink-muted); text-align: right; font-variant-numeric: tabular-nums; }
+.ko-crest { display: flex; align-items: center; justify-content: center; }
+.ko-name { line-height: 1.25; overflow-wrap: anywhere; }
+.ko-sc { text-align: right; font-weight: 800; font-variant-numeric: tabular-nums; }
+.ko-foot {
+    padding: 3px 8px 4px;
+    font-size: .72rem;
+    color: var(--ink-muted);
+    background: var(--surface-alt);
+    border-top: 1px solid var(--line);
+}
+.ko-foot.is-post { color: #d32f2f; }
+.ko-wait {
+    display: flex; align-items: center; justify-content: center; min-height: 5rem;
+    margin: 0; padding: 1rem .5rem;
+    font-size: .82rem; color: var(--ink-muted); text-align: center;
+    border: 1px dashed var(--line);
+    border-radius: var(--r-sm);
+}
+.ko-final-wrap { display: flex; flex-direction: column; gap: 8px; }
+.ko-champ {
+    padding: 10px 8px;
+    border-radius: var(--r-sm);
+    background: var(--accent-color);
+    color: var(--primary-color);
+    text-align: center;
+    font-size: .85rem;
+    line-height: 1.35;
+}
+.ko-legend { margin-top: .9rem; font-size: .8rem; color: var(--ink-muted); }
+@media (max-width: 768px) {
+    /* Κινητό: μία στήλη, η πιο πρόσφατη φάση πρώτη, οι κενές κρυμμένες */
+    .ko-board { display: flex; flex-direction: column-reverse; gap: 18px; overflow: visible; }
+    .ko-col.ko-empty { display: none; }
+    .ko-ties { justify-content: flex-start; }
+    .ko-team { font-size: .88rem; padding: 8px 10px; }
+}
+@media (prefers-color-scheme: dark) {
+    .ko-team.mine .ko-name { color: #81c784; }
+    .ko-champ { color: #1a472a; }
+}
+
+/* --- ΝΟΚ ΑΟΥΤ: admin --- */
+.ko-adm-help { font-size: .8rem; color: var(--ink-muted); margin: 0 0 10px; }
+.ko-adm-stage { padding: 10px 0 12px; border-top: 1px dashed #bbb; }
+.ko-adm-head { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+.ko-adm-head span { font-size: .8rem; color: var(--ink-muted); }
+.ko-adm-note { font-size: .78rem; color: var(--ink-muted); margin: 0 0 8px; }
+.ko-adm-note.warn { color: #b26a00; }
+.ko-adm-row { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 6px; align-items: center; margin-bottom: 6px; }
+.ko-adm-row select { width: 100%; min-width: 0; font-size: .82rem; padding: 6px; }
+.ko-adm-cols { margin-bottom: 2px; font-size: .72rem; font-weight: 700; color: var(--ink-muted); }
+.ko-adm-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+
 /* Αγωνιστικές που ανοιγοκλείνουν (στο «Όλοι οι αγώνες») */
 details.round-section { margin-bottom: .6rem; }
 details.round-section > summary.round-header {
@@ -3625,12 +3735,18 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
 .gk-kit .jersey-team-name,
 .gk-kit .player-number{ color:var(--gk-num) !important; }
 
-/* Μικρό σήμα σε βαθμολογία / πρόγραμμα / αποτελέσματα */
+/* Μικρό σήμα σε βαθμολογία / πρόγραμμα / αποτελέσματα / νοκ άουτ.
+   Σκέτη ασπίδα, χωρίς κύκλο και περίγραμμα: ίδια λογική με την κάρτα του επόμενου αγώνα.
+   multiply = το λευκό φόντο των λογοτύπων χάνεται στο φωτεινό θέμα. */
 .crest-mini{
     width:20px;height:20px;flex:none;object-fit:contain;
-    background:#fff;border-radius:50%;padding:1px;
-    border:1px solid #d9d9d9;vertical-align:-5px}
-@media (prefers-color-scheme: dark){ .crest-mini{border-color:#4a4a4a} }
+    background:transparent;border:0;border-radius:0;padding:0;
+    mix-blend-mode:multiply;vertical-align:-5px}
+/* Σκούρο θέμα: ο λευκός κύκλος ΜΕΝΕΙ. Χωρίς αυτόν τα λογότυπα με λευκό φόντο
+   γίνονται άσπρα τετραγωνάκια και τα μαύρα χάνονται στο σκοτάδι. */
+@media (prefers-color-scheme: dark){
+    .crest-mini{mix-blend-mode:normal;background:#fff;border-radius:50%;padding:1px;border:1px solid #4a4a4a}
+}
 .team-left  .crest-mini{margin-left:7px}
 .team-right .crest-mini{margin-right:7px}
 .team-cell{display:inline-flex;align-items:center;gap:7px;min-width:0}
@@ -3899,6 +4015,7 @@ function showToast(message, type = 'success') {
     <div class="container">
         <div id="standings" class="page active">
             <div id="nextMatchContainer"></div>
+            <div id="knockoutContainer"></div>
             
             <div class="card">
                 <div class="card-header">
@@ -4335,6 +4452,14 @@ function showToast(message, type = 'success') {
                     </div>
                 </details>
 
+                <details class="adm-sec" data-sec="knockout">
+                    <summary><span class="adm-sec-title">🏆 Νοκ άουτ</span>
+                             <span class="adm-sec-sub">ζευγάρια 16, 8, 4 και τελικού</span></summary>
+                    <div class="adm-sec-body">
+                        <div id="koAdmin"></div>
+                    </div>
+                </details>
+
                 <details class="adm-sec" data-sec="tools">
                     <summary><span class="adm-sec-title">🔧 Εργαλεία Σεζόν</span>
                              <span class="adm-sec-sub">ομάδες, πρόγραμμα, έλεγχος</span></summary>
@@ -4601,7 +4726,63 @@ function showToast(message, type = 'success') {
         //  - Φόρμα αποτελεσμάτων: ο Όλυμπος πρώτος + μετρητής συμπληρωμένων.
         // ΑΝΟΙΧΤΟ: κουμπί «Μετάβαση σε νέα φάση» (χειμώνας) — πρέπει να κρατά
         // τους αγώνες της Α' Φάσης, γιατί από αυτούς μετριούνται τα γκολ των παιδιών.
+        //
+        // Κλήρωση 10/10/2026 (Κ15 LEAGUE 1):
+        //  - 59 ομάδες (όχι 58), 19 αγωνιστικές x 29 αγώνες, 1 ρεπό ανά αγωνιστική.
+        //  - Στην πράξη ΔΥΟ κλειστές ομάδες χωρίς κανέναν κοινό αγώνα:
+        //    19 ομάδες (μαζί ο Όλυμπος) παίζουν όλοι με όλους μία φορά = 18 αγώνες + 1 ρεπό,
+        //    40 ομάδες δίνουν 19 αγώνες μόνο μεταξύ τους. Η βαθμολογία μένει ΕΝΙΑΙΑ
+        //    (απόφαση διαχειριστή), οπότε οι 19 έχουν έναν αγώνα λιγότερο.
+        //  - Όλυμπος: ρεπό στην 16η, 8 εντός / 10 εκτός.
+        //  - Τα «(1)» της ΕΠΣΜ σβήστηκαν από τα ονόματα. Ο αναγνώστης επικόλλησης τα
+        //    αντιστοιχίζει μόνος του, οπότε το κείμενο της ΕΠΣΜ μπαίνει όπως είναι.
+        // Νοκ άουτ (θέσεις 1-16), Οκτ. 2026: βλ. KO_STAGES ακριβώς από κάτω.
         // =========================================================
+
+        // =========================================================
+        // ΝΟΚ ΑΟΥΤ — πώς είναι στημένο
+        // Οι αγώνες του νοκ άουτ ζουν ΜΕΣΑ στο data.fixtures, σαν «αγωνιστικές» με
+        // πεδίο stage και αριθμούς 101-104. Έτσι σκόρερ, clean sheets, επόμενος αγώνας,
+        // φόρμα αποτελεσμάτων και Ιστορικό δουλεύουν χωρίς διπλό κώδικα.
+        // ΔΕΝ μετράνε στη βαθμολογία: ό,τι υπολογίζει βαθμολογία περνά από leagueRounds().
+        // Πέναλτι: penHome / penAway στον αγώνα (null όταν δεν χρειάστηκαν).
+        // Ζευγάρια: τα 16 προτείνονται από τη βαθμολογία (1-16, 2-15 ...).
+        // 8, 4 και τελικός: τα γράφει ο διαχειριστής μετά την κλήρωση της ΕΠΣΜ.
+        // ΣΗΜΕΙΩΣΗ — ΜΠΟΡΕΙ ΝΑ ΑΛΛΑΞΕΙ: μονοί αγώνες, στην ισοπαλία πέναλτι (ΕΠΣΜ 1/10).
+        // Αν η ΕΠΣΜ τους κάνει διπλούς, θέλει δεύτερο σκέλος ανά ζευγάρι (δεν υπάρχει ακόμα).
+        // Μικρός τελικός: δεν υπάρχει. Αν τον κρατήσει η ΕΠΣΜ, μπαίνει ως 5η γραμμή εδώ.
+        // =========================================================
+        const KO_STAGES = [
+            { key: 'R16', round: 101, label: 'Φάση των 16',  ties: 8, at: 'στη Φάση των 16' },
+            { key: 'QF',  round: 102, label: 'Προημιτελικά', ties: 4, at: 'στα Προημιτελικά' },
+            { key: 'SF',  round: 103, label: 'Ημιτελικά',    ties: 2, at: 'στα Ημιτελικά' },
+            { key: 'F',   round: 104, label: 'Τελικός',      ties: 1, at: 'στον Τελικό' }
+        ];
+        function koStage(r)     { return r && r.stage ? (KO_STAGES.find(s => s.key === r.stage) || null) : null; }
+        function koRound(key)   { return ((data && data.fixtures) || []).find(r => r.stage === key) || null; }
+        function leagueRounds() { return ((data && data.fixtures) || []).filter(r => !r.stage); }
+        function roundLabel(r)  { const s = koStage(r); return s ? s.label : `Αγωνιστική ${r.round}`; }
+        function roundShort(r)  { const s = koStage(r); return s ? s.label : `Αγ.${r.round}`; }
+        // Ποιος προκρίθηκε: από το σκορ, αλλιώς από τα πέναλτι. null = δεν κρίθηκε ακόμα.
+        function koWinner(m) {
+            if (!m || m.isPostponed || m.homeScore === null || m.awayScore === null) return null;
+            if (m.homeScore !== m.awayScore) return m.homeScore > m.awayScore ? m.home : m.away;
+            if (m.penHome == null || m.penAway == null || m.penHome === m.penAway) return null;
+            return m.penHome > m.penAway ? m.home : m.away;
+        }
+        const upGR = v => String(v).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
+
+        // Ρεπό: ποιες ομάδες δεν παίζουν σε μια αγωνιστική (59 ομάδες = 1 ανά αγωνιστική)
+        function restingIn(r) {
+            if (!r || r.stage || !TEAMS.length) return [];
+            const playing = new Set();
+            (r.matches || []).forEach(m => { playing.add(m.home); playing.add(m.away); });
+            const rest = TEAMS.filter(t => !playing.has(t));
+            return rest.length <= 3 ? rest : [];   // πολλές «απούσες» = ελλιπές πρόγραμμα, όχι ρεπό
+        }
+        function roundHasResults(r) {
+            return (r.matches || []).some(m => m.isPostponed || (m.homeScore !== null && m.awayScore !== null));
+        }
 
         const MY_TEAM = SEASON_DEFAULTS.team;
         const ADMIN_PASSWORD = 'olympos';
@@ -5053,7 +5234,7 @@ function updateStorageMeter(usedMB) {
     // Αρχικοποίηση: ό,τι ομάδα υπάρχει στο TEAMS *ή* εμφανίζεται στα fixtures.
     // (ΠΡΙΝ: αν ένα όνομα δεν ήταν στον καρφωτό πίνακα -> undefined -> έσκαγε όλη η βαθμολογία.)
     const allTeams = new Set(TEAMS);
-    (data.fixtures || []).forEach(r => (r.matches || []).forEach(m => {
+    leagueRounds().forEach(r => (r.matches || []).forEach(m => {
         if (m.home) allTeams.add(m.home);
         if (m.away) allTeams.add(m.away);
     }));
@@ -5073,8 +5254,8 @@ function updateStorageMeter(usedMB) {
         };
     });
 
-    // Υπολογισμός
-    data.fixtures.forEach(round => {
+    // Υπολογισμός (μόνο Α' Φάση — το νοκ άουτ δεν δίνει βαθμούς)
+    leagueRounds().forEach(round => {
         round.matches.forEach(match => {
             // Υπολογίζουμε μόνο αν έχει σκορ ΚΑΙ δεν είναι αναβληθέν
             if (match.home && match.away && match.homeScore !== null && match.awayScore !== null && !match.isPostponed) {
@@ -5138,7 +5319,7 @@ function updateStorageMeter(usedMB) {
 // Μίνι-βαθμολογία μόνο ανάμεσα σε δύο ομάδες (για ισοβαθμία)
 function headToHead(teamA, teamB) {
     let pa = 0, pb = 0, ga = 0, gb = 0;
-    (data.fixtures || []).forEach(r => (r.matches || []).forEach(m => {
+    leagueRounds().forEach(r => (r.matches || []).forEach(m => {
         if (m.isPostponed || m.homeScore === null || m.awayScore === null) return;
         const pair = (m.home === teamA && m.away === teamB) || (m.home === teamB && m.away === teamA);
         if (!pair) return;
@@ -5265,6 +5446,7 @@ function displayStandings() {
         ? `. Πράσινη μπάρα: θέσεις 1–${Q}, συνεχίζουν για τον τίτλο. Θέσεις ${Q + 1}–${totalTeams}: αγώνες κατάταξης.` : '';
 
     renderRoundProgress();
+    renderKnockout();
 }
 
 // ===== Συμπαγής βαθμολογία (κινητό) =====
@@ -5290,7 +5472,7 @@ if (window.matchMedia) {
 // ===== «8η αγωνιστική: 27/29 αποτελέσματα» =====
 function roundProgressInfo() {
     const played = m => !m.isPostponed && m.homeScore !== null && m.awayScore !== null;
-    const withResults = (data.fixtures || []).filter(r => (r.matches || []).some(played));
+    const withResults = leagueRounds().filter(r => (r.matches || []).some(played));
     if (!withResults.length) return null;
     const r = withResults.reduce((a, b) => (b.round > a.round ? b : a));
     const ms = (r.matches || []).filter(m => m.home && m.away);
@@ -5331,13 +5513,13 @@ function matchViewToggleHTML() {
 function involvesUs(m) { return isMyTeam(m.home) || isMyTeam(m.away); }
 
 // Στο «Όλοι» οι αγωνιστικές ανοιγοκλείνουν· ανοιχτή μένει μόνο η τρέχουσα.
-function makeRoundSection(roundNum, collapsible, open, count) {
+function makeRoundSection(label, collapsible, open, count) {
     const section = document.createElement(collapsible ? 'details' : 'div');
     section.className = 'round-section';
     if (collapsible && open) section.open = true;
     const header = document.createElement(collapsible ? 'summary' : 'div');
     header.className = 'round-header';
-    header.textContent = `Αγωνιστική ${roundNum}`;
+    header.textContent = label;
     if (collapsible) {
         const c = document.createElement('span');
         c.className = 'round-count';
@@ -5358,9 +5540,12 @@ function displayResults() {
     reversedFixtures.forEach(round => {
         const roundMatches = round.matches.filter(m =>
             ((m.homeScore !== null && m.awayScore !== null) || m.isPostponed) && (all || involvesUs(m)));
+        // Ρεπό: εδώ, όταν η αγωνιστική έχει ήδη αποτελέσματα (αλλιώς στο Πρόγραμμα)
+        const rest = roundHasResults(round) ? restingIn(round) : [];
+        const showRest = all ? rest.length > 0 : rest.some(isMyTeam);
 
-        if (roundMatches.length > 0) {
-            const section = makeRoundSection(round.round, all, shown === 0, roundMatches.length);
+        if (roundMatches.length > 0 || showRest) {
+            const section = makeRoundSection(roundLabel(round), all, shown === 0, roundMatches.length);
             shown++;
 
             roundMatches.forEach(match => {
@@ -5374,7 +5559,9 @@ function displayResults() {
                 // ΑΛΛΑΓΗ ΕΔΩ: Γράφουμε "ΑΝΑΒΟΛΗ" αντί για "ΑΝΑΒΛΗΘΗΚΕ"
                 let centerContent = match.isPostponed ? 
                     `<span class="postponed-badge">ΑΝΑΒΟΛΗ</span>` : 
-                    `<div class="match-score-box">${match.homeScore} - ${match.awayScore}</div>`;
+                    `<div class="match-score-box">${match.homeScore} - ${match.awayScore}</div>` +
+                    (match.penHome != null && match.penAway != null
+                        ? `<div class="pen-line">πέναλτι ${match.penHome}-${match.penAway}</div>` : '');
 
                 let mainMatchHTML = `
                     <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; padding: 1rem;">
@@ -5419,6 +5606,7 @@ function displayResults() {
                 div.innerHTML = mainMatchHTML + statsHTML;
                 section.appendChild(div);
             });
+            if (showRest) section.appendChild(restRow(rest, all));
             container.appendChild(section);
         }
     });
@@ -5439,9 +5627,12 @@ function displayFixtures() {
         // Αγώνες χωρίς σκορ και χωρίς αναβολή
         const roundMatches = round.matches.filter(m =>
             m.homeScore === null && m.awayScore === null && !m.isPostponed && (all || involvesUs(m)));
+        // Ρεπό: εδώ, όσο η αγωνιστική δεν έχει κανένα αποτέλεσμα
+        const rest = roundHasResults(round) ? [] : restingIn(round);
+        const showRest = all ? (rest.length > 0 && roundMatches.length > 0) : rest.some(isMyTeam);
 
-        if (roundMatches.length > 0) {
-            const section = makeRoundSection(round.round, all, shown === 0, roundMatches.length);
+        if (roundMatches.length > 0 || showRest) {
+            const section = makeRoundSection(roundLabel(round), all, shown === 0, roundMatches.length);
             shown++;
 
             roundMatches.forEach(match => {
@@ -5462,6 +5653,7 @@ function displayFixtures() {
                 `;
                 section.appendChild(div);
             });
+            if (showRest) section.appendChild(restRow(rest, all));
 
             container.appendChild(section);
         }
@@ -5476,6 +5668,74 @@ function displayFixtures() {
                 : '<div class="empty-state"><p>📅 Δεν υπάρχει προγραμματισμένος αγώνας του Ολύμπου. Δες το «Όλοι οι αγώνες».</p></div>');
     }
 }
+// Γραμμή «ρεπό» μέσα σε μια αγωνιστική
+function restRow(rest, all) {
+    const d = document.createElement('div');
+    d.className = 'rest-row';
+    d.textContent = all
+        ? `Ρεπό: ${rest.join(', ')}`
+        : 'Ρεπό για τον Όλυμπο σε αυτή την αγωνιστική.';
+    return d;
+}
+
+// ===== Νοκ άουτ: δημόσια προβολή, πάνω από τη βαθμολογία =====
+// Εμφανίζεται μόνο όταν υπάρχει έστω μία φάση. Στήλες 16 → 8 → 4 → Τελικός·
+// στο κινητό η πιο πρόσφατη φάση πάνω πάνω και οι κενές κρύβονται.
+function renderKnockout() {
+    const box = document.getElementById('knockoutContainer');
+    if (!box || !data) return;
+    const stages = KO_STAGES.map(s => ({ s, r: koRound(s.key) }));
+    if (!stages.some(x => x.r && x.r.matches && x.r.matches.length)) { box.innerHTML = ''; return; }
+
+    const pos = {};
+    calculateStandings().forEach((t, i) => { pos[t.team] = i + 1; });
+
+    const side = (team, sc, w) => `
+        <div class="ko-team${w ? (w === team ? ' win' : ' out') : ''}${isMyTeam(team) ? ' mine' : ''}">
+            <span class="ko-seed">${pos[team] || ''}</span>
+            <span class="ko-crest">${crestMini(team)}</span>
+            <span class="ko-name" title="${esc(team)}">${esc(team)}</span>
+            <span class="ko-sc">${sc}</span>
+        </div>`;
+
+    const tie = m => {
+        const w = koWinner(m);
+        const played = !m.isPostponed && m.homeScore !== null && m.awayScore !== null;
+        let foot = '';
+        if (m.isPostponed) foot = '<div class="ko-foot is-post">Αναβολή</div>';
+        else if (played && m.homeScore === m.awayScore)
+            foot = (m.penHome != null && m.penAway != null)
+                ? `<div class="ko-foot">Πέναλτι ${m.penHome}-${m.penAway}</div>`
+                : '<div class="ko-foot">Ισοπαλία, πέναλτι εκκρεμεί</div>';
+        return `<div class="ko-tie${involvesUs(m) ? ' is-us' : ''}">
+            ${side(m.home, played ? m.homeScore : '', w)}
+            ${side(m.away, played ? m.awayScore : '', w)}
+            ${foot}
+        </div>`;
+    };
+
+    const waiting = { R16: 'Μετά την Α΄ Φάση', QF: 'Μετά την κλήρωση', SF: 'Μετά την κλήρωση', F: 'Μετά τους ημιτελικούς' };
+    const cols = stages.map(({ s, r }) => {
+        const ms = (r && r.matches) || [];
+        const champ = s.key === 'F' && ms.length === 1 ? koWinner(ms[0]) : null;
+        return `<section class="ko-col${ms.length ? '' : ' ko-empty'}${s.key === 'F' ? ' ko-final' : ''}">
+            <h3 class="ko-stage">${esc(s.label)}</h3>
+            <div class="ko-ties">
+                ${ms.length ? ms.map((m, i) => i === 0 && champ
+                    ? `<div class="ko-final-wrap">${tie(m)}<div class="ko-champ">🏆 Πρωταθλητής<br><strong>${esc(champ)}</strong></div></div>`
+                    : tie(m)).join('') : `<p class="ko-wait">${waiting[s.key]}</p>`}
+            </div>
+        </section>`;
+    }).join('');
+
+    box.innerHTML = `
+        <div class="card ko-card">
+            <div class="card-header"><h2>🏆 Νοκ άουτ για τον τίτλο</h2></div>
+            <div class="ko-board">${cols}</div>
+            <div class="ko-legend">Ο μικρός αριθμός μπροστά από κάθε ομάδα είναι η θέση της στη βαθμολογία της Α΄ Φάσης.</div>
+        </div>`;
+}
+
 // ΝΕΑ ΣΥΝΑΡΤΗΣΗ: Βρίσκει αναλυτικά τα στατιστικά ενός παίκτη
 // ΝΕΑ ΣΥΝΑΡΤΗΣΗ: Βρίσκει αναλυτικά τα στατιστικά ενός παίκτη (Πιο Έξυπνη)
 function getPlayerDetailedStats(playerName) {
@@ -5494,7 +5754,7 @@ function getPlayerDetailedStats(playerName) {
 
             const opponent = isMyTeam(match.home) ? match.away : match.home;
             const score = `${match.homeScore}-${match.awayScore}`;
-            const info = `vs ${opponent} (${score})`;
+            const info = `vs ${opponent} (${score})${round.stage ? ', ' + roundLabel(round) : ''}`;
 
             // 1. Έλεγχος για Γκολ (Smart Check)
             if (match.scorers && Array.isArray(match.scorers)) {
@@ -6578,6 +6838,8 @@ if (data.specialMatch && data.specialMatch.home) {
         );
         if (m) { 
             nextMatch = m; 
+            const st = koStage(round);
+            if (st) matchType = upGR(st.label);   // π.χ. «ΦΑΣΗ ΤΩΝ 16», «ΤΕΛΙΚΟΣ»
             break; 
         }
     }
@@ -7249,7 +7511,7 @@ async function loadHistorySeason() {
 function computeArchiveTable(d) {
     const st = {};
     const ensure = t => (st[t] = st[t] || { team:t, played:0, won:0, drawn:0, lost:0, gf:0, ga:0, points:0 });
-    (d.fixtures || []).forEach(r => (r.matches || []).forEach(m => {
+    (d.fixtures || []).filter(r => !r.stage).forEach(r => (r.matches || []).forEach(m => {
         if (m.isPostponed || m.homeScore === null || m.awayScore === null) return;
         if (!m.home || !m.away) return;
         const h = ensure(m.home), a = ensure(m.away);
@@ -7279,6 +7541,19 @@ function renderHistorySeason(d) {
     const medal = p => p === 1 ? '🥇' : p === 2 ? '🥈' : p === 3 ? '🥉' : '';
     const me = table[myPos - 1];
 
+    // Ως πού έφτασε ο Όλυμπος στο νοκ άουτ (αν πήγε)
+    let koLine = '';
+    let lastR = null, lastM = null;
+    (d.fixtures || []).filter(r => r.stage).forEach(r => (r.matches || []).forEach(m => {
+        if (isMyTeam(m.home) || isMyTeam(m.away)) { lastR = r; lastM = m; }
+    }));
+    if (lastR) {
+        const st = koStage(lastR), w = koWinner(lastM);
+        if (st && st.key === 'F' && w) koLine = isMyTeam(w) ? '🏆 Πρωταθλητής' : '🥈 Φιναλίστ';
+        else if (st && w && !isMyTeam(w)) koLine = `Νοκ άουτ: αποκλεισμός ${st.at}`;
+        else if (st) koLine = `Νοκ άουτ: ${st.label}`;
+    }
+
     let html = `
       <div class="hist-hero">
         <div class="hist-hero-title">${esc(d.category || '')} · ${esc(d.season || '')}</div>
@@ -7287,6 +7562,7 @@ function renderHistorySeason(d) {
                 <div class="hist-hero-line">
                   ${me.played} αγώνες · ${me.won}Ν ${me.drawn}Ι ${me.lost}Η · ${me.gf}-${me.ga} τέρματα
                 </div>` : ''}
+        ${koLine ? `<div class="hist-hero-line"><strong>${esc(koLine)}</strong></div>` : ''}
       </div>`;
 
     html += `<h3 class="hist-h3">📊 Τελική Βαθμολογία</h3>
@@ -7348,7 +7624,7 @@ function findDataIssues() {
     const names = new Set((data.roster || []).map(p => p.name));
 
     (data.fixtures || []).forEach(r => (r.matches || []).forEach((m, i) => {
-        const label = `Αγ.${r.round}: ${m.home} - ${m.away}`;
+        const label = `${roundShort(r)}: ${m.home} - ${m.away}`;
 
         // 1. Μαρκαρισμένο ως αναβληθέν αλλά έχει σκορ ή σκόρερ
         if (m.isPostponed && (m.homeScore !== null || (m.scorers || []).length)) {
@@ -7374,6 +7650,11 @@ function findDataIssues() {
             if (conceded > 0) issues.push({ type: 'cs', round: r.round, index: i, label,
                 text: `${label} — clean sheet ενώ δέχτηκε ${conceded} γκολ.` });
         }
+        // 6. Νοκ άουτ: ισοπαλία χωρίς πέναλτι (ή με ίσα) — δεν φαίνεται ποιος προκρίθηκε
+        if (r.stage && !m.isPostponed && m.homeScore !== null && m.homeScore === m.awayScore && !koWinner(m)) {
+            issues.push({ type: 'pens', round: r.round, index: i, label,
+                text: `${label} — ισοπαλία χωρίς πέναλτι: δεν φαίνεται ποιος προκρίθηκε.` });
+        }
     }));
 
     // 5. Ομάδα δύο φορές στην ίδια αγωνιστική
@@ -7381,7 +7662,7 @@ function findDataIssues() {
         const c = {};
         (r.matches || []).forEach(m => { c[m.home] = (c[m.home]||0)+1; c[m.away] = (c[m.away]||0)+1; });
         Object.entries(c).filter(([, v]) => v > 1).forEach(([t]) =>
-            issues.push({ type: 'clash', round: r.round, text: `Αγ.${r.round}: η ${t} παίζει ${c[t]} φορές.` }));
+            issues.push({ type: 'clash', round: r.round, text: `${roundShort(r)}: η ${t} παίζει ${c[t]} φορές.` }));
     });
 
     return issues;
@@ -7562,6 +7843,10 @@ function mergeFixtures(target, incoming) {
         homeScore: m.homeScore, awayScore: m.awayScore, isPostponed: !!m.isPostponed });
 
     incoming.forEach(pr => {
+        if (target.some(r => r.round === pr.round && r.stage)) {
+            rep.conflicts.push(`Αγ.${pr.round}: ο αριθμός ανήκει στο νοκ άουτ, δεν μπήκε τίποτα.`);
+            return;
+        }
         const er = target.find(r => r.round === pr.round);
         if (!er) {
             target.push({ round: pr.round, matches: pr.matches.map(fresh) });
@@ -7637,7 +7922,7 @@ function previewPastedFixtures() {
     // Μετά τη συγχώνευση: ζευγάρια που συναντιούνται >1 φορά, ομάδες που λείπουν
     const pairCount = new Map();
     const seen = new Set();
-    dry.forEach(r => (r.matches || []).forEach(m => {
+    dry.filter(r => !r.stage).forEach(r => (r.matches || []).forEach(m => {
         seen.add(m.home); seen.add(m.away);
         const k = [m.home, m.away].sort((x, y) => x.localeCompare(y, 'el')).join(' & ');
         pairCount.set(k, (pairCount.get(k) || 0) + 1);
@@ -7770,9 +8055,158 @@ function generateFixtures() {
     showToast(`Δημιουργήθηκαν ${fixtures.length} αγωνιστικές.`);
 }
 
+// ============ ΝΟΚ ΑΟΥΤ — ADMIN ============
+// Ποιες ομάδες μπαίνουν σε μια φάση: στα 16 όλη η βαθμολογία (για ασυνήθιστες
+// αποφάσεις της ΕΠΣΜ), μετά μόνο όσοι προκρίθηκαν από την προηγούμενη φάση.
+// Ταξινόμηση πάντα κατά θέση στη βαθμολογία, που φαίνεται μπροστά από το όνομα.
+function koEligible(stage) {
+    const table = calculateStandings();
+    const pos = {};
+    table.forEach((t, i) => { pos[t.team] = i + 1; });
+    const idx = KO_STAGES.findIndex(s => s.key === stage.key);
+    let list;
+    if (idx === 0) list = table.map(t => t.team);
+    else {
+        const prev = koRound(KO_STAGES[idx - 1].key);
+        list = prev ? (prev.matches || []).map(koWinner).filter(Boolean) : [];
+    }
+    const cur = koRound(stage.key);   // ό,τι έχει ήδη μπει, μένει διαθέσιμο
+    if (cur) (cur.matches || []).forEach(m => [m.home, m.away].forEach(t => { if (t && !list.includes(t)) list.push(t); }));
+    return list.sort((a, b) => (pos[a] || 999) - (pos[b] || 999)).map(t => ({ team: t, pos: pos[t] }));
+}
+
+function renderKoAdmin() {
+    const box = document.getElementById('koAdmin');
+    if (!box || !data) return;
+
+    const pending = leagueRounds().reduce((n, r) => n +
+        (r.matches || []).filter(m => m.homeScore === null || m.awayScore === null).length, 0);
+    const opt = (opts, sel) => '<option value="">—</option>' + opts.map(o =>
+        `<option value="${esc(o.team)}"${o.team === sel ? ' selected' : ''}>${o.pos ? o.pos + '. ' : ''}${esc(o.team)}</option>`).join('');
+
+    let html = `<p class="ko-adm-help">
+        Τα <strong>16</strong> προτείνονται από τη βαθμολογία (1ος-16ος, 2ος-15ος κ.ο.κ.).
+        Για <strong>8, 4 και τελικό</strong> διαλέγεις εσύ τα ζευγάρια μετά την κλήρωση, ανάμεσα σε όσους προκρίθηκαν.
+        Σκορ, πέναλτι και σκόρερ περνιούνται στα <strong>Αποτελέσματα</strong>, όπως σε κάθε αγωνιστική.
+        Ο αριθμός μπροστά από την ομάδα είναι η θέση της στη βαθμολογία.</p>`;
+
+    KO_STAGES.forEach((s, si) => {
+        const r = koRound(s.key);
+        const prevStage = si ? KO_STAGES[si - 1] : null;
+        const prevRound = prevStage ? koRound(prevStage.key) : null;
+        const decided = r ? (r.matches || []).filter(koWinner).length : 0;
+        const status = r ? `${r.matches.length}/${s.ties} ζευγάρια · ${decided} κρίθηκαν` : 'δεν έχει οριστεί';
+
+        html += `<div class="ko-adm-stage">
+            <div class="ko-adm-head"><strong>${esc(s.label)}</strong><span>${status}</span></div>`;
+
+        if (prevStage && !prevRound) {
+            html += `<div class="ko-adm-note">Πρώτα ορίζονται τα ζευγάρια ${esc(prevStage.at)}.</div></div>`;
+            return;
+        }
+        const opts = koEligible(s);
+        if (si === 0 && pending) html += `<div class="ko-adm-note warn">Η Α΄ Φάση δεν έχει τελειώσει: λείπουν ${pending} αποτελέσματα, άρα η σειρά μπορεί ακόμα να αλλάξει.</div>`;
+        if (si > 0 && opts.length < s.ties * 2) html += `<div class="ko-adm-note">Έχουν προκριθεί ${opts.length} από ${s.ties * 2}. Οι υπόλοιποι εμφανίζονται μόλις περαστούν τα αποτελέσματα (και τα πέναλτι) ${esc(prevStage.at)}.</div>`;
+
+        html += `<div class="ko-adm-row ko-adm-cols"><span>Γηπεδούχος</span><span></span><span>Φιλοξενούμενη</span></div>`;
+        for (let i = 0; i < s.ties; i++) {
+            const m = r && r.matches[i];
+            html += `<div class="ko-adm-row">
+                <select id="ko-${s.key}-${i}-h" aria-label="${esc(s.label)}, ζευγάρι ${i + 1}, γηπεδούχος">${opt(opts, m && m.home)}</select>
+                <span>-</span>
+                <select id="ko-${s.key}-${i}-a" aria-label="${esc(s.label)}, ζευγάρι ${i + 1}, φιλοξενούμενη">${opt(opts, m && m.away)}</select>
+            </div>`;
+        }
+        html += `<div class="ko-adm-btns">
+            ${si === 0 ? `<button class="btn btn-secondary btn-small" onclick="koFillFromStandings()">↻ Συμπλήρωση από τη βαθμολογία</button>` : ''}
+            <button class="btn btn-success btn-small" onclick="koSaveStage('${s.key}')">💾 Αποθήκευση ζευγαριών</button>
+            ${r ? `<button class="btn btn-danger btn-small" onclick="koDeleteStage('${s.key}')">🗑️ Διαγραφή φάσης</button>` : ''}
+        </div></div>`;
+    });
+    box.innerHTML = html;
+}
+
+// 1ος-16ος, 2ος-15ος ... 8ος-9ος· γηπεδούχος η καλύτερη. Δεν αποθηκεύει: απλώς γεμίζει.
+function koFillFromStandings() {
+    const t = calculateStandings();
+    if (t.length < 16) { showToast('Η βαθμολογία έχει λιγότερες από 16 ομάδες.', 'error'); return; }
+    for (let i = 0; i < 8; i++) {
+        const h = document.getElementById(`ko-R16-${i}-h`), a = document.getElementById(`ko-R16-${i}-a`);
+        if (h) h.value = t[i].team;
+        if (a) a.value = t[15 - i].team;
+    }
+    showToast('Συμπληρώθηκε 1-16, 2-15 κ.ο.κ. Έλεγξε και πάτα Αποθήκευση.');
+}
+
+function koSaveStage(key) {
+    const s = KO_STAGES.find(x => x.key === key);
+    if (!s) return;
+    const pairs = [], used = new Set(), errs = [];
+    for (let i = 0; i < s.ties; i++) {
+        const h = (document.getElementById(`ko-${key}-${i}-h`) || {}).value || '';
+        const a = (document.getElementById(`ko-${key}-${i}-a`) || {}).value || '';
+        if (!h && !a) continue;
+        if (!h || !a) { errs.push(`Ζευγάρι ${i + 1}: λείπει η μία ομάδα.`); continue; }
+        if (h === a)  { errs.push(`Ζευγάρι ${i + 1}: ίδια ομάδα και στις δύο θέσεις.`); continue; }
+        [h, a].forEach(t => { if (used.has(t)) errs.push(`Η ${t} μπήκε σε δύο ζευγάρια.`); used.add(t); });
+        pairs.push({ h, a });
+    }
+    if (errs.length) { alert('Δεν αποθηκεύτηκε:\n\n' + errs.join('\n')); return; }
+    if (!pairs.length) { showToast('Δεν συμπλήρωσες κανένα ζευγάρι.', 'error'); return; }
+
+    const hasData = m => m.homeScore !== null || m.awayScore !== null || m.isPostponed ||
+        (m.scorers || []).length || (m.cleanSheetHolders || []).length;
+    let r = koRound(key);
+    const old = r ? (r.matches || []) : [];
+    // Ίδιο ζευγάρι (ίδια γηπεδούχος/φιλοξενούμενη) = ίδιος αγώνας: κρατά σκορ, πέναλτι, σκόρερ
+    const next = pairs.map(p => old.find(m => m.home === p.h && m.away === p.a) ||
+        { home: p.h, away: p.a, homeScore: null, awayScore: null, isPostponed: false, penHome: null, penAway: null });
+    const lost = old.filter(m => !next.includes(m) && hasData(m));
+    if (lost.length && !confirm('Θα χαθούν σκορ ή σκόρερ από:\n\n' +
+        lost.map(m => `${m.home} - ${m.away}`).join('\n') + '\n\nΣυνέχεια;')) return;
+
+    if (!r) {
+        r = { round: s.round, stage: s.key, matches: [] };
+        data.fixtures.push(r);
+        data.fixtures.sort((a, b) => a.round - b.round);
+    }
+    r.matches = next;
+
+    koAfterChange();
+    showToast(`${s.label}: ${next.length}/${s.ties} ζευγάρια αποθηκεύτηκαν. Μην ξεχάσεις Export!`);
+}
+
+function koDeleteStage(key) {
+    const idx = KO_STAGES.findIndex(x => x.key === key);
+    const later = KO_STAGES.slice(idx + 1).find(x => koRound(x.key));
+    if (later) { showToast(`Διάγραψε πρώτα: ${later.label}.`, 'error'); return; }
+    const r = koRound(key);
+    if (!r) return;
+    const withData = (r.matches || []).filter(m => m.homeScore !== null || (m.scorers || []).length).length;
+    if (!confirm(`Διαγραφή: ${KO_STAGES[idx].label};` +
+        (withData ? `\n\nΠΡΟΣΟΧΗ: ${withData} αγώνες έχουν σκορ ή σκόρερ και θα χαθούν.` : ''))) return;
+    data.fixtures.splice(data.fixtures.indexOf(r), 1);
+    koAfterChange();
+    showToast(`${KO_STAGES[idx].label}: διαγράφηκε.`);
+}
+
+function koAfterChange() {
+    recomputePlayerStats();
+    saveData(data);
+    loadRoundSelector();
+    renderKoAdmin();
+    displayStandings();
+    displayResults();
+    displayFixtures();
+    displayTopScorers();
+    displayRoster();
+    displayNextMatch();
+}
+
 // Βοηθητική συνάρτηση για να γεμίσουν τα κουτάκια
 function refreshAdminForms() {
     loadRoundSelector();
+    renderKoAdmin();
     updateRosterList();
     updateNewsList();
     updateTrainingAdmin();
@@ -7819,14 +8253,23 @@ function refreshAdminForms() {
 }
  function loadRoundSelector() {
             const select = document.getElementById('roundSelect');
+            const prev = select.value;
             select.innerHTML = '<option value="">-- Επέλεξε Αγωνιστική --</option>';
             
             data.fixtures.forEach(round => {
                 const option = document.createElement('option');
                 option.value = round.round;
-                option.textContent = `Αγωνιστική ${round.round}`;
+                option.textContent = roundLabel(round);
                 select.appendChild(option);
             });
+            // Κράτα την επιλογή αν υπάρχει ακόμα· αλλιώς άδειασε τη φόρμα για να μη μείνει παλιά
+            const inputs = document.getElementById('matchInputs');
+            if (prev && [...select.options].some(o => o.value === prev)) {
+                select.value = prev;
+                if (inputs && inputs.innerHTML) loadMatchesForRound();
+            } else if (inputs) {
+                inputs.innerHTML = '';
+            }
         }
 
   function loadMatchesForRound() {
@@ -7840,6 +8283,10 @@ function refreshAdminForms() {
     const container = document.getElementById('matchInputs');
     container.innerHTML = '<h4 style="margin-bottom: 1rem;">Αποτελέσματα & Στατιστικά:</h4>' +
                           '<div id="roundCounter" class="round-counter" aria-live="polite"></div>';
+    const restHere = restingIn(round);
+    if (restHere.length) container.insertAdjacentHTML('beforeend',
+        `<div class="adm-rest">Ρεπό: ${restHere.map(esc).join(', ')}</div>`);
+    const isKO = !!round.stage;
 
     // Ο Όλυμπος πρώτος, μετά οι υπόλοιποι. Τα index μένουν τα αρχικά:
     // από αυτά δουλεύουν η αποθήκευση και οι σκόρερ.
@@ -7937,6 +8384,15 @@ function refreshAdminForms() {
                         <input type="number" class="score-input" id="away-${roundNum}-${index}" value="${match.awayScore !== null ? match.awayScore : ''}" min="0" placeholder="0" style="${bgStyle}">
                     </div>
                     <label class="postpone-label"><input type="checkbox" id="postponed-${roundNum}-${index}" ${isPostponed}> Αναβλήθηκε</label>
+                    ${isKO ? `
+                    <div class="pen-inputs">
+                        <small>Πέναλτι, αν έληξε ισόπαλο</small>
+                        <div class="score-inputs">
+                            <input type="number" class="score-input" id="penh-${roundNum}-${index}" value="${match.penHome ?? ''}" min="0" placeholder="–" aria-label="Πέναλτι γηπεδούχου">
+                            <span>-</span>
+                            <input type="number" class="score-input" id="pena-${roundNum}-${index}" value="${match.penAway ?? ''}" min="0" placeholder="–" aria-label="Πέναλτι φιλοξενούμενης">
+                        </div>
+                    </div>` : ''}
                 </div>
                 <div class="adm-team adm-away${isMyTeam(awayTeam) ? ' is-us' : ''}">${esc(awayTeam)}</div>
             </div>
@@ -7956,7 +8412,7 @@ function updateRoundCounter(roundNum) {
     const box = document.getElementById('roundCounter');
     const round = (data.fixtures || []).find(r => r.round === roundNum);
     if (!box || !round) return;
-    let done = 0, post = 0, half = 0, total = 0;
+    let done = 0, post = 0, half = 0, total = 0, pens = 0;
     round.matches.forEach((m, i) => {
         if (!m.home || !m.away) return;
         total++;
@@ -7966,7 +8422,15 @@ function updateRoundCounter(roundNum) {
         if (!h || !a) return;
         let state = 'empty';
         if (pp && pp.checked) { post++; state = 'post'; }
-        else if (h.value !== '' && a.value !== '') { done++; state = 'done'; }
+        else if (h.value !== '' && a.value !== '') {
+            // Νοκ άουτ: ισοπαλία χωρίς πέναλτι = δεν κρίθηκε ακόμα
+            const ph = document.getElementById(`penh-${roundNum}-${i}`);
+            const pa = document.getElementById(`pena-${roundNum}-${i}`);
+            if (ph && pa && Number(h.value) === Number(a.value) &&
+                (ph.value === '' || pa.value === '' || Number(ph.value) === Number(pa.value))) {
+                pens++; state = 'half';
+            } else { done++; state = 'done'; }
+        }
         else if (h.value !== '' || a.value !== '') { half++; state = 'half'; }
         const row = h.closest('.match-input-row');
         if (row) row.dataset.state = state;
@@ -7975,7 +8439,8 @@ function updateRoundCounter(roundNum) {
     box.classList.toggle('complete', left === 0);
     box.innerHTML = `<strong>${done}/${total}</strong> συμπληρωμένα` +
         (post ? `, ${post} ${post === 1 ? 'αναβολή' : 'αναβολές'}` : '') +
-        (left ? `. Λείπουν ${left}${half ? ` (${half} με μισό σκορ)` : ''}.` : '. Όλα έτοιμα ✅ Πάτα Αποθήκευση.');
+        (left ? `. Λείπουν ${left}${half ? ` (${half} με μισό σκορ)` : ''}${pens ? ` (${pens} ${pens === 1 ? 'ισοπαλία' : 'ισοπαλίες'} χωρίς πέναλτι)` : ''}.`
+              : '. Όλα έτοιμα ✅ Πάτα Αποθήκευση.');
 }
 // Βοηθητικές Συναρτήσεις (ΠΡΟΣΘΕΣΕ ΤΕΣ ΚΑΤΩ ΑΠΟ ΤΗΝ loadMatchesForRound)
 function toggleScorerPanel(index) {
@@ -8014,6 +8479,7 @@ function saveResults() {
             match.isPostponed = true;
             match.homeScore = null;
             match.awayScore = null;
+            if (round.stage) { match.penHome = null; match.penAway = null; }
             // Καθαρίζουμε και τα inputs οπτικά
             homeInput.value = '';
             awayInput.value = '';
@@ -8025,6 +8491,15 @@ function saveResults() {
             
             match.homeScore = homeScore;
             match.awayScore = awayScore;
+
+            // Νοκ άουτ: πέναλτι μόνο όταν το σκορ είναι ισόπαλο
+            if (round.stage) {
+                const ph = document.getElementById(`penh-${roundNum}-${index}`);
+                const pa = document.getElementById(`pena-${roundNum}-${index}`);
+                const draw = homeScore !== null && homeScore === awayScore;
+                match.penHome = draw && ph && ph.value !== '' ? parseInt(ph.value) : null;
+                match.penAway = draw && pa && pa.value !== '' ? parseInt(pa.value) : null;
+            }
         }
     });
 
@@ -8037,6 +8512,7 @@ function saveResults() {
     displayTopScorers();
     displayRoster();
     displayNextMatch();
+    renderKoAdmin();
 
     showToast('Οι αλλαγές αποθηκεύτηκαν επιτυχώς!');
 }
