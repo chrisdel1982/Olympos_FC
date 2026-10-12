@@ -4026,6 +4026,48 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
 /* === ΤΙΤΛΟΙ ΚΑΡΤΩΝ ΣΤΟ ΚΙΝΗΤΟ — ενιαία εμφάνιση σε όλες τις σελίδες ===
    Βαθμολογία/Αποτελέσματα/Πρόγραμμα: η γραμμή ήταν κολλημένη στα γράμματα (padding-bottom 0).
    Ρόστερ/Νέα/Προπονήσεις/Ιστορικό: η γραμμή σταματούσε πιο μέσα από την άκρη.          */
+
+/* === ΡΟΣΤΕΡ: τίτλοι θέσεων ===========================================
+   Ίδια οικογένεια με τους τίτλους καρτών, εικονίδιο αντί για emoji,
+   πλήθος παικτών δίπλα. Στο σκούρο θέμα ήταν σκούρο πράσινο σε σκούρο
+   φόντο και σχεδόν δεν διαβαζόταν. Η λεπτή γραμμή αφήνει το χρυσό
+   για τον τίτλο της κάρτας. */
+.roster-category-title {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    font-family: 'Commissioner', 'Inter', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -.005em;
+    text-transform: none;
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: .5rem;
+}
+#rosterContainer > .roster-category-title:first-child { margin-top: .25rem; }
+.roster-category-title > .fa-solid {
+    width: 1.73rem;            /* το κείμενο ξεκινά στο ίδιο σημείο με τον τίτλο της κάρτας */
+    text-align: center;
+    font-size: .85em;
+    color: var(--accent-dark);
+    flex-shrink: 0;
+}
+.roster-category-title .rc-count {
+    font-size: .85rem;
+    font-weight: 700;
+    color: var(--ink-muted);
+    font-variant-numeric: tabular-nums;
+}
+@media (max-width: 768px) {
+    .roster-category-title > .fa-solid { width: 1.45rem; }
+}
+@media (prefers-color-scheme: dark) {
+    .roster-category-title { color: #ffffff; }
+    .roster-category-title > .fa-solid { color: var(--accent-color); }
+}
+
 @media (max-width: 768px) {
     #standings .card-header,
     #results .card-header,
@@ -5933,12 +5975,13 @@ function displayRoster() {
 
     const currentYear = new Date().getFullYear(); 
     const categories = [
-        { title: 'ΤΕΡΜΑΤΟΦΥΛΑΚΕΣ', keywords: ['(gk)'], icon: '🧤' },
-        { title: 'ΑΜΥΝΤΙΚΟΙ', keywords: ['(cb)', '(lb)', '(rb)', '(sw)', '(lwb)', '(rwb)', '(wb)'], icon: '🛡️' },
-        { title: 'ΜΕΣΟΙ', keywords: ['(cm)', '(dm)', '(am)', '(lm)', '(rm)'], icon: '⚙️' },
-        { title: 'ΕΠΙΘΕΤΙΚΟΙ', keywords: ['(cf)', '(ss)', '(lw)', '(rw)', '(st)'], icon: '⚡' },
-        { title: 'TECHNICAL STAFF', keywords: ['προπονητής', 'coach'], icon: '👨‍🏫' },
-        { title: 'ΛΟΙΠΟΙ', keywords: ['*'], icon: '👤' }   // δίχτυ ασφαλείας: κανείς δεν χάνεται
+        // Τα εικονίδια κρατούν το νόημα των παλιών emoji (γάντι, ασπίδα, γρανάζι, κεραυνός…)
+        { title: 'Τερματοφύλακες',    keywords: ['(gk)'], icon: 'fa-hand' },
+        { title: 'Αμυντικοί',         keywords: ['(cb)', '(lb)', '(rb)', '(sw)', '(lwb)', '(rwb)', '(wb)'], icon: 'fa-shield-halved' },
+        { title: 'Μέσοι',             keywords: ['(cm)', '(dm)', '(am)', '(lm)', '(rm)'], icon: 'fa-gear' },
+        { title: 'Επιθετικοί',        keywords: ['(cf)', '(ss)', '(lw)', '(rw)', '(st)'], icon: 'fa-bolt' },
+        { title: 'Τεχνικό επιτελείο', keywords: ['προπονητής', 'coach'], icon: 'fa-chalkboard-user', staff: true },
+        { title: 'Λοιποί',            keywords: ['*'], icon: 'fa-user' }   // δίχτυ ασφαλείας: κανείς δεν χάνεται
     ];
 
     let availablePlayers = [...data.roster];
@@ -5954,7 +5997,8 @@ function displayRoster() {
         if (groupPlayers.length > 0) {
             const titleDiv = document.createElement('div');
             titleDiv.className = 'roster-category-title';
-            titleDiv.innerHTML = `${category.icon} ${category.title}`;
+            titleDiv.innerHTML = `<i class="fa-solid ${category.icon}" aria-hidden="true"></i>`
+                               + `<span>${category.title}</span><span class="rc-count">${groupPlayers.length}</span>`;
             container.appendChild(titleDiv);
 
             const gridDiv = document.createElement('div');
@@ -5965,7 +6009,7 @@ function displayRoster() {
                 const stats = getPlayerDetailedStats(player.name);
                 // ΠΡΙΝ: player.position χωρίς guard -> παίκτης χωρίς θέση έσκαγε ΟΛΟ το ρόστερ.
                 const posText = player.position || '';
-                const isCoach = category.title === 'TECHNICAL STAFF';
+                const isCoach = !!category.staff;   // πριν: σύγκριση με τον τίτλο 'TECHNICAL STAFF'
 
                 // Γήπεδο με τη θέση. Ο προπονητής δεν παίρνει γήπεδο.
                 const posCodes = isCoach ? [] : positionCodes(posText);
