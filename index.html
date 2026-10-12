@@ -37,7 +37,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="shortcut icon" href="favicon.ico">
     
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&family=Inter:wght@400;600;700;900&family=Saira+Stencil+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&family=Inter:wght@400;600;700;900&family=Saira+Stencil+One&family=Commissioner:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <!-- Firebase SDK -->
@@ -279,6 +279,65 @@ h1, h2, h3, .card-header h2, nav {
             color: var(--primary-color);
             margin: 0;
         }
+
+/* === ΤΙΤΛΟΙ ΚΑΡΤΩΝ — εκδοχή «Α · Καθαρό» ===========================
+   Commissioner αντί για Roboto Condensed, εικονίδιο Font Awesome αντί
+   για emoji, και κατηγορία/όμιλος σε ταμπελάκια (μόνο στη Βαθμολογία).
+   Η χρυσή γραμμή από κάτω μένει όπως ήταν. */
+.card-header { padding-bottom: .7rem; }
+.card .card-header h2 {
+    font-family: 'Commissioner', 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 1.75rem;
+    line-height: 1.15;
+    letter-spacing: -.01em;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .45rem .6rem;
+}
+.card-header .h-ico {
+    font-size: .74em;
+    width: 1.3em;              /* σταθερό πλάτος: οι τίτλοι ξεκινούν όλοι στο ίδιο σημείο */
+    text-align: center;
+    color: var(--accent-dark);
+    flex-shrink: 0;
+}
+.card-header .h-tag {
+    font-family: 'Commissioner', 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: .78rem;
+    line-height: 1;
+    letter-spacing: .03em;
+    padding: .38rem .6rem;
+    border-radius: var(--r-sm);
+    white-space: nowrap;
+    background: #1a472a14;
+    color: var(--primary-color);
+    box-shadow: inset 0 0 0 1px #1a472a33;
+}
+.card-header .h-tag:first-of-type { margin-left: .2rem; }
+.card-header .h-tag--cat {
+    background: var(--primary-color);
+    color: var(--accent-color);
+    box-shadow: none;
+}
+@media (max-width: 768px) {
+    .card .card-header h2 { font-size: 1.45rem; }
+}
+@media (prefers-color-scheme: dark) {
+    .card-header .h-ico { color: var(--accent-color); }
+    .card-header .h-tag {
+        background: #ffd7001a;
+        color: var(--accent-color);
+        box-shadow: inset 0 0 0 1px #ffd70055;
+    }
+    .card-header .h-tag--cat {
+        background: var(--accent-color);
+        color: #14301e;
+        box-shadow: none;
+    }
+}
     .player-age {
     font-size: 0.85rem;
     color: #666;
@@ -3327,6 +3386,11 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
     font-size: 1rem;
     color: var(--primary-color);
 }
+.hist-h3 > .fa-solid {          /* εικονίδιο υπότιτλου: ίδιο χρώμα με το κείμενο, σταθερό πλάτος */
+    width: 1.25em;
+    margin-right: .35em;
+    text-align: center;
+}
 @media (prefers-color-scheme: dark) {
     .hist-h3 { color: var(--accent-color) !important; }
 }
@@ -3958,6 +4022,23 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
 #seasonToolsBox summary::before { content: '▸ '; color: #1a472a; }
 #seasonToolsBox[open] summary::before { content: '▾ '; }
 #seasonToolsBox summary:hover { background: #eef6f0; border-radius: var(--r-md); }
+
+/* === ΤΙΤΛΟΙ ΚΑΡΤΩΝ ΣΤΟ ΚΙΝΗΤΟ — ενιαία εμφάνιση σε όλες τις σελίδες ===
+   Βαθμολογία/Αποτελέσματα/Πρόγραμμα: η γραμμή ήταν κολλημένη στα γράμματα (padding-bottom 0).
+   Ρόστερ/Νέα/Προπονήσεις/Ιστορικό: η γραμμή σταματούσε πιο μέσα από την άκρη.          */
+@media (max-width: 768px) {
+    #standings .card-header,
+    #results .card-header,
+    #fixtures .card-header { padding-bottom: .7rem; }
+
+    #roster .card-header,
+    #news .card-header,
+    #training .card-header,
+    #history .card-header {
+        margin-left: -.5rem;  margin-right: -.5rem;
+        padding-left: .5rem;  padding-right: .5rem;
+    }
+}
        </style>
        <script>
 window.addEventListener('load', function() {
@@ -4042,7 +4123,7 @@ function showToast(message, type = 'success') {
         <li><a href="#results" class="nav-link">Αποτελέσματα</a></li>
         <li><a href="#fixtures" class="nav-link">Πρόγραμμα</a></li>
         <li><a href="#roster" class="nav-link">Ρόστερ</a></li>
-        <li><a href="#news" class="nav-link" onclick="markNewsAsRead()">Νέα - Ειδήσεις <span id="newsBadge" class="notification-badge">NEW</span></a></li>
+        <li><a href="#news" class="nav-link" onclick="markNewsAsRead()">Νέα <span id="newsBadge" class="notification-badge">NEW</span></a></li>
         <li><a href="#training" class="nav-link">Προπονήσεις</a></li>
         <li><a href="#history" class="nav-link">Ιστορικό</a></li>
         <li><a href="#admin" class="nav-link admin-link" onclick="openAdminPanel(); return false;">⚙️</a></li>
@@ -4057,7 +4138,7 @@ function showToast(message, type = 'success') {
             
             <div class="card">
                 <div class="card-header">
-                    <h2 id="standingsHeaderLabel">📊 Βαθμολογία</h2>
+                    <h2 id="standingsHeaderLabel"><i class="fa-solid fa-ranking-star h-ico" aria-hidden="true"></i>Βαθμολογία</h2>
                 </div>
                 
                 <div class="table-wrapper">
@@ -4087,7 +4168,7 @@ function showToast(message, type = 'success') {
 
             <div class="card">
                 <div class="card-header">
-                    <h2>👟 Σκόρερ</h2>
+                    <h2><i class="fa-solid fa-futbol h-ico" aria-hidden="true"></i>Σκόρερ</h2>
                 </div>
                 <div id="scorersContainer"></div>
             </div>
@@ -4095,14 +4176,18 @@ function showToast(message, type = 'success') {
 
         <div id="results" class="page">
             <div class="card">
-                <h2>⚽ Αποτελέσματα Αγώνων</h2>
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-flag-checkered h-ico" aria-hidden="true"></i>Αποτελέσματα Αγώνων</h2>
+                </div>
                 <div id="resultsContainer"></div>
             </div>
         </div>
 
         <div id="fixtures" class="page">
             <div class="card">
-                <h2>📅 Πρόγραμμα Αγώνων</h2>
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-calendar-days h-ico" aria-hidden="true"></i>Πρόγραμμα Αγώνων</h2>
+                </div>
                 <div id="fixturesContainer"></div>
             </div>
         </div>
@@ -4110,7 +4195,7 @@ function showToast(message, type = 'success') {
         <div id="roster" class="page">
             <div class="card">
                 <div class="card-header">
-                    <h2>👥 Ρόστερ Ομάδας</h2>
+                    <h2><i class="fa-solid fa-shirt h-ico" aria-hidden="true"></i>Ρόστερ Ομάδας</h2>
                 </div>
                 <div id="rosterContainer" class="roster-grid"></div>
             </div>
@@ -4120,7 +4205,7 @@ function showToast(message, type = 'success') {
         <div id="news" class="page">
             <div class="card">
                 <div class="card-header">
-                    <h2>📰 Νέα - Ειδήσεις</h2>
+                    <h2><i class="fa-solid fa-newspaper h-ico" aria-hidden="true"></i>Νέα</h2>
                 </div>
                 <div id="newsContainer"></div>
             </div>
@@ -4129,10 +4214,10 @@ function showToast(message, type = 'success') {
         <div id="training" class="page">
             <div class="card">
                 <div class="card-header">
-                    <h2>🏃 Προπονήσεις</h2>
+                    <h2><i class="fa-solid fa-person-running h-ico" aria-hidden="true"></i>Προπονήσεις</h2>
                 </div>
                 <div style="padding:12px;">
-                    <h3 class="hist-h3" style="margin-top:0;">🗓️ Εβδομαδιαίο πρόγραμμα</h3>
+                    <h3 class="hist-h3" style="margin-top:0;"><i class="fa-solid fa-calendar-week" aria-hidden="true"></i>Εβδομαδιαίο πρόγραμμα</h3>
                     <div id="trainingWeekly"></div>
                     <div id="trainingUpcoming" style="margin-top:14px;"></div>
                 </div>
@@ -4142,7 +4227,7 @@ function showToast(message, type = 'success') {
         <div id="history" class="page">
             <div class="card">
                 <div class="card-header">
-                    <h2>🏛️ Ιστορικό</h2>
+                    <h2><i class="fa-solid fa-landmark h-ico" aria-hidden="true"></i>Ιστορικό</h2>
                 </div>
                 <div style="padding:12px;">
                     <p class="hist-note">
@@ -4864,12 +4949,15 @@ const database = firebase.database();
         // --- Εφαρμογή ετικετών σεζόν στο UI ---
         function applySeasonLabels() {
             const cat = SEASON.category || '';
-            const grp = SEASON.group ? ' - ' + SEASON.group : '';
             const h = document.getElementById('seasonHeaderLabel');
             if (h) h.textContent = [cat, SEASON.league, 'Σεζόν ' + SEASON.season]
                                    .filter(Boolean).join(' | ');
             const st = document.getElementById('standingsHeaderLabel');
-            if (st) st.textContent = `📊 Βαθμολογία ${cat}${grp}`.trim();
+            if (st) {
+                const tags = (SEASON.category ? `<span class="h-tag h-tag--cat">${esc(SEASON.category)}</span>` : '')
+                           + (SEASON.group    ? `<span class="h-tag">${esc(SEASON.group)}</span>` : '');
+                st.innerHTML = `<i class="fa-solid fa-ranking-star h-ico" aria-hidden="true"></i>Βαθμολογία${tags}`;
+            }
             const ft = document.getElementById('footerLabel');
             if (ft) ft.textContent = `© ${SEASON.season.split('-')[0]} Olympos FC — ${cat}`;
             document.title = `Όλυμπος Δενδροποτάμου | ${cat} ${SEASON.season}`;
@@ -5776,7 +5864,7 @@ function renderKnockout() {
 
     box.innerHTML = `
         <div class="card ko-card">
-            <div class="card-header"><h2>🏆 Νοκ άουτ για τον τίτλο</h2></div>
+            <div class="card-header"><h2><i class="fa-solid fa-trophy h-ico" aria-hidden="true"></i>Νοκ άουτ για τον τίτλο</h2></div>
             <div class="ko-board">${cols}</div>
             <div class="ko-legend">Ο μικρός αριθμός μπροστά από κάθε ομάδα είναι η θέση της στη βαθμολογία της Α΄ Φάσης.</div>
         </div>`;
@@ -5999,7 +6087,7 @@ function displayTopScorers() {
     header.innerHTML = `
         <div class="col-rank">#</div>
         <div class="col-name">Παίκτης</div>
-        <div class="col-goals">Goals</div>
+        <div class="col-goals">Γκολ</div>
     `;
     list.appendChild(header);
 
@@ -7691,7 +7779,7 @@ function renderHistorySeason(d) {
         ${koLine ? `<div class="hist-hero-line"><strong>${esc(koLine)}</strong></div>` : ''}
       </div>`;
 
-    html += `<h3 class="hist-h3">📊 Τελική Βαθμολογία</h3>
+    html += `<h3 class="hist-h3"><i class="fa-solid fa-ranking-star" aria-hidden="true"></i>Τελική Βαθμολογία</h3>
       <div style="overflow-x:auto;"><table class="standings-table hist-table">
         <thead><tr><th>#</th><th style="text-align:left;">Ομάδα</th><th>Αγ</th><th>Ν</th><th>Ι</th><th>Η</th><th>Τέρ</th><th>Β</th></tr></thead><tbody>`;
     table.forEach((t, i) => {
@@ -7704,7 +7792,7 @@ function renderHistorySeason(d) {
     html += `</tbody></table></div>`;
 
     if (scorers.length) {
-        html += `<h3 class="hist-h3">⚽ Σκόρερ</h3><div class="hist-panel">`;
+        html += `<h3 class="hist-h3"><i class="fa-solid fa-futbol" aria-hidden="true"></i>Σκόρερ</h3><div class="hist-panel">`;
         scorers.forEach(([name, g], i) => {
             html += `<div class="hist-row"><span>${i === 0 ? '👑 ' : ''}${esc(name)}</span>
                      <strong>${g}</strong></div>`;
@@ -7713,7 +7801,7 @@ function renderHistorySeason(d) {
     }
 
     if ((d.roster || []).length) {
-        html += `<h3 class="hist-h3">👥 Το ρόστερ εκείνης της χρονιάς</h3><div class="hist-chips">`;
+        html += `<h3 class="hist-h3"><i class="fa-solid fa-shirt" aria-hidden="true"></i>Το ρόστερ εκείνης της χρονιάς</h3><div class="hist-chips">`;
         [...d.roster].sort((a, b) => (a.number || 999) - (b.number || 999)).forEach(p => {
             html += `<span class="hist-chip">${p.number ? '<strong>' + p.number + '</strong> ' : ''}` +
                     `${esc(p.name)}${p.isCaptain ? ' ©' : ''}</span>`;
@@ -7723,7 +7811,7 @@ function renderHistorySeason(d) {
 
     if ((d.news || []).length) {
         const sorted = [...d.news].sort((a, b) => new Date(b.date) - new Date(a.date));
-        html += `<h3 class="hist-h3">📰 Οι ειδήσεις της χρονιάς
+        html += `<h3 class="hist-h3"><i class="fa-solid fa-newspaper" aria-hidden="true"></i>Οι ειδήσεις της χρονιάς
                    <span class="hist-news-date">(${sorted.length})</span></h3>`;
         sorted.forEach(item => {
             const dt = new Date(item.date).toLocaleDateString('el-GR',
