@@ -4298,6 +4298,15 @@
       "goals": 0,
       "cleanSheets": 0,
       "isCaptain": false
+    },
+    {
+      "number": 42,
+      "name": "Ιορδάνης Σεκέρογλπυ",
+      "nickname": "JORDAN",
+      "birthYear": 2014,
+      "position": "Αμυντικός Μέσος (DM) / Πλάγιος Αμυντικός - Αριστερός (LB) / Πλάγιος Αμυντικός - Δεξιός (RB)",
+      "isCaptain": false,
+      "goals": 0
     }
   ],
   "news": [
