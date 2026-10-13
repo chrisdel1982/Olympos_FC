@@ -191,22 +191,6 @@ h1, h2, h3, .card-header h2, nav {
             justify-content: center;
         }
 
-        /* Το φως: έλλειψη που σβήνει σταδιακά, ώστε να μη διαγράφεται «δίσκος».
-           Πάνω-κάτω φτάνει μέχρι την άκρη του padding, για να μην πέφτει στο μενού. */
-        .logo::before {
-            content: '';
-            position: absolute;
-            top: -1.5rem;
-            bottom: -1.5rem;
-            left: -75%;
-            right: -75%;
-            pointer-events: none;
-            background: radial-gradient(ellipse closest-side,
-                rgba(255,255,255,.34), rgba(255,255,255,.29) 18%, rgba(255,255,255,.2) 35%,
-                rgba(255,255,255,.11) 50%, rgba(255,255,255,.05) 65%, rgba(255,255,255,.015) 80%,
-                rgba(255,255,255,0));
-        }
-
         .logo img {
             position: relative;
             width: 100%;
@@ -223,10 +207,6 @@ h1, h2, h3, .card-header h2, nav {
             border-radius: 50%;
             border: 4px solid var(--accent-color);
             overflow: hidden;
-        }
-
-        .logo.logo-flat::before {
-            content: none;
         }
 
         /* Το logo_front.png (γυαλιστερό σήμα με τις λάμψεις) έχει γύρω του πολύ διάφανο
@@ -1650,11 +1630,6 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
             .logo {
                 width: 84px;
                 height: 84px;
-            }
-
-            .logo::before {
-                top: -1rem;
-                bottom: -10px;
             }
 
             .logo.logo-flat {
@@ -3941,7 +3916,7 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
    οπότε μόνο σε αυτή την περίπτωση μπαίνει από κάτω λευκός κύκλος. */
 .nx-crest:has(img.crest-flat){background:#fff;border-radius:50%}
 .nx-crest:has(img.crest-flat) img{inset:7px;width:calc(100% - 14px);height:calc(100% - 14px)}
-.nx-crest.has-img::before{content:'';position:absolute;inset:-80% -95%;pointer-events:none;
+.nx-crest.has-img::before{content:'';position:absolute;inset:-40% -48%;pointer-events:none;
   background:radial-gradient(ellipse closest-side,rgba(255,255,255,.38),rgba(255,255,255,.33) 18%,
     rgba(255,255,255,.23) 35%,rgba(255,255,255,.13) 50%,rgba(255,255,255,.06) 65%,
     rgba(255,255,255,.02) 80%,rgba(255,255,255,0))}
@@ -10082,7 +10057,7 @@ async function openShareImage(opts) {
         shareImg.file = new File([blob], name, { type: 'image/png' });
         shareImg.url = URL.createObjectURL(blob);
         box.innerHTML = `<img src="${shareImg.url}" alt="Προεπισκόπηση της εικόνας που θα σταλεί">`;
-        hint.textContent = 'Μαζί με την εικόνα φεύγει κείμενο με τον χάρτη και το site. Αν το Viber κρατήσει μόνο την εικόνα, το κείμενο είναι ήδη αντιγραμμένο: πάτα παρατεταμένα στο μήνυμα και «Επικόλληση».';
+        hint.textContent = 'Φεύγει μόνο η εικόνα. Αν θες και τον χάρτη με το site, πάτα «Αντιγραφή κειμένου» και επικόλλησέ το χωριστά.';
     } catch (e) {
         console.error('Share image:', e);
         box.innerHTML = '<div class="si-wait">Η εικόνα δεν βγήκε σε αυτή τη συσκευή. Η «Κοινοποίηση» θα στείλει το κείμενο όπως πριν.</div>';
@@ -10116,24 +10091,24 @@ function siCopy(text, quiet) {
 
 function shareImgGo() {
     if (!shareImg) return;
-    const text = shareImg.blob ? shareImg.caption : shareImg.fullText;
     const hint = document.getElementById('shareImgHint');
-    // Αντιγραφή πρώτα (σιωπηλά), για την περίπτωση που το Viber πετάξει το κείμενο
-    if (!shareImg.noAutoCopy) siCopy(text, true);
 
-    if (shareImg.file && navigator.canShare && navigator.canShare({ files: [shareImg.file] })) {
-        navigator.share({ files: [shareImg.file], text }).catch(err => {
-            if (err && err.name === 'NotAllowedError') {
-                shareImg.noAutoCopy = true;           // ο browser δεν θέλει δύο ενέργειες σε ένα πάτημα
-                hint.textContent = 'Πάτα ξανά «Κοινοποίηση». Για το κείμενο υπάρχει η «Αντιγραφή κειμένου».';
-            } else if (err && err.name !== 'AbortError') {
-                console.error(err);
-            }
-        });
+    // Υπάρχει εικόνα: φεύγει ΜΟΝΟ η εικόνα, χωρίς κείμενο που να την επαναλαμβάνει
+    if (shareImg.blob) {
+        if (shareImg.file && navigator.canShare && navigator.canShare({ files: [shareImg.file] })) {
+            navigator.share({ files: [shareImg.file] }).catch(err => {
+                if (err && err.name !== 'AbortError') console.error(err);
+            });
+        } else {
+            // Υπολογιστής ή browser χωρίς share αρχείων: μόνο αποθήκευση της εικόνας
+            saveShareImg();
+            hint.textContent = 'Η εικόνα αποθηκεύτηκε. Στείλ’ την από το Viber ως συνημμένο.';
+        }
         return;
     }
-    // Υπολογιστής ή browser χωρίς share αρχείων: αποθήκευση εικόνας + κείμενο όπως πριν
-    if (shareImg.blob) saveShareImg();
+
+    // Η εικόνα δεν βγήκε σε αυτή τη συσκευή: στέλνουμε το κείμενο όπως πριν
+    const text = shareImg.fullText;
     if (navigator.share) {
         navigator.share({ title: 'Επόμενος Αγώνας', text }).catch(() => {});
     } else {
