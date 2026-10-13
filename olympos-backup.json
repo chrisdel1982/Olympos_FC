@@ -105,11 +105,20 @@
       "venue": "Πλαστικό Γήπεδο Μηγκοτζίδης"
     }
   ],
-  "trainingExceptions": [],
+  "trainingExceptions": [
+    {
+      "date": "2026-10-13",
+      "slotId": "tr1788293642915",
+      "reason": "Κακοκαιρία"
+    }
+  ],
   "season": "2026-27",
   "category": "Κ15",
   "group": "LEAGUE 1",
   "league": "ΕΠΣ ΜΑΚΕΔΟΝΙΑΣ",
+  "competition": "K15 League 1",
+  "nextCategory": "Κ16",
+  "qualify": 16,
   "teams": [
     "ΑΓΙΟΣ ΓΕΩΡΓΙΟΣ Ν.ΚΡΗΝΗΣ",
     "ΑΕ ΝΕΩΝ ΣΙΝΔΟΥ",
