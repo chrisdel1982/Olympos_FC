@@ -229,6 +229,12 @@ h1, h2, h3, .card-header h2, nav {
             content: none;
         }
 
+        /* Λεπτό μαύρο περίγραμμα μόνο στο σήμα της κεφαλίδας. Ακολουθεί το σχήμα
+           της ασπίδας (όχι κουτί) και «κλείνει» τις άκρες που έσβηναν στο πράσινο. */
+        .logo:not(.logo-flat) img {
+            filter: drop-shadow(0 0 0.6px rgba(0, 0, 0, 0.9));
+        }
+
         .club-info {
             position: relative; /* πάνω από το φως του σήματος */
             text-align: center;
@@ -4019,6 +4025,23 @@ a.nx-place:hover{border-color:var(--ink-muted)}
   .nx-place{margin-left:-12px;margin-right:-12px}
 }
 
+/* Share ως εικόνα: μικρό παράθυρο προεπισκόπησης.
+   Το id + !important χρειάζεται για να ξεφύγει από το γενικό .modal-content του admin (95%, 90vh). */
+#shareImgModal .modal-content{max-width:440px !important;width:92% !important;height:auto !important;
+  max-height:92vh;padding:1.1rem 1.1rem 1.2rem !important;display:block;overflow-y:auto;
+  background:var(--surface);color:var(--ink);border-radius:var(--r-lg)}
+#shareImgModal .si-title{margin:0 0 .8rem;padding:0;border:0;font-size:1.1rem;color:var(--primary-color)}
+.si-box{background:var(--surface-alt);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;
+  min-height:180px;display:grid;place-items:center}
+.si-box img{display:block;width:100%;height:auto;max-height:58vh;object-fit:contain}
+.si-wait{padding:48px 16px;text-align:center;color:var(--ink-muted);font-size:.9rem}
+.si-hint{font-size:.78rem;line-height:1.4;color:var(--ink-muted);margin:.7rem 0 0}
+.si-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:.9rem}
+.si-actions .btn{width:100%;margin:0;justify-content:center;text-align:center}
+.si-actions #shareImgGo{grid-column:1 / -1}
+.si-actions .btn:disabled{opacity:.5;cursor:default}
+@media (prefers-color-scheme: dark){ #shareImgModal .si-title{color:#c0dd97} }
+
 /* Ημερολόγιο — διακριτικά */
 .tr-cal{
     display:inline-flex; align-items:center; gap:4px;
@@ -4909,6 +4932,20 @@ function showToast(message, type = 'success') {
             <button class="btn btn-secondary" style="width: 100%;" onclick="document.getElementById('squadModal').style.display='none'">
                 Ακύρωση
             </button>
+        </div>
+    </div>
+</div>
+<!-- Share ως εικόνα: προεπισκόπηση πριν την αποστολή -->
+<div id="shareImgModal" class="modal" style="z-index: 3001;" onclick="if (event.target === this) closeShareImgModal()">
+    <div class="modal-content">
+        <h3 class="si-title">📤 Έτοιμο για αποστολή</h3>
+        <div id="shareImgBox" class="si-box"></div>
+        <p id="shareImgHint" class="si-hint"></p>
+        <div class="si-actions">
+            <button type="button" class="btn" id="shareImgGo" style="background: var(--primary-color);" onclick="shareImgGo()">📤 Κοινοποίηση</button>
+            <button type="button" class="btn btn-secondary" id="shareImgCopy" onclick="copyShareText()">📋 Αντιγραφή κειμένου</button>
+            <button type="button" class="btn btn-secondary" id="shareImgSave" onclick="saveShareImg()">⬇️ Αποθήκευση εικόνας</button>
+            <button type="button" class="btn btn-secondary" onclick="closeShareImgModal()">Κλείσιμο</button>
         </div>
     </div>
 </div>
@@ -7040,6 +7077,8 @@ function saveGeneralSettings() {
 }
         let countdownInterval = null; // Μεταβλητή για να σταματάμε το χρονόμετρο αν χρειαστεί
 let currentNextMatch = null;
+// Ό,τι δείχνει η κάρτα (τίτλος, αγωνιστική, γήπεδο), για να το ξαναχρησιμοποιεί η εικόνα share
+let currentNextMatchInfo = null;
 
 // Κανονικοποίηση: χωρίς τόνους, κεφαλαία, χωρίς παρενθέσεις
 function normTeam(v) {
@@ -7115,21 +7154,15 @@ function teamInitials(name) {
 // Αν ο browser δεν επιτρέπει ανάγνωση της εικόνας (π.χ. άλλο domain), μένει ως έχει.
 const CREST_NORM = new Map();
 const CREST_TARGET = 0.62;   // πόσο «γεμίζει» το κουτί μια τυπική ασπίδα
-function normCrest(img) {
-    if (img.dataset.norm) return;
-    img.dataset.norm = '1';
+// Η ανάλυση χωριστά από την εφαρμογή, ώστε να τη χρησιμοποιούν και οι εικόνες share.
+// Επιστρέφει { url, k, flat } ή null (αρχείο που δεν διαβάζεται).
+function analyzeCrest(img) {
     const key = img.src;
-    const apply = r => {
-        if (!r) return;
-        if (r.url) img.src = r.url;
-        img.classList.toggle('crest-flat', !!r.flat);   // αρχείο με λευκό φόντο
-        img.style.transform = r.k < 0.999 ? `scale(${r.k.toFixed(3)})` : '';
-    };
-    if (CREST_NORM.has(key)) return apply(CREST_NORM.get(key));
+    if (CREST_NORM.has(key)) return CREST_NORM.get(key);
     let r = null;
     try {
         const W = img.naturalWidth, H = img.naturalHeight;
-        if (!W || !H) return;
+        if (!W || !H) return null;
         const cv = document.createElement('canvas');
         cv.width = W; cv.height = H;
         const cx = cv.getContext('2d', { willReadFrequently: true });
@@ -7152,7 +7185,7 @@ function normCrest(img) {
                 if (y < y0) y0 = y; if (y > y1) y1 = y;
             }
         }
-        if (x1 < 0) return;
+        if (x1 < 0) return null;
         const w = x1 - x0 + 1, h = y1 - y0 + 1;
 
         // Πόσο γεμάτο είναι το σχήμα μέσα στο δικό του πλαίσιο
@@ -7179,7 +7212,17 @@ function normCrest(img) {
         r = null;                              // tainted canvas κ.λπ.: αφήνουμε το σήμα όπως είναι
     }
     CREST_NORM.set(key, r);
-    apply(r);
+    return r;
+}
+
+function normCrest(img) {
+    if (img.dataset.norm) return;
+    img.dataset.norm = '1';
+    const r = analyzeCrest(img);
+    if (!r) return;
+    if (r.url) img.src = r.url;
+    img.classList.toggle('crest-flat', !!r.flat);   // αρχείο με λευκό φόντο
+    img.style.transform = r.k < 0.999 ? `scale(${r.k.toFixed(3)})` : '';
 }
 
 function teamSide(name) {
@@ -7225,6 +7268,7 @@ if (data.specialMatch && data.specialMatch.home) {
 // 3. Αν δεν υπάρχει επόμενος αγώνας
 if (!nextMatch) {
     currentNextMatch = null;
+    currentNextMatchInfo = null;
     const noFixturesYet = !data.fixtures || data.fixtures.length === 0;
     container.innerHTML = noFixturesYet
         ? `<div class="card" style="text-align: center; padding: 30px; border-top: 5px solid var(--accent-color);">
@@ -7274,6 +7318,7 @@ if (!nextMatch) {
     let stadNote = pIdx > 0 ? stadiumRaw.slice(pIdx + 1).replace(/\)\s*$/, '').trim() : '';
     if (stadNote) stadNote = stadNote.charAt(0).toUpperCase() + stadNote.slice(1);
     const mapLink = (data.matchMapLink || '').trim();
+    currentNextMatchInfo = { title, sub, isHome, stadName, stadNote, mapLink };
 
     const placeInner = `
                 <span class="nx-ico"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></span>
@@ -9414,7 +9459,7 @@ function openSquadModal() {
 
         div.innerHTML = `
             <label style="display: flex; align-items: center; width: 100%; cursor: pointer; margin: 0;">
-                <input type="checkbox" class="squad-checkbox" value="${esc(p.name)}" data-pos="${esc(pos)}" ${!isCoach ? 'checked' : ''} style="width: 20px; height: 20px; margin-right: 10px;">
+                <input type="checkbox" class="squad-checkbox" value="${esc(p.name)}" data-pos="${esc(pos)}" data-num="${esc(p.number || '')}" ${!isCoach ? 'checked' : ''} style="width: 20px; height: 20px; margin-right: 10px;">
                 <span style="font-weight: 600; font-size: 0.9rem;">${p.number ? '#' + p.number : ''} ${esc(p.name)}</span>
                 <span style="font-size: 0.75rem; color: #888; margin-left: auto;">${esc(pos.split('/')[0])}</span>
             </label>
@@ -9499,6 +9544,9 @@ function closePinModal() {
 }
 
 // Η πραγματική συνάρτηση share (παλιά shareFinalSquad)
+// Βγάζει ΕΙΚΟΝΑ (με παίκτες: «SQUAD LIST», χωρίς: η κάρτα του αγώνα) και τη στέλνει
+// μαζί με σύντομο κείμενο που έχει τα links. Η εικόνα δεν «πατιέται» στο Viber,
+// γι' αυτό χάρτης και site ταξιδεύουν στο κείμενο.
 function executeShareSquad() {
     const { home, away, date, time, stadium, mapLink } = currentMatchShareData;
     const siteUrl = window.location.origin + window.location.pathname;
@@ -9506,6 +9554,7 @@ function executeShareSquad() {
     const hideSquad = document.getElementById('noSquadCheckbox').checked;
 
     let squadText = "";
+    const squad = [];          // για την εικόνα: { name, num, extra }
 
     if (!hideSquad) {
         const checkboxes = document.querySelectorAll('.squad-checkbox:checked');
@@ -9549,6 +9598,9 @@ function executeShareSquad() {
                 else category = 'mid';
             }
 
+            const num = parseInt(box.getAttribute('data-num'), 10);
+            squad.push({ name, num: Number.isFinite(num) ? num : null });
+
             if (category === 'gk') gks.push(name);
             else if (category === 'def') defs.push(name);
             else if (category === 'mid') mids.push(name);
@@ -9565,25 +9617,546 @@ function executeShareSquad() {
         
         if (extras) {
             squadText += "\n🆕 " + extras;
+            extras.split(/[,;\n]+/).map(x => x.trim()).filter(Boolean)
+                  .forEach(x => squad.push({ name: x, num: null, extra: true }));
         }
         squadText += "\n"; 
     }
 
-    const text = `⚽ *ΕΠΟΜΕΝΟΣ ΑΓΩΝΑΣ* ⚽\n\n` +
+    // Με αριθμό φανέλας· όσοι δεν έχουν (π.χ. από την Κ14) μπαίνουν στο τέλος
+    squad.sort((a, b) => (a.num ?? 999) - (b.num ?? 999));
+
+    const head = `⚽ *ΕΠΟΜΕΝΟΣ ΑΓΩΝΑΣ* ⚽\n\n` +
                  `🆚 ${home} - ${away}\n` +
                  `📅 ${date}  ⏰ ${time}\n` +
                  `🏟️ ${stadium}\n\n` +
-                 `📍 *Χάρτης Γηπέδου:* ${mapLink}\n` +
-                 `${squadText}\n` + 
-                 `⏳ ${siteUrl}\n\n` + 
+                 (mapLink ? `📍 *Χάρτης Γηπέδου:* ${mapLink}\n` : '');
+    const tail = `⏳ ${siteUrl}\n\n` + 
                  `*👨‍👩‍👦 Μια οικογένεια, ⛰️ μια ομάδα, 🔥 ένα πάθος*`;
 
-    if (navigator.share) {
-        navigator.share({ title: 'Επόμενος Αγώνας', text: text }).catch(console.error);
-    } else {
-        const viberUrl = `viber://forward?text=${encodeURIComponent(text)}`;
-        window.open(viberUrl, '_blank');
+    // Λεζάντα της εικόνας (τα ονόματα είναι ήδη στην εικόνα) και το παλιό πλήρες κείμενο ως εφεδρεία
+    const caption  = head + `\n` + tail;
+    const fullText = head + `${squadText}\n` + tail;
+
+    openShareImage({ withSquad: squad.length > 0, squad, caption, fullText });
+}
+
+// ===== SHARE ΩΣ ΕΙΚΟΝΑ =====
+// Δύο όρθιες εικόνες 1080×1350 (στο Viber του κινητού γεμίζουν την οθόνη):
+//  • με παίκτες: «SQUAD LIST» σε ανθρακί και χρυσό, με αριθμούς φανέλας
+//  • χωρίς παίκτες: η κάρτα του επόμενου αγώνα, όρθια
+// Η εικόνα φτιάχνεται πρώτα και εμφανίζεται σε προεπισκόπηση. Το share γίνεται με
+// ξεχωριστό πάτημα, γιατί ο Safari δεν επιτρέπει share αν μεσολαβήσει αναμονή.
+let shareImg = null;   // { blob, file, url, caption, fullText }
+
+const SI_W = 1080, SI_H = 1350;
+const SI_RC = '"RC Share","Roboto Condensed",Arial,sans-serif';
+const SI_IN = '"Inter Share",Inter,Arial,sans-serif';
+const SI_SLOGAN = 'Μια οικογένεια, μια ομάδα, ένα πάθος';
+
+// Γραμματοσειρές για τον καμβά, με δικό τους όνομα ώστε να μην αγγίζουν τη σελίδα
+// (η σελίδα φορτώνει μόνο το Roboto Condensed 700· εδώ χρειάζεται και το λεπτό 400).
+function loadShareFonts() {
+    if (loadShareFonts.p) return loadShareFonts.p;
+    const sets = [['RC Share', 'Roboto+Condensed:wght@400;700'], ['Inter Share', 'Inter:wght@400;600']];
+    const work = Promise.all(sets.map(([fam, q]) =>
+        fetch(`https://fonts.googleapis.com/css2?family=${q}&display=swap`)
+            .then(r => r.ok ? r.text() : '')
+            .then(css => {
+                const loads = [];
+                const re = /\/\*\s*([\w-]+)\s*\*\/\s*@font-face\s*\{([^}]*)\}/g;
+                let m;
+                while ((m = re.exec(css))) {
+                    if (!/^(greek|latin)$/.test(m[1])) continue;      // ελληνικά + λατινικά/αριθμοί
+                    const body = m[2];
+                    const url = (body.match(/url\(([^)]+)\)/) || [])[1];
+                    const weight = (body.match(/font-weight:\s*([\d ]+)/) || [])[1];
+                    const range = (body.match(/unicode-range:\s*([^;]+)/) || [])[1];
+                    if (!url) continue;
+                    const ff = new FontFace(fam, `url(${url})`, { weight: (weight || '400').trim(), unicodeRange: range });
+                    document.fonts.add(ff);
+                    loads.push(ff.load().catch(() => null));
+                }
+                return Promise.all(loads);
+            })
+            .catch(() => null)));
+    const timeout = new Promise(res => setTimeout(res, 4000));   // ποτέ κόλλημα: αλλιώς πέφτει στις γνωστές
+    return (loadShareFonts.p = Promise.race([work, timeout]));
+}
+
+// Κεφαλαία χωρίς τόνους (κρατάμε τα διαλυτικά): «Σάββας» → «ΣΑΒΒΑΣ»
+function siUpper(v) {
+    return String(v || '').normalize('NFD').replace(/[\u0300\u0301\u0342]/g, '')
+        .normalize('NFC').toLocaleUpperCase('el-GR');
+}
+// «Χρήστος Μπατσακίδης» → «Χ. ΜΠΑΤΣΑΚΙΔΗΣ» (δύο αδέρφια δεν γίνονται ένας)
+function siShortName(full) {
+    const w = String(full || '').trim().split(/\s+/);
+    if (w.length < 2) return siUpper(full);
+    return siUpper(w[0].charAt(0) + '. ' + w.slice(1).join(' '));
+}
+
+function siLoadImg(src) {
+    return new Promise(res => {
+        if (!src) return res(null);
+        const im = new Image();
+        im.onload = () => res(im);
+        im.onerror = () => res(null);
+        im.src = src;
+    });
+}
+
+// Σήμα ομάδας για τον καμβά: ίδια σειρά αρχείων και ίδια «εξισορρόπηση» με την κάρτα
+async function siCrest(name) {
+    if (!name) return null;
+    const chain = isMyTeam(name) ? poloCrestChain() : [crestFor(name)].filter(Boolean);
+    for (const src of chain) {
+        const im = await siLoadImg(src);
+        if (!im) continue;
+        const r = analyzeCrest(im);
+        if (r && r.url) {
+            const trimmed = await siLoadImg(r.url);
+            if (trimmed) return { img: trimmed, k: r.k, flat: !!r.flat };
+        }
+        return { img: im, k: r ? r.k : 1, flat: !!(r && r.flat) };
     }
+    return null;
+}
+
+// Απαλό λευκό φως πίσω από το σήμα (ίδια καμπύλη με την κάρτα και την κεφαλίδα)
+function siGlow(ctx, cx, cy, rx, ry, a0) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.scale(rx / ry, 1);
+    const g = ctx.createRadialGradient(0, 0, 0, 0, 0, ry);
+    [[0, 1], [.18, .87], [.35, .6], [.5, .34], [.65, .16], [.8, .05], [1, 0]]
+        .forEach(([o, m]) => g.addColorStop(o, `rgba(255,255,255,${(a0 * m).toFixed(3)})`));
+    ctx.fillStyle = g;
+    ctx.fillRect(-ry, -ry, 2 * ry, 2 * ry);
+    ctx.restore();
+}
+
+function siDrawCrest(ctx, c, name, cx, cy, size, ringColor, initialsColor) {
+    if (!c) {   // χωρίς σήμα: τα αρχικά σε κύκλο, όπως στην κάρτα
+        const r = size * 0.44;
+        ctx.save();
+        ctx.lineWidth = Math.max(2, size * 0.035);
+        ctx.strokeStyle = ringColor;
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillStyle = initialsColor;
+        ctx.font = `700 ${Math.round(size * 0.28)}px ${SI_RC}`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(siUpper(teamInitials(name)), cx, cy + size * 0.01);
+        ctx.restore();
+        return;
+    }
+    let box = size;
+    if (c.flat) {   // αρχείο με λευκό φόντο: λευκός κύκλος από κάτω, όπως στην κάρτα
+        ctx.save(); ctx.fillStyle = '#fff';
+        ctx.beginPath(); ctx.arc(cx, cy, size / 2, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+        box = size * (1 - 14 / 64);
+    }
+    const w = c.img.naturalWidth || c.img.width, h = c.img.naturalHeight || c.img.height;
+    const s = Math.min(box / w, box / h) * (c.k || 1);
+    ctx.drawImage(c.img, cx - w * s / 2, cy - h * s / 2, w * s, h * s);
+}
+
+// Κείμενο που χωράει: μικραίνει ως minSize και, αν δεν φτάνει, κόβεται με «…»
+function siText(ctx, text, x, y, maxW, weight, size, minSize, family, align) {
+    let s = size;
+    ctx.textAlign = align || 'left';
+    ctx.font = `${weight} ${s}px ${family}`;
+    while (ctx.measureText(text).width > maxW && s > minSize) {
+        s -= 1;
+        ctx.font = `${weight} ${s}px ${family}`;
+    }
+    let t = text;
+    if (ctx.measureText(t).width > maxW) {
+        while (t.length > 1 && ctx.measureText(t + '…').width > maxW) t = t.slice(0, -1);
+        t = t.trim() + '…';
+    }
+    ctx.fillText(t, x, y);
+    return s;
+}
+
+// Αναδίπλωση σε γραμμές (το πολύ maxLines· η τελευταία κόβεται με «…»)
+function siWrap(ctx, text, maxW, maxLines) {
+    const words = String(text || '').split(/\s+/).filter(Boolean);
+    const lines = [];
+    let cur = '';
+    for (const w of words) {
+        const test = cur ? cur + ' ' + w : w;
+        if (ctx.measureText(test).width <= maxW || !cur) cur = test;
+        else { lines.push(cur); cur = w; }
+    }
+    if (cur) lines.push(cur);
+    if (lines.length > maxLines) {
+        const keep = lines.slice(0, maxLines);
+        let last = keep[maxLines - 1] + ' ' + lines.slice(maxLines).join(' ');
+        while (last.length > 1 && ctx.measureText(last + '…').width > maxW) last = last.slice(0, -1);
+        keep[maxLines - 1] = last.trim() + '…';
+        return keep;
+    }
+    return lines;
+}
+
+function siRoundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+}
+
+// Εικονίδια ζωγραφισμένα στο χέρι (τα icon fonts δεν είναι εγγυημένα μέσα στον καμβά)
+function siIconCalendar(ctx, x, y, s, color) {
+    ctx.save();
+    ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = s * 0.1;
+    siRoundRect(ctx, x + s * 0.05, y + s * 0.16, s * 0.9, s * 0.8, s * 0.12);
+    ctx.stroke();
+    ctx.fillRect(x + s * 0.05, y + s * 0.16, s * 0.9, s * 0.22);
+    ctx.fillRect(x + s * 0.24, y, s * 0.11, s * 0.3);
+    ctx.fillRect(x + s * 0.65, y, s * 0.11, s * 0.3);
+    ctx.restore();
+}
+function siIconPin(ctx, cx, top, s, color, holeColor) {
+    const r = s * 0.36, cy = top + r + s * 0.02;
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(cx, top + s);
+    ctx.bezierCurveTo(cx - r * 0.9, cy + r * 1.1, cx - r, cy + r * 0.45, cx - r, cy);
+    ctx.arc(cx, cy, r, Math.PI, 0, false);
+    ctx.bezierCurveTo(cx + r, cy + r * 0.45, cx + r * 0.9, cy + r * 1.1, cx, top + s);
+    ctx.fill();
+    ctx.fillStyle = holeColor;
+    ctx.beginPath(); ctx.arc(cx, cy, r * 0.4, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+}
+
+function siSiteLabel() {
+    const h = (window.location.hostname || '').replace(/^www\./, '');
+    return h && h !== 'localhost' && !/^[\d.]+$/.test(h) ? h : 'olymposfc.gr';
+}
+
+function siMatchBits() {
+    const nm = currentNextMatch || {};
+    const info = currentNextMatchInfo || {};
+    const d = currentMatchShareData || {};
+    const raw = (d.stadium || '').trim();
+    const pIdx = raw.indexOf('(');
+    return {
+        home: nm.home || d.home || '', away: nm.away || d.away || '',
+        title: info.title || '', sub: info.sub || '',
+        isHome: info.isHome !== undefined ? info.isHome : isMyTeam(nm.home || d.home),
+        when: [d.date, d.time].filter(Boolean).join(', '),
+        stadName: info.stadName || (pIdx > 0 ? raw.slice(0, pIdx).trim() : raw),
+        stadNote: info.stadNote || ''
+    };
+}
+
+// --- Εικόνα 1: SQUAD LIST ---
+async function drawSquadImage(squad) {
+    await loadShareFonts();
+    const M = siMatchBits();
+    const [hc, ac] = await Promise.all([siCrest(M.home), siCrest(M.away)]);
+
+    const W = SI_W, H = SI_H;
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = '#1b201d';
+    ctx.fillRect(0, 0, W, H);
+    ctx.textBaseline = 'alphabetic';
+
+    // Κάθετο «ΟΛΥΜΠΟΣ» με χρυσό περίγραμμα, ολόκληρο, από κάτω προς τα πάνω
+    const pad = 44, word = 'ΟΛΥΜΠΟΣ';
+    ctx.font = `700 100px ${SI_RC}`;
+    const fs = 100 * (H - 2 * pad) / ctx.measureText(word).width;
+    ctx.font = `700 ${fs}px ${SI_RC}`;
+    const wm = ctx.measureText(word);
+    const capH = wm.actualBoundingBoxAscent || fs * 0.71;
+    const bx = 40 + capH;
+    ctx.save();
+    ctx.translate(bx, H - pad - (H - 2 * pad - wm.width) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.lineWidth = 3; ctx.lineJoin = 'round';
+    ctx.strokeStyle = 'rgba(255,215,0,.38)';
+    ctx.strokeText(word, 0, 0);
+    ctx.restore();
+
+    const x0 = Math.round(bx + 64), x1 = W - 56, cw = x1 - x0, axis = x0 + cw / 2;
+
+    // Κεφαλή
+    ctx.fillStyle = '#b4b2a9';
+    siText(ctx, siUpper([M.title, M.sub].filter(Boolean).join('  |  ')), x0, 96, cw, 700, 34, 24, SI_RC);
+    ctx.fillStyle = '#ffffff';
+    siText(ctx, 'SQUAD LIST', x0, 182, cw, 400, 84, 56, SI_RC);
+
+    // Κάτω μέρος, από κάτω προς τα πάνω
+    const yUrl = H - 52, ySlogan = H - 112;
+    const yNote = M.stadNote ? H - 172 : null;
+    const yVenue = M.stadNote ? H - 222 : H - 176;
+    const yDate = yVenue - 58;
+    const yRule = yDate - 62;
+    const crestSize = 130, yCrest = yRule - 40 - crestSize / 2;
+
+    // Λίστα παικτών: δύο στήλες, πρώτα γεμίζει η αριστερή
+    const listTop = 228, listBottom = yCrest - crestSize / 2 - 46;
+    const rows = Math.max(1, Math.ceil(squad.length / 2));
+    const rowH = Math.min(58, (listBottom - listTop) / rows);
+    const fz = Math.max(22, Math.min(38, Math.round(rowH * 0.68)));
+    const gap = 40, colW = (cw - gap) / 2, numW = Math.round(fz * 1.7), nameW = colW - numW;
+    const label = p => p.extra ? siUpper(p.name) : siShortName(p.name);
+    ctx.font = `400 ${fz}px ${SI_RC}`;
+    const widest = Math.max(1, ...squad.map(p => ctx.measureText(label(p)).width));
+    // Όλα τα ονόματα μικραίνουν μαζί ως ένα όριο· ένα εξαιρετικά μακρύ δεν τα παίρνει όλα μαζί του
+    const nfz = widest > nameW ? Math.max(Math.round(fz * 0.82), Math.floor(fz * nameW / widest)) : fz;
+    squad.forEach((p, i) => {
+        const col = i < rows ? 0 : 1, r = i < rows ? i : i - rows;
+        const x = x0 + col * (colW + gap), y = listTop + r * rowH + rowH * 0.72;
+        ctx.textAlign = 'left';
+        ctx.fillStyle = p.num != null ? '#ffd700' : 'rgba(255,215,0,.45)';
+        ctx.font = `700 ${fz}px ${SI_RC}`;
+        ctx.fillText(p.num != null ? String(p.num) : '–', x, y);
+        ctx.fillStyle = '#ffffff';
+        siText(ctx, label(p), x + numW, y, nameW, 400, nfz, 18, SI_RC);
+    });
+
+    // Σήματα, χωρίς ονόματα δίπλα
+    const dx = 150;
+    siGlow(ctx, axis - dx, yCrest, crestSize * 1.3, crestSize * 1.15, 0.3);
+    siGlow(ctx, axis + dx, yCrest, crestSize * 1.3, crestSize * 1.15, 0.3);
+    siDrawCrest(ctx, hc, M.home, axis - dx, yCrest, crestSize, '#5a605b', '#b4b2a9');
+    siDrawCrest(ctx, ac, M.away, axis + dx, yCrest, crestSize, '#5a605b', '#b4b2a9');
+    ctx.fillStyle = '#b4b2a9';
+    ctx.font = `700 34px ${SI_RC}`;
+    ctx.textAlign = 'center';
+    ctx.fillText('VS', axis, yCrest + 12);
+
+    // Χρυσή γραμμή και πληροφορίες
+    ctx.fillStyle = 'rgba(255,215,0,.35)';
+    ctx.fillRect(x0, yRule, cw, 2);
+    const ix = x0 + 56;
+    if (M.when) {
+        siIconCalendar(ctx, x0, yDate - 30, 34, '#ffd700');
+        ctx.fillStyle = '#e8e8e2';
+        siText(ctx, M.when, ix, yDate, cw - 56, 400, 36, 26, SI_IN);
+    }
+    if (M.stadName) {
+        siIconPin(ctx, x0 + 17, yVenue - 32, 38, '#ffd700', '#1b201d');
+        ctx.fillStyle = '#e8e8e2';
+        siText(ctx, M.stadName, ix, yVenue, cw - 56, 400, 36, 24, SI_IN);
+    }
+    if (yNote) {
+        ctx.fillStyle = '#b4b2a9';
+        siText(ctx, M.stadNote, ix, yNote, cw - 56, 400, 30, 22, SI_IN);
+    }
+    ctx.fillStyle = '#b4b2a9';
+    siText(ctx, SI_SLOGAN, x0, ySlogan, cw, 400, 30, 22, SI_IN);
+    ctx.fillStyle = '#ffd700';
+    siText(ctx, siSiteLabel(), axis, yUrl, cw, 600, 32, 24, SI_IN, 'center');
+    return cv;
+}
+
+// --- Εικόνα 2: η κάρτα του αγώνα, όρθια ---
+async function drawMatchImage() {
+    await loadShareFonts();
+    const M = siMatchBits();
+    const [hc, ac] = await Promise.all([siCrest(M.home), siCrest(M.away)]);
+
+    const W = SI_W, H = SI_H;
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    const ctx = cv.getContext('2d');
+    ctx.textBaseline = 'alphabetic';
+
+    const css = getComputedStyle(document.documentElement);
+    const c1 = (css.getPropertyValue('--primary-color') || '').trim() || '#1a472a';
+    const c2 = (css.getPropertyValue('--secondary-color') || '').trim() || '#2d5a3d';
+    const bandH = 760;
+    const g = ctx.createLinearGradient(0, 0, W, bandH);
+    g.addColorStop(0, c1); g.addColorStop(1, c2);
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, bandH + 60);
+
+    ctx.fillStyle = '#c0dd97';
+    ctx.font = `700 40px ${SI_RC}`;
+    ctx.textAlign = 'center';
+    ctx.fillText('ΕΠΟΜΕΝΟΣ ΑΓΩΝΑΣ', W / 2, 150);
+
+    // Δύο πλευρές από την ίδια αφετηρία: σήματα και ονόματα πάντα στο ίδιο ύψος
+    const size = 210, top = 230, cy = top + size / 2;
+    const sides = [[M.home, hc, 285], [M.away, ac, W - 285]];
+    sides.forEach(([, , x]) => siGlow(ctx, x, cy, size * 1.45, size * 1.3, 0.38));
+    sides.forEach(([name, c, x]) => {
+        const mine = isMyTeam(name);
+        siDrawCrest(ctx, c, name, x, cy, size, mine ? '#ffd700' : '#6f927a', mine ? '#ffffff' : '#c0dd97');
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        // Μακρύ όνομα: πρώτα μικραίνει (ως 34px) και μόνο αν δεν χωρά σε δύο γραμμές κόβεται
+        let nfs = 46, lines;
+        for (;;) {
+            ctx.font = `700 ${nfs}px ${SI_RC}`;
+            lines = siWrap(ctx, siUpper(name), 420, 2);
+            if (!lines[lines.length - 1].endsWith('…') || nfs <= 34) break;
+            nfs -= 2;
+        }
+        let y = top + size + 66;
+        lines.forEach(l => { ctx.fillText(l, x, y); y += Math.round(nfs * 1.17); });
+        if (mine) {
+            ctx.fillStyle = '#ffd700';
+            siRoundRect(ctx, x - 45, y - 30, 90, 9, 4.5);
+            ctx.fill();
+        }
+    });
+    ctx.fillStyle = '#c0dd97';
+    ctx.font = `700 46px ${SI_RC}`;
+    ctx.textAlign = 'center';
+    ctx.fillText('VS', W / 2, cy + 16);
+
+    // Φύλλο
+    const sy = bandH - 54, R = 54, px = 72;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.moveTo(0, sy + R);
+    ctx.arcTo(0, sy, R, sy, R);
+    ctx.lineTo(W - R, sy);
+    ctx.arcTo(W, sy, W, sy + R, R);
+    ctx.lineTo(W, H); ctx.lineTo(0, H);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = '#333333';
+    siText(ctx, M.title || 'Επόμενος αγώνας', px, sy + 116, W - 2 * px, 600, 60, 40, SI_IN);
+    ctx.fillStyle = '#666666';
+    siText(ctx, [M.sub, M.isHome ? 'Εντός' : 'Εκτός'].filter(Boolean).join(' | '), px, sy + 174, W - 2 * px, 400, 40, 28, SI_IN);
+
+    let y = sy + 262;
+    if (M.when) {
+        siIconCalendar(ctx, px, y - 38, 42, '#666666');
+        ctx.fillStyle = '#333333';
+        siText(ctx, M.when, px + 66, y, W - 2 * px - 66, 400, 46, 32, SI_IN);
+    }
+    if (M.stadName) {
+        const bx = px - 14, by = y + 40, bw = W - 2 * bx, bh = M.stadNote ? 146 : 104;
+        ctx.strokeStyle = '#e6e6e6'; ctx.lineWidth = 3;
+        siRoundRect(ctx, bx, by, bw, bh, 40);
+        ctx.stroke();
+        siIconPin(ctx, bx + 52, by + bh / 2 - 22, 44, '#666666', '#ffffff');
+        ctx.fillStyle = '#333333';
+        siText(ctx, M.stadName, bx + 100, by + (M.stadNote ? 62 : 66), bw - 130, 400, 42, 28, SI_IN);
+        if (M.stadNote) {
+            ctx.fillStyle = '#666666';
+            siText(ctx, M.stadNote, bx + 100, by + 112, bw - 130, 400, 32, 24, SI_IN);
+        }
+    }
+    ctx.fillStyle = '#888888';
+    siText(ctx, SI_SLOGAN, px, H - 108, W - 2 * px, 400, 34, 24, SI_IN);
+    ctx.fillStyle = '#2d6a4f';
+    siText(ctx, siSiteLabel(), W / 2, H - 50, W - 2 * px, 600, 36, 26, SI_IN, 'center');
+    return cv;
+}
+
+// --- Προεπισκόπηση και αποστολή ---
+async function openShareImage(opts) {
+    const modal = document.getElementById('shareImgModal');
+    const box = document.getElementById('shareImgBox');
+    const hint = document.getElementById('shareImgHint');
+    if (shareImg && shareImg.url) URL.revokeObjectURL(shareImg.url);
+    shareImg = { caption: opts.caption, fullText: opts.fullText, blob: null, file: null, url: null };
+    box.innerHTML = '<div class="si-wait">Ετοιμάζω την εικόνα…</div>';
+    hint.textContent = '';
+    siButtons(false);
+    modal.style.display = 'flex';
+    try {
+        const cv = opts.withSquad ? await drawSquadImage(opts.squad) : await drawMatchImage();
+        const blob = await new Promise((res, rej) =>
+            cv.toBlob(b => (b ? res(b) : rej(new Error('toBlob'))), 'image/png'));
+        const d = (currentMatchShareData.date || '').match(/(\d{1,2})\/(\d{1,2})/);
+        const name = `olympos-${opts.withSquad ? 'squad' : 'agonas'}${d ? '-' + d[1] + '-' + d[2] : ''}.png`;
+        shareImg.blob = blob;
+        shareImg.file = new File([blob], name, { type: 'image/png' });
+        shareImg.url = URL.createObjectURL(blob);
+        box.innerHTML = `<img src="${shareImg.url}" alt="Προεπισκόπηση της εικόνας που θα σταλεί">`;
+        hint.textContent = 'Μαζί με την εικόνα φεύγει κείμενο με τον χάρτη και το site. Αν το Viber κρατήσει μόνο την εικόνα, το κείμενο είναι ήδη αντιγραμμένο: πάτα παρατεταμένα στο μήνυμα και «Επικόλληση».';
+    } catch (e) {
+        console.error('Share image:', e);
+        box.innerHTML = '<div class="si-wait">Η εικόνα δεν βγήκε σε αυτή τη συσκευή. Η «Κοινοποίηση» θα στείλει το κείμενο όπως πριν.</div>';
+    }
+    siButtons(true);
+}
+
+function siButtons(on) {
+    ['shareImgGo', 'shareImgSave', 'shareImgCopy'].forEach(id => {
+        const b = document.getElementById(id);
+        if (b) b.disabled = !on || (id === 'shareImgSave' && !(shareImg && shareImg.blob));
+    });
+}
+
+function siCopy(text, quiet) {
+    const done = () => {
+        if (quiet) return;
+        const b = document.getElementById('shareImgCopy');
+        if (!b) return;
+        const old = b.dataset.label || b.textContent;
+        b.dataset.label = old;
+        b.textContent = '✅ Αντιγράφηκε';
+        setTimeout(() => { b.textContent = old; }, 1600);
+    };
+    try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            return navigator.clipboard.writeText(text).then(done).catch(() => {});
+        }
+    } catch (e) { /* χωρίς πρόσβαση στο πρόχειρο */ }
+}
+
+function shareImgGo() {
+    if (!shareImg) return;
+    const text = shareImg.blob ? shareImg.caption : shareImg.fullText;
+    const hint = document.getElementById('shareImgHint');
+    // Αντιγραφή πρώτα (σιωπηλά), για την περίπτωση που το Viber πετάξει το κείμενο
+    if (!shareImg.noAutoCopy) siCopy(text, true);
+
+    if (shareImg.file && navigator.canShare && navigator.canShare({ files: [shareImg.file] })) {
+        navigator.share({ files: [shareImg.file], text }).catch(err => {
+            if (err && err.name === 'NotAllowedError') {
+                shareImg.noAutoCopy = true;           // ο browser δεν θέλει δύο ενέργειες σε ένα πάτημα
+                hint.textContent = 'Πάτα ξανά «Κοινοποίηση». Για το κείμενο υπάρχει η «Αντιγραφή κειμένου».';
+            } else if (err && err.name !== 'AbortError') {
+                console.error(err);
+            }
+        });
+        return;
+    }
+    // Υπολογιστής ή browser χωρίς share αρχείων: αποθήκευση εικόνας + κείμενο όπως πριν
+    if (shareImg.blob) saveShareImg();
+    if (navigator.share) {
+        navigator.share({ title: 'Επόμενος Αγώνας', text }).catch(() => {});
+    } else {
+        window.open(`viber://forward?text=${encodeURIComponent(text)}`, '_blank');
+    }
+}
+
+function saveShareImg() {
+    if (!shareImg || !shareImg.blob) return;
+    const a = document.createElement('a');
+    a.href = shareImg.url;
+    a.download = shareImg.file ? shareImg.file.name : 'olympos.png';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+}
+
+function copyShareText() {
+    if (!shareImg) return;
+    siCopy(shareImg.blob ? shareImg.caption : shareImg.fullText, false);
+}
+
+function closeShareImgModal() {
+    document.getElementById('shareImgModal').style.display = 'none';
 }
 // ===== LIKE FUNCTIONALITY =====
 async function toggleLike(newsId) {
