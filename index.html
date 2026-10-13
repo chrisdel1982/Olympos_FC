@@ -229,10 +229,11 @@ h1, h2, h3, .card-header h2, nav {
             content: none;
         }
 
-        /* Λεπτό μαύρο περίγραμμα μόνο στο σήμα της κεφαλίδας. Ακολουθεί το σχήμα
-           της ασπίδας (όχι κουτί) και «κλείνει» τις άκρες που έσβηναν στο πράσινο. */
-        .logo:not(.logo-flat) img {
-            filter: drop-shadow(0 0 0.6px rgba(0, 0, 0, 0.9));
+        /* Το logo_front.png (γυαλιστερό σήμα με τις λάμψεις) έχει γύρω του πολύ διάφανο
+           περιθώριο: η ασπίδα πιάνει μόνο ~74% του ύψους. Το μεγεθύνουμε ώστε να γεμίζει
+           το κουτί όσο και η παλιά ασπίδα. Δεν αλλάζει το πλαίσιο, οπότε η στοίχιση μένει ίδια. */
+        .logo:not(.logo-flat) img[src$="logo_front.png"] {
+            transform: scale(1.34);
         }
 
         .club-info {
@@ -4251,7 +4252,7 @@ function showToast(message, type = 'success') {
         </div>
         <div class="header-top">
             <div class="logo">
-    <img src="crests/olympos-shield.png" alt="Όλυμπος Δενδροποτάμου" data-next="crests/olympos.png"
+    <img src="logo_front.png" alt="Όλυμπος Δενδροποτάμου" data-next="crests/olympos-shield.png|crests/olympos.png"
          onerror="const n=(this.dataset.next||'').split('|').filter(Boolean);if(n.length){this.dataset.next=n.slice(1).join('|');this.src=n[0];return;}this.onerror=null;this.parentNode.classList.add('logo-flat');this.src='android-chrome-192x192.png'">
 </div>
             <div class="club-info">
