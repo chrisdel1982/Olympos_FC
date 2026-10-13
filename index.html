@@ -3861,9 +3861,9 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
    Στοίχιση φύλλου: όλα τα εικονίδια σε μία κάθετη (16px από την άκρη),
    όλα τα κείμενα σε άλλη (16+20+10). Το πλαίσιο του γηπέδου «κρέμεται»
    12px προς τα έξω, ώστε το περιεχόμενό του να πέφτει στις ίδιες γραμμές.
-   Αφίσα: ανοιχτή γκριζοπράσινη στο φωτεινό θέμα, ανθρακί στο σκοτεινό. */
-.nx{--nx-band:#e8eee9;--nx-on:var(--ink);--nx-on-muted:var(--ink-muted);
-  --nx-mine:var(--primary-color);--nx-mine-line:var(--primary-color);--nx-ring:#c9d3cb;
+   Αφίσα: το ίδιο πράσινο με την κεφαλίδα στο φωτεινό θέμα, ανθρακί στο σκοτεινό. */
+.nx{--nx-band:linear-gradient(135deg,var(--primary-color),var(--secondary-color));
+  --nx-on:#fff;--nx-on-muted:#c0dd97;--nx-mine:#fff;--nx-mine-line:var(--accent-color);--nx-ring:#6f927a;
   --nx-go:#2d6a4f;--nx-pad:16px;
   background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
   box-shadow:var(--sh-2);overflow:hidden;max-width:100%;margin-bottom:2rem}
@@ -3882,7 +3882,11 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
 .nx-crest:not(.has-img){width:56px;height:56px;margin:4px;border-radius:50%;border:2px solid var(--nx-ring)}
 .nx-side.mine .nx-crest:not(.has-img){color:var(--nx-mine);border-color:var(--nx-mine-line)}
 .nx-crest img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
-.nx-crest img.crest-flat{mix-blend-mode:multiply}   /* σβήνει το λευκό φόντο πάνω στην ανοιχτή αφίσα */
+.nx-crest img.crest-flat{mix-blend-mode:normal}
+/* Σήμα με λευκό φόντο: πάνω στη σκούρα αφίσα θα έβγαινε λευκό τετράγωνο,
+   οπότε μόνο σε αυτή την περίπτωση μπαίνει από κάτω λευκός κύκλος. */
+.nx-crest:has(img.crest-flat){background:#fff;border-radius:50%}
+.nx-crest:has(img.crest-flat) img{inset:7px;width:calc(100% - 14px);height:calc(100% - 14px)}
 .nx-name{font-family:'Roboto Condensed',sans-serif;font-weight:700;font-size:.92rem;line-height:1.2;
   text-transform:uppercase;letter-spacing:.2px;color:var(--nx-on);max-width:100%;
   overflow-wrap:normal;word-break:keep-all;hyphens:none}
@@ -3941,13 +3945,7 @@ a.nx-place:hover{border-color:var(--ink-muted)}
   color:var(--ink-muted);margin-top:4px;text-transform:uppercase}
 
 @media (prefers-color-scheme: dark){
-  .nx{--nx-band:#2c312d;--nx-on:#fff;--nx-on-muted:#b4b2a9;
-    --nx-mine:#fff;--nx-mine-line:var(--accent-color);--nx-ring:#5a605b}
-  .nx-crest img.crest-flat{mix-blend-mode:normal}
-  /* Σήμα με λευκό φόντο: στο σκούρο θα έβγαινε λευκό τετράγωνο, οπότε
-     μόνο σε αυτή την περίπτωση μπαίνει από κάτω λευκός κύκλος. */
-  .nx-crest:has(img.crest-flat){background:#fff;border-radius:50%}
-  .nx-crest:has(img.crest-flat) img{inset:7px;width:calc(100% - 14px);height:calc(100% - 14px)}
+  .nx{--nx-band:#2c312d;--nx-on-muted:#b4b2a9;--nx-ring:#5a605b}
   .nx-cd b{color:#fff}
 }
 @media (max-width:380px){
