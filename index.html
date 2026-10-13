@@ -3855,97 +3855,106 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
 .team-left{justify-content:flex-end}
 .team-right{justify-content:flex-start}
 
-/* ================= ΚΑΡΤΑ ΕΠΟΜΕΝΟΥ ΑΓΩΝΑ ================= */
-.nm{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+/* ================= ΚΑΡΤΑ ΕΠΟΜΕΝΟΥ ΑΓΩΝΑ («εισιτήριο») =================
+   Πάνω η αφίσα (ποιος παίζει), κάτω το φύλλο (τι, πότε, πού).
+   Στο PC (>=900px) γυρίζει οριζόντια: αφίσα αριστερά, φύλλο δεξιά.
+   Στοίχιση φύλλου: όλα τα εικονίδια σε μία κάθετη (16px από την άκρη),
+   όλα τα κείμενα σε άλλη (16+20+10). Το πλαίσιο του γηπέδου «κρέμεται»
+   12px προς τα έξω, ώστε το περιεχόμενό του να πέφτει στις ίδιες γραμμές. */
+.nx{--nx-band:#1f2722;--nx-go:#2d6a4f;--nx-pad:16px;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
   box-shadow:var(--sh-2);overflow:hidden;max-width:100%;margin-bottom:2rem}
-.nm.is-live{border:2px solid var(--live)}
+.nx.is-live{border:2px solid var(--live)}
 
-.nm-top{padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface-alt)}
-.nm-kind-row{text-align:center;margin-bottom:8px}
-.nm-meta{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.nm-kind{display:inline-block;font-size:.66rem;font-weight:800;letter-spacing:.8px;
-  text-transform:uppercase;padding:4px 12px;border-radius:999px;
-  background:var(--primary-color);color:#fff}
-.nm.is-live .nm-kind{background:var(--live);color:#fff}
-.nm-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#fff;
-  margin-right:7px;vertical-align:1px;animation:nmblink 1.1s infinite}
-@keyframes nmblink{0%,100%{opacity:1}50%{opacity:.25}}
-.nm-when{font-size:.8rem;font-weight:700;color:var(--ink-muted)}
-.nm-venue-tag{font-size:.64rem;font-weight:800;letter-spacing:.6px;padding:3px 9px;
-  border-radius:999px;border:1px solid var(--line);color:var(--ink-muted);white-space:nowrap}
+/* --- Αφίσα --- */
+.nx-band{background:var(--nx-band);color:#fff;display:grid;justify-content:center;
+  grid-template-columns:minmax(0,210px) 72px minmax(0,210px);align-items:start;gap:6px;
+  padding:22px 12px 40px}
+.nx-side{display:flex;flex-direction:column;align-items:center;gap:9px;text-align:center;min-width:0}
+/* Πάντα λευκός κύκλος: πάνω στη σκούρη αφίσα κάθε σήμα (διάφανο ή με λευκό φόντο)
+   κάθεται καθαρά, και τα αρχικά διαβάζονται όταν λείπει το σήμα. */
+.nx-crest{position:relative;flex:none;width:60px;height:60px;border-radius:50%;background:#fff;
+  display:grid;place-items:center;overflow:hidden;
+  font-family:'Roboto Condensed',sans-serif;font-weight:700;font-size:1rem;color:#5a5a5a}
+.nx-side.mine .nx-crest{box-shadow:0 0 0 3px var(--accent-color);color:var(--primary-color)}
+.nx-crest img{position:absolute;inset:8px;width:calc(100% - 16px);height:calc(100% - 16px);object-fit:contain}
+.nx-crest img.crest-flat{mix-blend-mode:multiply}   /* σβήνει το λευκό φόντο μέσα στον λευκό κύκλο */
+.nx-name{font-family:'Roboto Condensed',sans-serif;font-weight:700;font-size:.92rem;line-height:1.2;
+  text-transform:uppercase;letter-spacing:.2px;color:#fff;max-width:100%;
+  overflow-wrap:normal;word-break:keep-all;hyphens:none}
+.nx-mid{padding-top:21px;text-align:center}
+.nx-vs{font-family:'Roboto Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:1px;color:#b4b2a9}
+.nx-score{font-family:'Roboto Condensed',sans-serif;font-weight:700;font-size:2.1rem;line-height:1;
+  color:#fff;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:-6px}
+.nx-score em{font-style:normal;font-weight:400;font-size:1.5rem;color:#b4b2a9}
+.nx-min{margin-top:7px;font-size:.75rem;font-weight:700;color:var(--accent-color)}
 
-.nm-duel{display:grid;grid-template-columns:1fr auto 1fr;align-items:start;gap:8px;padding:22px 12px 16px}
-.nm-side{text-align:center;display:flex;flex-direction:column;align-items:center;gap:9px;min-width:0}
-.nm-side.mine::after{content:'';display:block;width:34px;height:2px;margin:2px auto 0;
-  background:var(--primary-color);border-radius:2px}
-.nm-crest{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;
-  font-family:'Roboto Condensed',sans-serif;font-weight:700;font-size:1.05rem;letter-spacing:.5px;
-  /* ΠΑΝΤΑ λευκός κύκλος, και στα δύο θέματα: έτσι το άσπρο φόντο που έχουν
-     τα περισσότερα λογότυπα χάνεται μέσα του και δεν φαίνεται σαν αυτοκόλλητο. */
-  background:#fff;border:2px solid #d9d9d9;color:#5a5a5a;overflow:hidden}
-.nm-crest img{width:100%;height:100%;object-fit:contain;padding:3px}
-.nm-side.mine .nm-crest{border-color:var(--primary-color)}
-/* Όταν υπάρχει πραγματικό σήμα: σκέτη ασπίδα, χωρίς κύκλο και περίγραμμα.
-   Ο κύκλος μένει ΜΟΝΟ για τα αρχικά, όταν λείπει το σήμα. */
-.nm-crest.has-img{width:64px;height:64px;border:0;border-radius:0;
-  background:transparent;overflow:visible;position:relative}
-/* Η εικόνα «καρφώνεται» στο κουτί: σε grid, το height:100% δεν πιάνει
-   και η ασπίδα ψήλωνε πέρα από τα 64px, πέφτοντας πάνω στο όνομα. */
-.nm-crest.has-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
-.nm-crest.has-img img{padding:0;mix-blend-mode:multiply} /* σβήνει το λευκό φόντο στο φωτεινό θέμα */
-.nm-name{font-family:'Roboto Condensed',sans-serif;font-size:.92rem;font-weight:700;
-  line-height:1.2;text-transform:uppercase;letter-spacing:.2px;max-width:100%;
-  color:var(--ink-muted);overflow-wrap:normal;word-break:keep-all;hyphens:none;
-  height:2.4em;display:flex;align-items:flex-start;justify-content:center;text-align:center}
-.nm-side.mine .nm-name{color:var(--primary-color)}
+/* --- Φύλλο --- */
+.nx-sheet{position:relative;background:var(--surface);color:var(--ink);
+  border-radius:18px 18px 0 0;margin-top:-18px;padding:16px var(--nx-pad) 18px}
+.nx-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:24px}
+.nx-kind{font-size:.78rem;color:var(--ink-muted)}
+.nx.is-live .nx-kind{color:var(--live-ink);font-weight:700;letter-spacing:.5px}
+.nx-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--live);
+  margin-right:6px;vertical-align:1px;animation:nxblink 1.1s infinite}
+@keyframes nxblink{0%,100%{opacity:1}50%{opacity:.25}}
+.nx-tag{font-size:.7rem;font-weight:700;letter-spacing:.4px;padding:3px 10px;border-radius:999px;
+  border:1px solid var(--line);color:var(--ink-muted);white-space:nowrap}
 
-.nm-mid{display:flex;flex-direction:column;align-items:center;gap:5px;padding-top:14px;
-  min-width:76px;flex:none}
-.nm-vs{font-family:'Roboto Condensed',sans-serif;font-size:1.1rem;font-weight:700;
-  color:var(--ink-muted);opacity:.6}
-.nm-score{font-family:'Roboto Condensed',sans-serif;font-size:2.3rem;font-weight:700;
-  line-height:1;color:var(--ink);white-space:nowrap;display:flex;align-items:center;gap:6px}
-.nm-score em{font-style:normal;font-weight:400;opacity:.45;font-size:1.6rem}
-.nm-min{font-size:.72rem;font-weight:800;color:var(--live-ink)}
+.nx-head{display:flex;align-items:center;gap:12px;margin-top:4px}
+.nx-titles{flex:1;min-width:0}
+.nx-title{font-size:1.2rem;font-weight:700;line-height:1.25;color:var(--ink)}
+.nx-sub{font-size:.95rem;line-height:1.3;color:var(--ink-muted);margin-top:1px}
+.nx-share{-webkit-appearance:none;appearance:none;margin:0;padding:0;font:inherit;
+  flex:none;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);
+  background:transparent;color:var(--ink-muted);display:grid;place-items:center;
+  cursor:pointer;font-size:1rem;transition:color .15s,border-color .15s}
+.nx-share:hover{color:var(--ink);border-color:var(--ink-muted)}
 
-.nm-cd{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:0 14px 16px}
-.nm-cd div{background:var(--surface-alt);border:1px solid var(--line);border-radius:var(--r-sm);
+.nx-row{display:flex;align-items:center;gap:10px}
+.nx-ico{flex:none;width:20px;text-align:center;font-size:1.05rem;color:var(--ink-muted)}
+.nx-when{margin-top:14px;font-size:1.02rem;color:var(--ink)}
+
+.nx-place{margin:10px -12px 0;padding:9px 11px;border:1px solid var(--line);border-radius:14px;
+  color:inherit;text-decoration:none;transition:border-color .15s}
+a.nx-place:hover{border-color:var(--ink-muted)}
+.nx-place-txt{flex:1;min-width:0}
+.nx-place-name{font-size:.98rem;line-height:1.3;color:var(--ink)}
+.nx-place-note{font-size:.78rem;line-height:1.3;color:var(--ink-muted);margin-top:1px}
+.nx-go{flex:none;display:inline-flex;align-items:center;gap:6px;padding:7px 11px 7px 13px;
+  border-radius:999px;background:var(--nx-go);color:#fff;font-size:.8rem;font-weight:700;white-space:nowrap}
+.nx-go i{font-size:.68rem}
+.nx-share:focus-visible,a.nx-place:focus-visible{outline:2px solid var(--accent-color);outline-offset:2px}
+
+/* Αντίστροφη μέτρηση: κρυφή, την ανάβει η startCountdown τις 3 τελευταίες μέρες */
+.nx-cd{display:none;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:14px}
+.nx-cd div{background:var(--surface-alt);border:1px solid var(--line);border-radius:var(--r-sm);
   padding:9px 2px;text-align:center}
-.nm-cd b{display:block;font-family:'Roboto Condensed',sans-serif;font-size:1.5rem;
-  font-weight:700;line-height:1;color:var(--primary-color)}
-.nm-cd s{display:block;text-decoration:none;font-size:.6rem;font-weight:700;letter-spacing:.6px;
+.nx-cd b{display:block;font-family:'Roboto Condensed',sans-serif;font-size:1.5rem;font-weight:700;
+  line-height:1;color:var(--primary-color)}
+.nx-cd s{display:block;text-decoration:none;font-size:.6rem;font-weight:700;letter-spacing:.6px;
   color:var(--ink-muted);margin-top:4px;text-transform:uppercase}
 
-.nm-place{display:flex;align-items:center;justify-content:center;gap:7px;
-  padding:0 16px 16px;font-size:.84rem;color:var(--ink-muted);text-align:center}
-
-.nm-acts{display:grid;grid-template-columns:1fr auto;border-top:1px solid var(--line)}
-.nm-go{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;
-  background:var(--primary-color);color:#fff;text-decoration:none;font-weight:800;
-  font-size:.9rem;letter-spacing:.3px}
-.nm-share{width:58px;display:grid;place-items:center;background:var(--secondary-color);
-  color:#fff;cursor:pointer;font-size:1.1rem}
-.nm-share:hover{filter:brightness(1.12)}
-
 @media (prefers-color-scheme: dark){
-  .nm-kind{background:#2d6a4f;color:#fff}
-  .nm.is-live .nm-kind{background:var(--live);color:#fff}
-  .nm-side.mine .nm-name{color:#fff}
-  .nm-side.mine::after{background:var(--accent-color)}
-  .nm-crest{border-color:#4a4a4a}
-  .nm-side.mine .nm-crest{border-color:var(--accent-color)}
-  .nm-crest.has-img img{mix-blend-mode:normal} /* στο σκούρο θέμα θέλει διάφανο PNG */
-  .nm-cd b{color:#fff}
-  .nm-go{background:#2d6a4f;color:#fff}
-  .nm-share{background:#24503b;color:#fff}
+  .nx{--nx-band:#2c312d}
+  .nx-cd b{color:#fff}
 }
-@media(max-width:430px){
-  .nm-name{font-size:.8rem}
-  .nm-crest{width:46px;height:46px}
-  .nm-crest.has-img{width:54px;height:54px}
-  .nm-duel{gap:5px;padding:18px 8px 14px}
-  .nm-mid{min-width:70px}
-  .nm-score{font-size:2rem}
+@media (max-width:380px){
+  .nx-band{grid-template-columns:minmax(0,210px) 60px minmax(0,210px);padding:20px 8px 38px}
+  .nx-crest{width:54px;height:54px}
+  .nx-name{font-size:.84rem}
+  .nx-go{padding:7px 9px 7px 11px}
+}
+/* PC: οριζόντιο εισιτήριο (τα tablet σε κάθετη θέση κρατούν τη διάταξη του κινητού) */
+@media (min-width:900px){
+  .nx{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}
+  .nx-band{grid-template-columns:minmax(0,210px) 84px minmax(0,210px);justify-content:center;
+    align-items:center;align-content:center;padding:30px 34px 30px 16px}
+  .nx-mid{padding-top:0}
+  .nx-crest{width:72px;height:72px}
+  .nx-name{font-size:1rem}
+  .nx-sheet{--nx-pad:22px;margin:0 0 0 -18px;border-radius:18px 0 0 18px;padding:20px var(--nx-pad) 22px}
+  .nx-place{margin-left:-12px;margin-right:-12px}
 }
 
 /* Ημερολόγιο — διακριτικά */
@@ -4358,8 +4367,8 @@ function showToast(message, type = 'success') {
 <!-- ΝΕΑ ΠΕΔΙΑ ΓΙΑ ΤΟΝ ΕΜΒΟΛΙΜΟ ΑΓΩΝΑ -->
 <div id="specialMatchFields" style="display: none; background: var(--surface-alt); padding: 1rem; border-radius: var(--r-md); margin-bottom: 1rem;">
     <div class="form-group">
-        <label>Τύπος Αγώνα (π.χ. ΦΙΛΙΚΟΣ, ΚΥΠΕΛΛΟ):</label>
-        <input type="text" id="specialMatchTypeInput" placeholder="π.χ. ΦΙΛΙΚΟΣ ΑΓΩΝΑΣ">
+        <label>Τύπος αγώνα (τίτλος στην κάρτα):</label>
+        <input type="text" id="specialMatchTypeInput" placeholder="π.χ. Φιλικός αγώνας">
     </div>
     
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -4377,11 +4386,11 @@ function showToast(message, type = 'success') {
 <!-- ΚΑΝΟΝΙΚΑ ΠΕΔΙΑ (για όλους τους αγώνες) -->
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
     <div class="form-group">
-        <label>Ημερομηνία (Πάνω Αριστερά):</label>
-        <input type="text" id="matchDateInput" placeholder="π.χ. ΣΑΒ 13/12">
+        <label>Ημερομηνία:</label>
+        <input type="text" id="matchDateInput" placeholder="π.χ. Σάββατο 17/10">
     </div>
     <div class="form-group">
-        <label>Ώρα (Πάνω Δεξιά):</label>
+        <label>Ώρα:</label>
         <input type="text" id="matchTimeInput" placeholder="π.χ. 10:45">
     </div>
 </div>
@@ -4670,6 +4679,10 @@ function showToast(message, type = 'success') {
                             <label style="font-size:0.8rem;">Επόμενη κατηγορία</label>
                             <input type="text" id="nextCategoryInput" placeholder="Κ16" style="width:100%;">
                         </div>
+                        <div style="grid-column:1 / -1;">
+                            <label style="font-size:0.8rem;">Διοργάνωση (τίτλος στην κάρτα αγώνα)</label>
+                            <input type="text" id="competitionInput" placeholder="K15 League 1" style="width:100%;">
+                        </div>
                     </div>
 
                     <label style="font-size:0.8rem; margin-top:10px; display:block;">
@@ -4890,6 +4903,7 @@ function showToast(message, type = 'success') {
             nextCategory: 'Κ16',
             group:        '',
             league:       'ΕΠΣ ΜΑΚΕΔΟΝΙΑΣ',
+            competition:  'K15 League 1',   // τίτλος στην κάρτα επόμενου αγώνα, όπως τον γράφει η ΕΠΣΜ
             qualify:      16      // θέσεις που προκρίνονται (πράσινη μπάρα)
         };
         let SEASON = { ...SEASON_DEFAULTS };
@@ -5040,6 +5054,7 @@ const database = firebase.database();
                 nextCategory: data.nextCategory || SEASON_DEFAULTS.nextCategory,
                 group:        data.group        ?? SEASON_DEFAULTS.group,
                 league:       data.league       || SEASON_DEFAULTS.league,
+                competition:  data.competition  || SEASON_DEFAULTS.competition,
                 qualify:      Number(data.qualify) || SEASON_DEFAULTS.qualify
             };
             TEAMS = resolveTeams(data);
@@ -5371,6 +5386,9 @@ function updateStorageMeter(usedMB) {
         category: data.category || SEASON.category,
         group:    data.group    ?? SEASON.group,
         league:   data.league   || SEASON.league,
+        competition:  data.competition  || SEASON.competition,
+        nextCategory: data.nextCategory || SEASON.nextCategory,
+        qualify:      data.qualify      || SEASON.qualify,
         teams:    Array.isArray(data.teams) && data.teams.length ? data.teams : TEAMS,
 
         // ⚽ ΤΑ ΒΑΡΙΑ, ΤΕΛΕΥΤΑΙΑ
@@ -7105,11 +7123,11 @@ function teamSide(name) {
     const mine = isMyTeam(name);
     const file = crestFor(name);
     const crest = file
-        ? `<div class="nm-crest has-img"><img src="${esc(file)}" alt="" onload="normCrest(this)"
+        ? `<div class="nx-crest has-img"><img src="${esc(file)}" alt="" onload="normCrest(this)"
              onerror="const p=this.parentNode;p.classList.remove('has-img');p.textContent='${esc(teamInitials(name))}'"></div>`
-        : `<div class="nm-crest">${esc(teamInitials(name))}</div>`;
-    return `<div class="nm-side ${mine ? 'mine' : ''}">${crest}
-              <div class="nm-name">${esc(name)}</div></div>`;
+        : `<div class="nx-crest">${esc(teamInitials(name))}</div>`;
+    return `<div class="nx-side ${mine ? 'mine' : ''}">${crest}
+              <div class="nx-name">${esc(name)}</div></div>`;
 }  // Ο τρέχων επόμενος αγώνας (για το share του squad)
 function displayNextMatch() {
     const container = document.getElementById('nextMatchContainer');
@@ -7117,12 +7135,11 @@ function displayNextMatch() {
     container.innerHTML = '';
 
     let nextMatch = null;
-    let matchType = 'ΕΠΟΜΕΝΟΣ ΑΓΩΝΑΣ';
+    let nextRound = null;   // για τον υπότιτλο («Αγωνιστική 5», «Τελικός»)
 
 // 1. Έλεγχος για Εμβόλιμο Αγώνα
 if (data.specialMatch && data.specialMatch.home) {
     nextMatch = { home: data.specialMatch.home, away: data.specialMatch.away };
-    matchType = data.specialMatch.type || 'ΕΜΒΟΛΙΜΟΣ ΑΓΩΝΑΣ';
 } else {
     // 2. Εύρεση επόμενου αγώνα (φιλτράροντας και τα αναβληθέντα)
     for (const round of data.fixtures) {
@@ -7133,8 +7150,7 @@ if (data.specialMatch && data.specialMatch.home) {
         );
         if (m) { 
             nextMatch = m; 
-            const st = koStage(round);
-            if (st) matchType = upGR(st.label);   // π.χ. «ΦΑΣΗ ΤΩΝ 16», «ΤΕΛΙΚΟΣ»
+            nextRound = round;
             break; 
         }
     }
@@ -7173,45 +7189,78 @@ if (!nextMatch) {
         );
     }
     
-    const countdownStyle = isLive ? 'display: none;' : 'display: block;';
-
-    // HTML Κάρτας
     const isHome = isMyTeam(nextMatch.home);
+    const isSpecial = !!(data.specialMatch && data.specialMatch.home);
+
+    // Τίτλος: η διοργάνωση (ή ο τύπος του εμβόλιμου). Υπότιτλος: αγωνιστική ή φάση.
+    const title = isSpecial
+        ? (data.specialMatch.type || 'Εμβόλιμος αγώνας')
+        : (SEASON.competition || [SEASON.category, SEASON.group].filter(Boolean).join(' '));
+    const sub = (!isSpecial && nextRound) ? roundLabel(nextRound) : '';
+
+    // Ημερομηνία: στο live δεν τη χρειάζεται κανείς, οπότε κρύβεται
+    const when = [data.matchDate, data.matchTime].filter(Boolean).join(', ');
+
+    // Γήπεδο: «Όνομα (σημείωση)» → όνομα σε μία γραμμή, σημείωση από κάτω
+    const stadiumRaw = (data.matchStadium || '').trim();
+    const pIdx = stadiumRaw.indexOf('(');
+    const stadName = (pIdx > 0 ? stadiumRaw.slice(0, pIdx) : stadiumRaw).trim();
+    let stadNote = pIdx > 0 ? stadiumRaw.slice(pIdx + 1).replace(/\)\s*$/, '').trim() : '';
+    if (stadNote) stadNote = stadNote.charAt(0).toUpperCase() + stadNote.slice(1);
+    const mapLink = (data.matchMapLink || '').trim();
+
+    const placeInner = `
+                <span class="nx-ico"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></span>
+                <span class="nx-place-txt">
+                    <span class="nx-place-name" style="display:block">${esc(stadName || 'Οδηγίες για το γήπεδο')}</span>
+                    ${stadNote ? `<span class="nx-place-note" style="display:block">${esc(stadNote)}</span>` : ''}
+                </span>
+                ${mapLink ? `<span class="nx-go">Οδηγίες<i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>` : ''}`;
+    const place = (stadName || mapLink)
+        ? (mapLink
+            ? `<a class="nx-row nx-place" href="${esc(mapLink)}" target="_blank" rel="noopener">${placeInner}</a>`
+            : `<div class="nx-row nx-place">${placeInner}</div>`)
+        : '';
 
     container.innerHTML = `
-        <div class="nm ${isLive ? 'is-live' : ''}">
-            <div class="nm-top">
-                <div class="nm-kind-row">
-                    <span class="nm-kind">${isLive ? '<i class="nm-dot"></i>LIVE' : esc(matchType)}</span>
-                </div>
-                <div class="nm-meta">
-                    <span class="nm-when">${esc(data.matchDate || '')}${data.matchTime ? ' · ' + esc(data.matchTime) : ''}</span>
-                    <span class="nm-venue-tag">${isHome ? 'ΕΝΤΟΣ' : 'ΕΚΤΟΣ'}</span>
-                </div>
-            </div>
-
-            <div class="nm-duel">
+        <div class="nx ${isLive ? 'is-live' : ''}">
+            <div class="nx-band">
                 ${teamSide(nextMatch.home)}
-                <div class="nm-mid">
+                <div class="nx-mid">
                     ${isLive ? `
-                        <div class="nm-score">${esc(data.liveScore.home || 0)}<em>–</em>${esc(data.liveScore.away || 0)}</div>
-                        <div class="nm-min">${esc(liveMinuteDisplay)}</div>
-                    ` : `<div class="nm-vs">VS</div>`}
+                        <div class="nx-score">${esc(data.liveScore.home || 0)}<em>–</em>${esc(data.liveScore.away || 0)}</div>
+                        <div class="nx-min">${esc(liveMinuteDisplay)}</div>
+                    ` : `<div class="nx-vs">VS</div>`}
                 </div>
                 ${teamSide(nextMatch.away)}
             </div>
 
-            <div id="countdown-display" class="nm-cd" style="${isLive ? 'display:none' : ''}"></div>
-
-            ${data.matchStadium ? `<div class="nm-place">🏟️ ${esc(data.matchStadium)}</div>` : ''}
-
-            <div class="nm-acts">
-                <a class="nm-go" href="${esc(data.matchMapLink || '#')}" target="_blank" rel="noopener">
-                    📍 Οδηγίες για το γήπεδο
-                </a>
-                <div class="nm-share" onclick="openSquadModal()" title="Κοινοποίηση">
-                    <i class="fa-solid fa-share-nodes"></i>
+            <div class="nx-sheet">
+                <div class="nx-meta">
+                    <span class="nx-kind">${isLive ? '<i class="nx-dot"></i>LIVE' : 'Επόμενος αγώνας'}</span>
+                    <span class="nx-tag">${isHome ? 'Εντός' : 'Εκτός'}</span>
                 </div>
+
+                <div class="nx-head">
+                    <div class="nx-titles">
+                        <div class="nx-title">${esc(title)}</div>
+                        ${sub ? `<div class="nx-sub">${esc(sub)}</div>` : ''}
+                    </div>
+                    <button type="button" class="nx-share" onclick="openSquadModal()"
+                            title="Αποστολή κλήσης" aria-label="Αποστολή κλήσης">
+                        <i class="fa-solid fa-share" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                ${(!isLive && when) ? `
+                <div class="nx-row nx-when">
+                    <span class="nx-ico"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i></span>
+                    <span>${esc(when)}</span>
+                </div>` : ''}
+
+                ${place}
+
+                <div id="countdown-display" class="nx-cd"></div>
             </div>
         </div>
     `;
@@ -7361,6 +7410,7 @@ function saveSeasonSetup() {
     data.category     = document.getElementById('categoryInput').value.trim()     || SEASON_DEFAULTS.category;
     data.group        = document.getElementById('groupInput').value.trim();
     data.nextCategory = document.getElementById('nextCategoryInput').value.trim() || SEASON_DEFAULTS.nextCategory;
+    data.competition  = document.getElementById('competitionInput').value.trim()  || SEASON_DEFAULTS.competition;
     data.teams        = teams;
 
     syncDerived();
@@ -8514,6 +8564,7 @@ function refreshAdminForms() {
     document.getElementById('categoryInput').value     = data.category     || SEASON.category;
     document.getElementById('groupInput').value        = data.group        || '';
     document.getElementById('nextCategoryInput').value = data.nextCategory || SEASON.nextCategory;
+    document.getElementById('competitionInput').value  = data.competition  || SEASON.competition;
     document.getElementById('teamsInput').value        = (TEAMS || []).join('\n');
     const cr = document.getElementById('crestsInput');
     if (cr) cr.value = Object.entries(data.crests || {}).map(([k, v]) => `${k} = ${v}`).join('\n');
