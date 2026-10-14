@@ -9923,13 +9923,14 @@ async function drawSquadImage(squad, coaches) {
     // Προπονητής: κάτω από τη λίστα, με αέρα, σε μικρότερα γράμματα από τους παίκτες
     if (coaches.length) {
         const yCoach = listTop + rows * rowH + 64;
-        const lab = coaches.length > 1 ? 'ΠΡΟΠΟΝΗΤΕΣ' : 'ΠΡΟΠΟΝΗΤΗΣ';
-        const cfz = Math.max(24, Math.round(fz * 0.78));
+        const lab = coaches.length > 1 ? 'Προπονητές' : 'Προπονητής';   // πεζά, σαν ετικέτα
+        const cfz = Math.max(24, Math.round(fz * 0.78));                 // το όνομα
+        const lfz = Math.max(20, Math.round(cfz * 0.82));                // η ετικέτα, λίγο μικρότερη
         ctx.textAlign = 'left';
         ctx.fillStyle = '#b4b2a9';
-        ctx.font = `700 ${cfz}px ${SI_RC}`;
+        ctx.font = `400 ${lfz}px ${SI_RC}`;
         ctx.fillText(lab, x0, yCoach);
-        const lw = ctx.measureText(lab).width + Math.round(cfz * 0.6);
+        const lw = ctx.measureText(lab).width + Math.round(cfz * 0.5);
         ctx.fillStyle = '#ffffff';
         siText(ctx, coaches.map(siCoachName).join(', '), x0 + lw, yCoach, cw - lw, 400, cfz, 18, SI_RC);
     }
