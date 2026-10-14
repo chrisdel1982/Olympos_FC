@@ -9431,11 +9431,12 @@ function openSquadModal() {
         div.style.alignItems = "center";
 
         const pos = p.position || '';
-        const isCoach = pos.includes('Προπονητής');
 
+        // Όλοι τσεκαρισμένοι, και ο προπονητής: στην εικόνα μπαίνει στη δική του γραμμή.
+        // Αν κάποια μέρα λείπει, απλώς ξετσεκάρεται.
         div.innerHTML = `
             <label style="display: flex; align-items: center; width: 100%; cursor: pointer; margin: 0;">
-                <input type="checkbox" class="squad-checkbox" value="${esc(p.name)}" data-pos="${esc(pos)}" data-num="${esc(p.number || '')}" ${!isCoach ? 'checked' : ''} style="width: 20px; height: 20px; margin-right: 10px;">
+                <input type="checkbox" class="squad-checkbox" value="${esc(p.name)}" data-pos="${esc(pos)}" data-num="${esc(p.number || '')}" checked style="width: 20px; height: 20px; margin-right: 10px;">
                 <span style="font-weight: 600; font-size: 0.9rem;">${p.number ? '#' + p.number : ''} ${esc(p.name)}</span>
                 <span style="font-size: 0.75rem; color: #888; margin-left: auto;">${esc(pos.split('/')[0])}</span>
             </label>
@@ -9531,6 +9532,7 @@ function executeShareSquad() {
 
     let squadText = "";
     const squad = [];          // για την εικόνα: { name, num, extra }
+    const coaches = [];        // για την εικόνα: ονόματα προπονητών (δική τους γραμμή)
 
     if (!hideSquad) {
         const checkboxes = document.querySelectorAll('.squad-checkbox:checked');
@@ -9542,6 +9544,8 @@ function executeShareSquad() {
 
         checkboxes.forEach(box => {
             const name = box.value;
+            // Ο προπονητής δεν είναι παίκτης: ούτε στη λίστα με τα νούμερα ούτε στους μέσους
+            if ((box.getAttribute('data-pos') || '').includes('Προπονητής')) { coaches.push(name); return; }
             const rawPos = (box.getAttribute('data-pos') || "").toUpperCase();
             const firstPos = rawPos.split('/')[0];
             const match = firstPos.match(/\(([A-Z]+)\)/);
@@ -9590,6 +9594,7 @@ function executeShareSquad() {
         if (defs.length) squadText += "\n🛡️ " + defs.join(", ");
         if (mids.length) squadText += "\n⚙️ " + mids.join(", ");
         if (fwds.length) squadText += "\n⚡ " + fwds.join(", ");
+        if (coaches.length) squadText += "\n👨‍🏫 " + coaches.join(", ");
         
         if (extras) {
             squadText += "\n🆕 " + extras;
@@ -9614,7 +9619,7 @@ function executeShareSquad() {
     const caption  = head + `\n` + tail;
     const fullText = head + `${squadText}\n` + tail;
 
-    openShareImage({ withSquad: squad.length > 0, squad, caption, fullText });
+    openShareImage({ withSquad: squad.length > 0, squad, coaches, caption, fullText });
 }
 
 // ===== SHARE ΩΣ ΕΙΚΟΝΑ =====
@@ -9833,11 +9838,19 @@ function siMatchBits() {
     };
 }
 
+// Προπονητής: μόνο το επίθετο. «Γιώργος Παπαδόπουλος» → «ΠΑΠΑΔΟΠΟΥΛΟΣ»
+function siCoachName(full) {
+    const w = String(full || '').trim().split(/\s+/);
+    return siUpper(w.length > 1 ? w.slice(1).join(' ') : w.join(' '));
+}
+
 // --- Εικόνα 1: SQUAD LIST ---
-async function drawSquadImage(squad) {
+// coaches: ονόματα προπονητών (μπαίνουν κάτω από τη λίστα, όχι ανάμεσα στους παίκτες)
+async function drawSquadImage(squad, coaches) {
     await loadShareFonts();
     const M = siMatchBits();
     const [hc, ac] = await Promise.all([siCrest(M.home), siCrest(M.away)]);
+    coaches = (coaches || []).filter(Boolean);
 
     const W = SI_W, H = SI_H;
     const cv = document.createElement('canvas');
@@ -9877,13 +9890,19 @@ async function drawSquadImage(squad) {
     const yVenue = M.stadNote ? H - 222 : H - 176;
     const yDate = yVenue - 58;
     const yRule = yDate - 62;
-    const crestSize = 130, yCrest = yRule - 40 - crestSize / 2;
+
+    // Μέγεθος σημάτων: 180 όταν η λίστα είναι ως 18 παίκτες, κατεβαίνει σιγά σιγά ως το
+    // παλιό 130 στους 26+. Όταν στριμώχνεται ο χώρος, υποχωρούν πρώτα τα σήματα, όχι τα ονόματα.
+    const rows = Math.max(1, Math.ceil(squad.length / 2));
+    const crestSize = Math.round(180 - 50 * Math.min(1, Math.max(0, (rows - 9) / 4)));
+    const yCrest = yRule - 44 - crestSize / 2;
+    const coachH = coaches.length ? 80 : 0;   // αέρας ανάμεσα σε παίκτες και κόουτς
 
     // Λίστα παικτών: δύο στήλες, πρώτα γεμίζει η αριστερή
-    const listTop = 228, listBottom = yCrest - crestSize / 2 - 46;
-    const rows = Math.max(1, Math.ceil(squad.length / 2));
+    const listTop = 228, listBottom = yCrest - crestSize / 2 - 40 - coachH;
     const rowH = Math.min(58, (listBottom - listTop) / rows);
     const fz = Math.max(22, Math.min(38, Math.round(rowH * 0.68)));
+
     const gap = 40, colW = (cw - gap) / 2, numW = Math.round(fz * 1.7), nameW = colW - numW;
     const label = p => p.extra ? siUpper(p.name) : siShortName(p.name);
     ctx.font = `400 ${fz}px ${SI_RC}`;
@@ -9901,16 +9920,30 @@ async function drawSquadImage(squad) {
         siText(ctx, label(p), x + numW, y, nameW, 400, nfz, 18, SI_RC);
     });
 
+    // Προπονητής: κάτω από τη λίστα, με αέρα, σε μικρότερα γράμματα από τους παίκτες
+    if (coaches.length) {
+        const yCoach = listTop + rows * rowH + 64;
+        const lab = coaches.length > 1 ? 'ΠΡΟΠΟΝΗΤΕΣ' : 'ΠΡΟΠΟΝΗΤΗΣ';
+        const cfz = Math.max(24, Math.round(fz * 0.78));
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#b4b2a9';
+        ctx.font = `700 ${cfz}px ${SI_RC}`;
+        ctx.fillText(lab, x0, yCoach);
+        const lw = ctx.measureText(lab).width + Math.round(cfz * 0.6);
+        ctx.fillStyle = '#ffffff';
+        siText(ctx, coaches.map(siCoachName).join(', '), x0 + lw, yCoach, cw - lw, 400, cfz, 18, SI_RC);
+    }
+
     // Σήματα, χωρίς ονόματα δίπλα
-    const dx = 150;
+    const dx = Math.round(150 + (crestSize - 130) * 0.6);
     siGlow(ctx, axis - dx, yCrest, crestSize * 1.3, crestSize * 1.15, 0.3);
     siGlow(ctx, axis + dx, yCrest, crestSize * 1.3, crestSize * 1.15, 0.3);
     siDrawCrest(ctx, hc, M.home, axis - dx, yCrest, crestSize, '#5a605b', '#b4b2a9');
     siDrawCrest(ctx, ac, M.away, axis + dx, yCrest, crestSize, '#5a605b', '#b4b2a9');
     ctx.fillStyle = '#b4b2a9';
-    ctx.font = `700 34px ${SI_RC}`;
+    ctx.font = `700 36px ${SI_RC}`;
     ctx.textAlign = 'center';
-    ctx.fillText('VS', axis, yCrest + 12);
+    ctx.fillText('VS', axis, yCrest + 13);
 
     // Χρυσή γραμμή και πληροφορίες
     ctx.fillStyle = 'rgba(255,215,0,.35)';
@@ -10048,7 +10081,7 @@ async function openShareImage(opts) {
     siButtons(false);
     modal.style.display = 'flex';
     try {
-        const cv = opts.withSquad ? await drawSquadImage(opts.squad) : await drawMatchImage();
+        const cv = opts.withSquad ? await drawSquadImage(opts.squad, opts.coaches) : await drawMatchImage();
         const blob = await new Promise((res, rej) =>
             cv.toBlob(b => (b ? res(b) : rej(new Error('toBlob'))), 'image/png'));
         const d = (currentMatchShareData.date || '').match(/(\d{1,2})\/(\d{1,2})/);
