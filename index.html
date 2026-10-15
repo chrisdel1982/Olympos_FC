@@ -3959,6 +3959,62 @@ a.nx-place:hover{border-color:var(--ink-muted)}
 .si-actions .btn:disabled{opacity:.5;cursor:default}
 @media (prefers-color-scheme: dark){ #shareImgModal .si-title{color:#c0dd97} }
 
+/* Κλήση: μία οθόνη. Κινητό: επιλογή → εικόνα → κουμπιά (κολλημένα κάτω).
+   Υπολογιστής (720px+): επιλογή αριστερά, εικόνα δεξιά. */
+#squadModal .modal-content.sq{--sq-ink:var(--primary-color);max-width:820px !important;width:94% !important;
+  height:auto !important;max-height:92vh;padding:0 !important;display:flex;flex-direction:column;overflow:hidden;
+  background:var(--surface);color:var(--ink);border-radius:var(--r-lg)}
+.sq-head{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.1rem .4rem}
+#squadModal .sq-title{margin:0;padding:0;border:0;font-size:1.15rem;color:var(--sq-ink)}
+.sq-x{background:none;border:0;font-size:1.1rem;color:var(--ink-muted);cursor:pointer;padding:6px 8px;border-radius:var(--r-sm)}
+.sq-mode{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:.3rem 1.1rem .8rem;padding:4px;
+  background:var(--surface-chip);border-radius:var(--r-md)}
+.sq-mode button{border:0;background:transparent;color:var(--ink-muted);font:inherit;font-size:.9rem;font-weight:600;
+  padding:9px 6px;border-radius:calc(var(--r-md) - 3px);cursor:pointer}
+.sq-mode button[aria-checked="true"]{background:var(--surface);color:var(--sq-ink);box-shadow:var(--sh-1)}
+.sq-grid{flex:1;min-height:0;overflow-y:auto;padding:0 1.1rem;display:grid;gap:14px}
+.sq-pick{transition:opacity .2s}
+.sq-grid.match-only{grid-template-columns:minmax(0,1fr) !important}
+.sq-grid.match-only .sq-pick{display:none}   /* οι επιλογές μένουν στη μνήμη για όταν γυρίσεις */
+.sq-grid.match-only .sq-prev{position:static;width:100%;max-width:440px;margin:0 auto}
+.sq-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.sq-count{font-size:.85rem;font-weight:600;color:var(--sq-ink)}
+.sq-quick button{background:none;border:1px solid var(--line);color:var(--ink-muted);font:inherit;font-size:.78rem;
+  padding:4px 10px;border-radius:999px;cursor:pointer;margin-left:4px}
+.sq-group{font-size:.72rem;font-weight:600;letter-spacing:.3px;color:var(--ink-muted);margin:10px 0 5px}
+.sq-chips{display:flex;flex-wrap:wrap;gap:6px}
+.sq-chip{display:inline-flex;align-items:center;gap:6px;padding:7px 11px 7px 8px;border-radius:999px;cursor:pointer;
+  border:1.5px solid var(--sq-ink);background:var(--highlight-row);color:var(--ink);font-size:.86rem;
+  user-select:none;-webkit-tap-highlight-color:transparent;transition:background .15s,border-color .15s,color .15s}
+.sq-chip input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.sq-chip:focus-within{outline:2px solid var(--accent-color);outline-offset:2px}
+.sq-chip b{min-width:22px;text-align:center;font-size:.8rem;color:var(--sq-ink)}
+.sq-chip:not(.on){background:transparent;border:1.5px dashed var(--line);color:var(--ink-muted)}
+.sq-chip:not(.on) b{color:var(--ink-muted)}
+.sq-chip:not(.on) span{text-decoration:line-through}
+.sq-extra-lab{display:block;font-size:.8rem;font-weight:600;color:var(--ink-muted);margin:14px 0 5px}
+#squadModal #extraPlayersInput{width:100%;font-size:.95rem;padding:10px 12px;border:1px solid var(--line);
+  border-radius:var(--r-sm);background:var(--surface);color:var(--ink);box-sizing:border-box}
+.sq-prev .si-box{position:relative;min-height:120px}
+.sq-prev .si-box img{max-height:46vh;margin:0 auto}
+.sq-prev .si-box.is-busy img{opacity:.55;transition:opacity .2s}
+#sqHint{margin:.5rem 1.1rem 0}
+.sq-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:.7rem 1.1rem 1rem;
+  border-top:1px solid var(--line);background:var(--surface);margin-top:.6rem}
+.sq-actions .btn{width:100%;margin:0;justify-content:center;text-align:center;white-space:nowrap;font-size:.92rem}
+.sq-actions #sqGo{grid-column:1 / -1;background:var(--primary-color);color:#fff}
+@media (min-width:720px){
+  .sq-grid{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:start}
+  .sq-prev{position:sticky;top:0}
+  .sq-prev .si-box img{max-height:62vh}
+  .sq-actions{grid-template-columns:2fr 1fr 1fr}
+  .sq-actions #sqGo{grid-column:auto}
+}
+@media (prefers-color-scheme: dark){
+  #squadModal .modal-content.sq{--sq-ink:#c0dd97}
+  .sq-mode button[aria-checked="true"]{background:#2b2b2b}
+}
+
 /* Ημερολόγιο — διακριτικά */
 .tr-cal{
     display:inline-flex; align-items:center; gap:4px;
@@ -4432,7 +4488,10 @@ function showToast(message, type = 'success') {
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px;">
             <div>
                 <small style="display:block; font-size:0.7rem;">Ημίχρονο:</small>
-                <select id="liveHalf" style="padding:5px;">
+                <!-- 2ο/3ο/4ο: η «Έναρξη» γίνεται αυτόματα η τωρινή ώρα (διορθώνεται με το χέρι).
+                     Αλλιώς έμενε η ώρα του 1ου ημιχρόνου και το λεπτό έβγαινε «70+30'». -->
+                <select id="liveHalf" style="padding:5px;"
+                        onchange="if (/^[234]$/.test(this.value)) { const d = new Date(); document.getElementById('liveStartTime').value = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'); }">
                     <option value="1">1ο</option>
                     <option value="2">2ο</option>
                     <option value="HT">HT (Ημίχρονο)</option>
@@ -4780,38 +4839,45 @@ function showToast(message, type = 'success') {
             </div>
         </div>
     </div>
-<div id="squadModal" class="modal" style="z-index: 3000;">
-    <div class="modal-content" style="max-width: 500px;">
-        <h3 style="color: var(--primary-color); border-bottom: 2px solid var(--accent-color); padding-bottom: 10px;">
-            📋 Επιλογή Αποστολής
-        </h3>
-        
-        <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;">
-            Επίλεξε τους παίκτες για το μήνυμα.
-        </p>
-
-        <div class="form-group" style="display: flex; align-items: center; gap: 10px; background: #fff3e0; padding: 10px; border-radius: var(--r-sm); border: 1px solid #ffcc80; margin-bottom: 1rem;">
-            <input type="checkbox" id="noSquadCheckbox" style="width: 20px; height: 20px; cursor: pointer;">
-            <label for="noSquadCheckbox" style="margin: 0; font-weight: bold; color: #e65100; cursor: pointer; font-size: 0.95rem;">
-                🚫 Μην στείλεις καθόλου ονόματα (Μόνο Γήπεδο/Ώρα)
-            </label>
+<!-- Κλήση: ΜΙΑ οθόνη (Οκτ. 2026). Επιλογή, εικόνα και αποστολή μαζί.
+     Οι δύο εικόνες (με αποστολή / μόνο ο αγώνας) είναι ΑΚΡΙΒΩΣ οι ίδιες με πριν:
+     φτιάχνονται από τις ίδιες drawSquadImage / drawMatchImage. Άλλαξε μόνο ο δρόμος ως εκεί. -->
+<div id="squadModal" class="modal" style="z-index: 3000;" onclick="if (event.target === this) closeSquadModal()">
+    <div class="modal-content sq">
+        <div class="sq-head">
+            <h3 class="sq-title">📋 Κλήση</h3>
+            <button type="button" class="sq-x" onclick="closeSquadModal()" aria-label="Κλείσιμο">✕</button>
         </div>
 
-        <div id="squadList" style="max-height: 250px; overflow-y: auto; background: #f9f9f9; padding: 10px; border: 1px solid #ddd; border-radius: var(--r-sm); margin-bottom: 1rem;">
+        <div class="sq-mode" role="radiogroup" aria-label="Τι εικόνα θα σταλεί">
+            <button type="button" role="radio" data-mode="squad" aria-checked="true" onclick="sqSetMode('squad')">Με την αποστολή</button>
+            <button type="button" role="radio" data-mode="match" aria-checked="false" onclick="sqSetMode('match')">Μόνο ο αγώνας</button>
+        </div>
+        <input type="checkbox" id="noSquadCheckbox" hidden>
+
+        <div class="sq-grid">
+            <div class="sq-pick" id="sqPick">
+                <div class="sq-bar">
+                    <span id="sqCount" class="sq-count"></span>
+                    <span class="sq-quick">
+                        <button type="button" onclick="sqAll(true)">Όλοι</button>
+                        <button type="button" onclick="sqAll(false)">Κανένας</button>
+                    </span>
+                </div>
+                <div id="squadList"></div>
+                <label for="extraPlayersInput" class="sq-extra-lab">➕ Από Κ14 ή άλλη ομάδα (με κόμμα)</label>
+                <input type="text" id="extraPlayersInput" placeholder="π.χ. Παπαδόπουλος (Κ13)" autocomplete="off">
             </div>
-
-        <div class="form-group">
-            <label style="font-size: 0.9rem;">➕ Προσθήκη από Κ14 (ή άλλοι):</label>
-            <input type="text" id="extraPlayersInput" placeholder="π.χ. Παπαδόπουλος (Κ13)" style="font-size: 0.9rem;">
+            <div class="sq-prev">
+                <div id="sqPreview" class="si-box"></div>
+            </div>
         </div>
 
-        <div class="modal-buttons">
-            <button class="btn" style="background: var(--primary-color); width: 100%;" onclick="shareFinalSquad()">
-                📤 Δημιουργία & Share στο Viber
-            </button>
-            <button class="btn btn-secondary" style="width: 100%;" onclick="document.getElementById('squadModal').style.display='none'">
-                Ακύρωση
-            </button>
+        <p id="sqHint" class="si-hint"></p>
+        <div class="sq-actions">
+            <button type="button" class="btn" id="sqGo" onclick="sqShare()">📤 Αποστολή</button>
+            <button type="button" class="btn btn-secondary" id="sqCopy" onclick="sqCopyText()">📋 Κείμενο</button>
+            <button type="button" class="btn btn-secondary" id="sqSave" onclick="saveShareImg()">⬇️ Αποθήκευση</button>
         </div>
     </div>
 </div>
@@ -4836,7 +4902,8 @@ function showToast(message, type = 'success') {
             🔐 Εισαγωγή PIN
         </h3>
         <p style="font-size: 0.9rem; color: #666; margin-bottom: 1.5rem;">
-            Για να κάνεις share την αποστολή, εισήγαγε το PIN:
+            Για να κάνεις share την αποστολή, εισήγαγε το PIN.<br>
+            <small style="opacity:.75">Ζητείται μία φορά σε κάθε συσκευή.</small>
         </p>
         
         <!-- PIN Display -->
@@ -5251,6 +5318,70 @@ function stampNewsSeasons() {
                 p.cleanSheets = cs[clean(p.name)] || 0;
             });
         }
+// Μόνο από τον server. Αποτυχία (χωρίς σήμα, μισό αρχείο, 404 την ώρα του deploy) = null.
+// cache:'no-cache' -> ο browser ρωτάει με ETag. Αν το αρχείο δεν άλλαξε
+// γυρίζει 304 και ΔΕΝ κατεβαίνει ξανά. (Το παλιό '?t=' κατέβαζε τα πάντα, κάθε φορά.)
+async function fetchServerData() {
+    try {
+        const response = await fetch('olympos-backup.json', { cache: 'no-cache' });
+        if (!response.ok) return null;
+        const text = await response.text();
+        let d;
+        try {
+            d = JSON.parse(text);              // ένα κόμμα που λείπει -> σφάλμα -> null
+        } catch (bad) {
+            // Ο server απάντησε, αλλά το αρχείο δεν διαβάζεται: λάθος στο χέρι.
+            // Ειδοποίηση ΜΙΑ φορά, για να μη νομίζεις ότι απλώς αργεί το GitHub.
+            if (!fetchServerData.warned) {
+                fetchServerData.warned = true;
+                console.error('olympos-backup.json: χαλασμένο JSON ->', bad.message);
+                if (typeof showToast === 'function')
+                    showToast('Τα νέα δεδομένα έχουν λάθος (κόμμα ή εισαγωγικό;). Δείχνω την τελευταία σωστή έκδοση.', 'error');
+            }
+            return null;
+        }
+        fetchServerData.warned = false;
+        if (!(d && typeof d === 'object' && !Array.isArray(d))) return null;
+        rememberGoodData(text);
+        return d;
+    } catch (e) {
+        console.warn('⚠️ Πρόβλημα σύνδεσης ή χαλασμένο JSON...', e);
+        return null;
+    }
+}
+
+// --- ΔΙΧΤΥ ΑΣΦΑΛΕΙΑΣ ΓΙΑ ΤΟ JSON (Οκτ. 2026) ---
+// Το σκορ γράφεται με το χέρι στο GitHub, μέσα στον αγώνα. Ένα κόμμα που λείπει
+// και ο JSON δεν διαβάζεται. ΠΡΙΝ: όποιος άνοιγε το site εκείνη την ώρα έβλεπε
+// άδεια σελίδα («Η νέα σεζόν έρχεται»). ΤΩΡΑ: βλέπει την τελευταία σωστή έκδοση
+// που είχε κατεβάσει η συσκευή του, μέχρι να διορθωθεί το αρχείο.
+// Αποθήκευση στο Cache Storage, ΟΧΙ στο localStorage: εκεί ζουν τα drafts του admin
+// και δεν πρέπει να τους φάμε τον χώρο.
+const GOOD_DATA_CACHE = 'olympos-data-v1';
+const GOOD_DATA_KEY = 'last-good.json';
+let lastGoodText = null;
+
+function rememberGoodData(text) {
+    if (text === lastGoodText || !('caches' in window)) return;
+    lastGoodText = text;
+    caches.open(GOOD_DATA_CACHE)
+        .then(c => c.put(GOOD_DATA_KEY, new Response(text, { headers: { 'Content-Type': 'application/json' } })))
+        .catch(() => {});
+}
+
+async function readGoodData() {
+    try {
+        if (!('caches' in window)) return null;
+        const c = await caches.open(GOOD_DATA_CACHE);
+        const r = await c.match(GOOD_DATA_KEY);
+        if (!r) return null;
+        const d = JSON.parse(await r.text());
+        return (d && typeof d === 'object' && !Array.isArray(d)) ? d : null;
+    } catch (e) {
+        return null;
+    }
+}
+
 async function loadData() {
     // 1️⃣ ΕΛΕΓΧΟΣ: Είμαι σε Admin Mode;
     const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
@@ -5265,16 +5396,17 @@ async function loadData() {
     }
     
     // 3️⃣ ΦΟΡΤΩΣΗ ΑΠΟ GITHUB (default για όλους)
-    // cache:'no-cache' -> ο browser ρωτάει με ETag. Αν το αρχείο δεν άλλαξε
-    // γυρίζει 304 και ΔΕΝ κατεβαίνει ξανά. (Το παλιό '?t=' κατέβαζε τα πάντα, κάθε φορά.)
-    try {
-        const response = await fetch('olympos-backup.json', { cache: 'no-cache' });
-        if (response.ok) return await response.json();
-    } catch (e) {
-        console.warn('⚠️ Πρόβλημα σύνδεσης...', e);
+    const fromServer = await fetchServerData();
+    if (fromServer) return fromServer;
+
+    // 3½ Η τελευταία σωστή έκδοση αυτής της συσκευής (χωρίς σήμα ή με χαλασμένο JSON)
+    const lastGood = await readGoodData();
+    if (lastGood) {
+        console.warn('📦 Εμφανίζεται η τελευταία σωστή έκδοση των δεδομένων.');
+        return lastGood;
     }
 
-    // 4️⃣ FALLBACK
+    // 4️⃣ FALLBACK (μόνο για το ΠΡΩΤΟ φόρτωμα· το auto-refresh δεν περνά ποτέ από εδώ)
     return {
         fixtures: JSON.parse(JSON.stringify(FIXTURES)),
         roster: [],
@@ -7270,6 +7402,9 @@ if (!nextMatch) {
 
     if (!isLive && data.countdownTarget) {
         startCountdown(data.countdownTarget);
+    } else if (countdownInterval) {
+        clearInterval(countdownInterval);   // στο live η αντίστροφη μέτρηση δεν έχει θέση
+        countdownInterval = null;
     }
 }
 // ΝΕΑ ΣΥΝΑΡΤΗΣΗ: Υπολογισμός Χρόνου
@@ -8940,13 +9075,73 @@ async function runRefresh() {
     }
 }
 
-// Μόλις ο χρήστης ξαναδεί τη σελίδα, ανανέωσε αμέσως
+// --- ΕΠΙΣΤΡΟΦΗ ΣΤΗΝ ΕΦΑΡΜΟΓΗ (Οκτ. 2026) ---
+// Στο κινητό η «εφαρμογή» της αρχικής οθόνης δεν κλείνει: μένει στο παρασκήνιο.
+// Το iPhone δεν στέλνει πάντα visibilitychange όταν γυρνάς από άλλη εφαρμογή,
+// γι' αυτό ακούμε και pageshow / focus / online. Όλα καταλήγουν στο ίδιο σημείο,
+// με φρένο 5" ώστε τρία events μαζί να κάνουν ΕΝΑ fetch.
+//
+// Μεγάλη απουσία (30'+): αν ο server απαντά, γίνεται ολόκληρο reload, για να
+// έρχεται και ο ΝΕΟΣ κώδικας (index.html), όχι μόνο τα νέα δεδομένα. Ποτέ χωρίς
+// σήμα (θα έβγαζε λευκή σελίδα σφάλματος μέσα στην εφαρμογή), ποτέ σε admin,
+// ποτέ με ανοιχτό παράθυρο (κλήση, PIN, share).
+const RESUME_RELOAD_MS = 30 * 60 * 1000;
+let hiddenSince = null;
+let lastResumeAt = 0;
+
+function anyModalOpen() {
+    return [...document.querySelectorAll('.modal')]
+        .some(m => getComputedStyle(m).display !== 'none');
+}
+
+async function onResume() {
+    if (document.visibilityState !== 'visible') return;
+    const now = Date.now();
+    if (now - lastResumeAt < 5000) return;
+    lastResumeAt = now;
+
+    tickLiveMinute();   // το λεπτό διορθώνεται αμέσως, πριν καν απαντήσει ο server
+
+    const away = hiddenSince ? now - hiddenSince : 0;
+    hiddenSince = null;
+    const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
+    if (away >= RESUME_RELOAD_MS && !isAdmin && navigator.onLine && !anyModalOpen()) {
+        const fresh = await fetchServerData();      // ο server απαντά; τότε μόνο reload
+        if (fresh && !anyModalOpen()) { location.reload(); return; }
+    }
+    runRefresh();
+}
+
 document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') runRefresh();
+    if (document.visibilityState === 'hidden') hiddenSince = hiddenSince || Date.now();
+    else onResume();
 });
+window.addEventListener('pageshow', e => { if (e.persisted) onResume(); });
+window.addEventListener('focus', onResume);
+window.addEventListener('online', onResume);
+
+// --- ΤΟ ΛΕΠΤΟ ΤΟΥ LIVE ΤΡΕΧΕΙ ΜΟΝΟ ΤΟΥ ---
+// ΠΡΙΝ: το λεπτό υπολογιζόταν μόνο όταν ξαναζωγραφιζόταν η κάρτα, δηλαδή μόνο
+// όταν άλλαζε το σκορ. Στο 6' άνοιγες το site, στο 6' έμενε ως το επόμενο γκολ.
+// ΤΩΡΑ: κάθε 10" αλλάζει μόνο το κείμενο του λεπτού, χωρίς δίκτυο και χωρίς
+// να ξαναστήνεται η κάρτα.
+function tickLiveMinute() {
+    const ls = data && data.liveScore;
+    if (!ls || !ls.active) return;
+    const el = document.querySelector('#nextMatchContainer .nx-min');
+    if (!el) return;
+    const t = calculateLiveMinute(ls.startTime, ls.half, ls.duration);
+    if (el.textContent !== t) el.textContent = t;
+}
+setInterval(() => {
+    if (document.visibilityState === 'visible') tickLiveMinute();
+}, 10000);
 
 async function refreshFromServer() {
-    const newData = await loadData();
+    // ΠΡΙΝ: loadData() -> σε αποτυχία γύριζε ΑΔΕΙΑ δεδομένα και η κάρτα του live
+    // γινόταν «Η νέα σεζόν έρχεται» (δοκιμασμένο). Στο γήπεδο, με ένα κάγκελο σήμα,
+    // αυτό θα γινόταν συνέχεια. ΤΩΡΑ: χωρίς απάντηση κρατάμε ό,τι ήδη δείχνουμε.
+    const newData = await fetchServerData();
 
     if (newData) {
         // 1. ΣΥΓΚΡΙΣΗ: Κρατάμε "φωτογραφία" των παλιών ρυθμίσεων Live/Αγώνα
@@ -9393,51 +9588,242 @@ let currentMatchShareData = {};
 // ΠΡΙΝ: τα στοιχεία περνούσαν ως strings μέσα σε inline onclick.
 // Μία απόστροφος στο όνομα γηπέδου («Αγ. Παύλου '84») έσπαγε το κουμπί.
 // Τώρα διαβάζονται κατευθείαν από το data.
+// Σε ποια ομάδα θέσεων ανήκει ένας παίκτης. ΙΔΙΑ λογική με πριν (μεταφέρθηκε εδώ
+// αυτούσια από την executeShareSquad), ώστε λίστα και εικόνα να συμφωνούν πάντα.
+function squadCategory(posRaw) {
+    const pos = posRaw || '';
+    if (pos.includes('Προπονητής')) return 'coach';
+    const rawPos = pos.toUpperCase();
+    const firstPos = rawPos.split('/')[0];
+    const match = firstPos.match(/\(([A-Z]+)\)/);
+    let category = 'mid';
+    if (match && match[1].length >= 2) {
+        const code = match[1];
+        const secondChar = code[1];
+        if (secondChar === 'K') {
+            category = 'gk';
+        } else if (secondChar === 'B') {
+            category = 'def';
+        } else if (secondChar === 'M') {
+            category = 'mid';
+        } else if (secondChar === 'F' || secondChar === 'S') {
+            category = 'fwd';
+        } else if (secondChar === 'W') {
+            if (code.length === 2 && code !== 'SW') {
+                category = 'fwd';
+            } else {
+                category = 'def';
+            }
+        }
+    } else {
+        if (firstPos.includes('ΤΕΡΜΑΤΟΦΥΛΑΚΑΣ')) category = 'gk';
+        else if (firstPos.includes('ΑΜΥΝΤΙΚΟΣ')) category = 'def';
+        else if (firstPos.includes('ΕΠΙΘΕΤΙΚΟΣ')) category = 'fwd';
+        else category = 'mid';
+    }
+    return category;
+}
+
+// «Σάββας Αβραμίδης» → «Σ. Αβραμίδης» (όπως στην εικόνα, αλλά με πεζά)
+function sqChipName(full) {
+    const w = String(full || '').trim().split(/\s+/);
+    return w.length < 2 ? (full || '') : w[0].charAt(0) + '. ' + w.slice(1).join(' ');
+}
+
+// PIN μία φορά ανά συσκευή. Αν αλλάξεις το CORRECT_PIN, ξαναζητείται παντού.
+function squadPinOk() {
+    try { return localStorage.getItem('squadPinOk') === CORRECT_PIN; } catch (e) { return false; }
+}
+let afterPin = null;   // τι γίνεται μετά το σωστό PIN
+
+// Το κουμπί share της κάρτας: πρώτα PIN (αν χρειάζεται), μετά η Κλήση.
+// ΠΡΙΝ: λίστα → PIN → προεπισκόπηση (τρία παράθυρα), και το PIN έβλεπε όποιος πατούσε.
 function openSquadModal() {
+    if (!squadPinOk()) {
+        afterPin = openSquadModalNow;
+        clearPin();
+        document.getElementById('pinModal').style.display = 'flex';
+        return;
+    }
+    openSquadModalNow();
+}
+
+function openSquadModalNow() {
     const nm = currentNextMatch || {};
     currentMatchShareData = {
         home: nm.home || '', away: nm.away || '',
         date: data.matchDate || '', time: data.matchTime || '',
         stadium: data.matchStadium || '', mapLink: data.matchMapLink || ''
     };
+    if (siCrest.memo) siCrest.memo.clear();   // φρέσκα σήματα σε κάθε άνοιγμα
 
     const list = document.getElementById('squadList');
-    list.innerHTML = ''; 
+    list.innerHTML = '';
 
-    document.getElementById('noSquadCheckbox').checked = false;
-
-    const players = [...data.roster].sort((a, b) => (a.number || 999) - (b.number || 999));
-
-    players.forEach(p => {
-        const div = document.createElement('div');
-        div.style.padding = "5px";
-        div.style.borderBottom = "1px solid #eee";
-        div.style.display = "flex";
-        div.style.alignItems = "center";
-
-        const pos = p.position || '';
-
-        // Όλοι τσεκαρισμένοι, και ο προπονητής: στην εικόνα μπαίνει στη δική του γραμμή.
-        // Αν κάποια μέρα λείπει, απλώς ξετσεκάρεται.
-        div.innerHTML = `
-            <label style="display: flex; align-items: center; width: 100%; cursor: pointer; margin: 0;">
-                <input type="checkbox" class="squad-checkbox" value="${esc(p.name)}" data-pos="${esc(pos)}" data-num="${esc(p.number || '')}" checked style="width: 20px; height: 20px; margin-right: 10px;">
-                <span style="font-weight: 600; font-size: 0.9rem;">${p.number ? '#' + p.number : ''} ${esc(p.name)}</span>
-                <span style="font-size: 0.75rem; color: #888; margin-left: auto;">${esc(pos.split('/')[0])}</span>
-            </label>
-        `;
-        list.appendChild(div);
+    // Ομάδες θέσεων, με τη σειρά που μπαίνουν και στο κείμενο. Μέσα σε κάθε ομάδα: αριθμός φανέλας.
+    const GROUPS = [['gk', 'Τερματοφύλακες'], ['def', 'Άμυνα'], ['mid', 'Μέση'], ['fwd', 'Επίθεση'], ['coach', 'Προπονητής']];
+    const players = [...(data.roster || [])].sort((a, b) => (a.number || 999) - (b.number || 999));
+    GROUPS.forEach(([key, label]) => {
+        const inGroup = players.filter(p => squadCategory(p.position) === key);
+        if (!inGroup.length) return;
+        const h = document.createElement('div');
+        h.className = 'sq-group';
+        h.textContent = label;
+        const wrap = document.createElement('div');
+        wrap.className = 'sq-chips';
+        // Όλοι επιλεγμένοι, και ο προπονητής: στην εικόνα μπαίνει στη δική του γραμμή.
+        // Αν κάποια μέρα λείπει, απλώς ξεπατιέται.
+        wrap.innerHTML = inGroup.map(p => `
+            <label class="sq-chip on" title="${esc(p.name)}">
+                <input type="checkbox" class="squad-checkbox" value="${esc(p.name)}" data-pos="${esc(p.position || '')}" data-num="${esc(p.number || '')}" data-order="${players.indexOf(p)}" checked>
+                <b>${p.number ? esc(p.number) : '–'}</b><span>${esc(sqChipName(p.name))}</span>
+            </label>`).join('');
+        list.append(h, wrap);
     });
+    list.querySelectorAll('.squad-checkbox').forEach(cb => cb.addEventListener('change', () => {
+        cb.closest('.sq-chip').classList.toggle('on', cb.checked);
+        sqChanged(250);
+    }));
 
-    document.getElementById('extraPlayersInput').value = '';
+    const extra = document.getElementById('extraPlayersInput');
+    extra.value = '';
+    extra.oninput = () => sqChanged(600);
+
+    document.getElementById('sqHint').textContent = '';
+    sqSetMode('squad', true);
     document.getElementById('squadModal').style.display = 'flex';
+    sqChanged(0);
 }
-function shareFinalSquad() {
-    // Κλείσιμο του squad modal
+
+function closeSquadModal() {
+    sqToken++;   // όποια εικόνα φτιαχνόταν, πετιέται
+    clearTimeout(sqTimer);
     document.getElementById('squadModal').style.display = 'none';
-    
-    // Άνοιγμα του PIN modal
-    document.getElementById('pinModal').style.display = 'flex';
+}
+
+function sqSetMode(mode, quiet) {
+    const matchOnly = mode === 'match';
+    document.getElementById('noSquadCheckbox').checked = matchOnly;
+    document.querySelectorAll('#squadModal .sq-mode button').forEach(b =>
+        b.setAttribute('aria-checked', String(b.dataset.mode === mode)));
+    const grid = document.querySelector('#squadModal .sq-grid');
+    grid.classList.toggle('match-only', matchOnly);
+    grid.scrollTop = 0;
+    if (!quiet) sqChanged(0);
+}
+
+function sqAll(on) {
+    document.querySelectorAll('#squadList .squad-checkbox').forEach(cb => {
+        cb.checked = on;
+        cb.closest('.sq-chip').classList.toggle('on', on);
+    });
+    sqChanged(150);
+}
+
+function sqUpdateCount() {
+    const boxes = [...document.querySelectorAll('#squadList .squad-checkbox')]
+        .filter(cb => squadCategory(cb.getAttribute('data-pos')) !== 'coach');
+    const on = boxes.filter(cb => cb.checked).length;
+    const extras = document.getElementById('extraPlayersInput').value
+        .split(/[,;\n]+/).map(x => x.trim()).filter(Boolean).length;
+    document.getElementById('sqCount').textContent =
+        `${on} από ${boxes.length} παίκτες` + (extras ? ` + ${extras} ακόμα` : '');
+}
+
+// --- Η εικόνα φτιάχνεται ΟΣΟ επιλέγεις ---
+// Έτσι, όταν πατάς «Αποστολή», είναι ήδη έτοιμη και το share γίνεται στο ίδιο
+// πάτημα (ο Safari δεν επιτρέπει share αν μεσολαβήσει αναμονή).
+let sqTimer = null;
+let sqToken = 0;
+let sqBuilding = false;
+function sqBusy() { return sqBuilding || !!sqTimer; }
+
+function sqChanged(delay) {
+    sqUpdateCount();
+    clearTimeout(sqTimer);
+    sqTimer = setTimeout(() => { sqTimer = null; sqRender(); }, delay || 0);
+    document.getElementById('sqPreview').classList.add('is-busy');
+}
+
+async function sqRender() {
+    const my = ++sqToken;
+    const box = document.getElementById('sqPreview');
+    const hint = document.getElementById('sqHint');
+    const opts = collectSquadShare();
+    sqBuilding = true;
+    if (!box.querySelector('img')) box.innerHTML = '<div class="si-wait">Ετοιμάζω την εικόνα…</div>';
+    box.classList.add('is-busy');
+    try {
+        const cv = opts.withSquad ? await drawSquadImage(opts.squad, opts.coaches) : await drawMatchImage();
+        const blob = await new Promise((res, rej) =>
+            cv.toBlob(b => (b ? res(b) : rej(new Error('toBlob'))), 'image/png'));
+        if (my !== sqToken) return;   // στο μεταξύ άλλαξε κάτι: αυτή η εικόνα είναι παλιά
+        const d = (currentMatchShareData.date || '').match(/(\d{1,2})\/(\d{1,2})/);
+        const name = `olympos-${opts.withSquad ? 'squad' : 'agonas'}${d ? '-' + d[1] + '-' + d[2] : ''}.png`;
+        if (shareImg && shareImg.url) URL.revokeObjectURL(shareImg.url);
+        shareImg = { caption: opts.caption, fullText: opts.fullText, blob,
+                     file: new File([blob], name, { type: 'image/png' }), url: URL.createObjectURL(blob) };
+        box.innerHTML = `<img src="${shareImg.url}" alt="Η εικόνα που θα σταλεί">`;
+        const isMatchOnly = document.getElementById('noSquadCheckbox').checked;
+        hint.textContent = (!isMatchOnly && !opts.withSquad)
+            ? 'Δεν διάλεξες παίκτες, οπότε φεύγει η εικόνα του αγώνα.'
+            : 'Φεύγει μόνο η εικόνα. Τον χάρτη και το site τα παίρνεις με το «Κείμενο».';
+    } catch (e) {
+        if (my !== sqToken) return;
+        console.error('Share image:', e);
+        if (shareImg && shareImg.url) URL.revokeObjectURL(shareImg.url);
+        shareImg = { caption: opts.caption, fullText: opts.fullText, blob: null, file: null, url: null };
+        box.innerHTML = '<div class="si-wait">Η εικόνα δεν βγήκε σε αυτή τη συσκευή. Η «Αποστολή» θα στείλει το κείμενο όπως παλιά.</div>';
+        hint.textContent = '';
+    } finally {
+        if (my === sqToken) {
+            sqBuilding = false;
+            box.classList.remove('is-busy');
+        }
+    }
+}
+
+function sqShare() {
+    const hint = document.getElementById('sqHint');
+    if (sqBusy() || !shareImg) {
+        hint.textContent = 'Η εικόνα ετοιμάζεται. Πάτα ξανά σε ένα δευτερόλεπτο.';
+        return;
+    }
+    if (shareImg.blob) {
+        // Φεύγει ΜΟΝΟ η εικόνα, χωρίς κείμενο που να την επαναλαμβάνει (όπως πριν)
+        if (shareImg.file && navigator.canShare && navigator.canShare({ files: [shareImg.file] })) {
+            navigator.share({ files: [shareImg.file] }).catch(err => {
+                if (err && err.name !== 'AbortError') console.error(err);
+            });
+        } else {
+            saveShareImg();
+            hint.textContent = 'Η εικόνα αποθηκεύτηκε. Στείλ’ την από το Viber ως συνημμένο.';
+        }
+        return;
+    }
+    // Η εικόνα δεν βγήκε: το κείμενο, όπως πριν
+    const text = shareImg.fullText;
+    if (navigator.share) navigator.share({ title: 'Επόμενος Αγώνας', text }).catch(() => {});
+    else window.open(`viber://forward?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+function sqCopyText() {
+    if (!shareImg) return;
+    const text = shareImg.blob ? shareImg.caption : shareImg.fullText;
+    const b = document.getElementById('sqCopy');
+    const hint = document.getElementById('sqHint');
+    const ok = () => {
+        const old = b.dataset.label || b.textContent;
+        b.dataset.label = old;
+        b.textContent = '✅ Αντιγράφηκε';
+        hint.textContent = 'Επικόλλησέ το στο Viber κάτω από την εικόνα.';
+        setTimeout(() => { b.textContent = old; }, 1600);
+    };
+    const fail = () => { hint.textContent = 'Η συσκευή δεν άφησε αντιγραφή. Δοκίμασε από άλλο browser.'; };
+    try {
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok, fail);
+        else fail();
+    } catch (e) { fail(); }
 }
 // PIN Configuration
 const CORRECT_PIN = '1969'; // ⚠️ ΑΛΛΑΞΕ ΤΟ PIN ΕΔΩ
@@ -9484,7 +9870,10 @@ function checkPin() {
         // ✅ Σωστό PIN - Προχωράμε στο share
         document.getElementById('pinError').textContent = '';
         closePinModal();
-        executeShareSquad(); // Η πραγματική λειτουργία share
+        try { localStorage.setItem('squadPinOk', CORRECT_PIN); } catch (e) { /* χωρίς μνήμη: θα ξαναρωτήσει */ }
+        const next = afterPin || openSquadModalNow;
+        afterPin = null;
+        next();
     } else {
         // ❌ Λάθος PIN
         document.getElementById('pinError').textContent = '❌ Λάθος PIN! Προσπάθησε ξανά.';
@@ -9509,7 +9898,7 @@ function closePinModal() {
 // Βγάζει ΕΙΚΟΝΑ (με παίκτες: «SQUAD LIST», χωρίς: η κάρτα του αγώνα) και τη στέλνει
 // μαζί με σύντομο κείμενο που έχει τα links. Η εικόνα δεν «πατιέται» στο Viber,
 // γι' αυτό χάρτης και site ταξιδεύουν στο κείμενο.
-function executeShareSquad() {
+function collectSquadShare() {
     const { home, away, date, time, stadium, mapLink } = currentMatchShareData;
     const siteUrl = window.location.origin + window.location.pathname;
     
@@ -9520,7 +9909,9 @@ function executeShareSquad() {
     const coaches = [];        // για την εικόνα: ονόματα προπονητών (δική τους γραμμή)
 
     if (!hideSquad) {
-        const checkboxes = document.querySelectorAll('.squad-checkbox:checked');
+        // Ίδια σειρά με την παλιά λίστα (κατά αριθμό φανέλας), όποια κι αν είναι η σειρά στην οθόνη
+        const checkboxes = [...document.querySelectorAll('.squad-checkbox:checked')]
+            .sort((a, b) => (+a.dataset.order || 0) - (+b.dataset.order || 0));
         
         const gks = [];
         const defs = [];
@@ -9530,38 +9921,8 @@ function executeShareSquad() {
         checkboxes.forEach(box => {
             const name = box.value;
             // Ο προπονητής δεν είναι παίκτης: ούτε στη λίστα με τα νούμερα ούτε στους μέσους
-            if ((box.getAttribute('data-pos') || '').includes('Προπονητής')) { coaches.push(name); return; }
-            const rawPos = (box.getAttribute('data-pos') || "").toUpperCase();
-            const firstPos = rawPos.split('/')[0];
-            const match = firstPos.match(/\(([A-Z]+)\)/);
-            
-            let category = 'mid';
-
-            if (match && match[1].length >= 2) {
-                const code = match[1];
-                const secondChar = code[1];
-
-                if (secondChar === 'K') {
-                    category = 'gk';
-                } else if (secondChar === 'B') {
-                    category = 'def';
-                } else if (secondChar === 'M') {
-                    category = 'mid';
-                } else if (secondChar === 'F' || secondChar === 'S') {
-                    category = 'fwd';
-                } else if (secondChar === 'W') {
-                    if (code.length === 2 && code !== 'SW') {
-                        category = 'fwd';
-                    } else {
-                        category = 'def';
-                    }
-                }
-            } else {
-                if (firstPos.includes('ΤΕΡΜΑΤΟΦΥΛΑΚΑΣ')) category = 'gk';
-                else if (firstPos.includes('ΑΜΥΝΤΙΚΟΣ')) category = 'def';
-                else if (firstPos.includes('ΕΠΙΘΕΤΙΚΟΣ')) category = 'fwd';
-                else category = 'mid';
-            }
+            const category = squadCategory(box.getAttribute('data-pos'));
+            if (category === 'coach') { coaches.push(name); return; }
 
             const num = parseInt(box.getAttribute('data-num'), 10);
             squad.push({ name, num: Number.isFinite(num) ? num : null });
@@ -9604,7 +9965,13 @@ function executeShareSquad() {
     const caption  = head + `\n` + tail;
     const fullText = head + `${squadText}\n` + tail;
 
-    openShareImage({ withSquad: squad.length > 0, squad, coaches, caption, fullText });
+    return { withSquad: squad.length > 0, squad, coaches, caption, fullText };
+}
+
+// Το παλιό μονοπάτι (παράθυρο προεπισκόπησης). Η Κλήση δεν το χρειάζεται πια,
+// μένει ως εφεδρεία και φτιάχνει την ίδια ακριβώς εικόνα.
+function executeShareSquad() {
+    openShareImage(collectSquadShare());
 }
 
 // ===== SHARE ΩΣ ΕΙΚΟΝΑ =====
@@ -9673,8 +10040,15 @@ function siLoadImg(src) {
 }
 
 // Σήμα ομάδας για τον καμβά: ίδια σειρά αρχείων και ίδια «εξισορρόπηση» με την κάρτα
+// Μνήμη ανά άνοιγμα της Κλήσης: η εικόνα ξαναφτιάχνεται σε κάθε πάτημα,
+// τα σήματα όμως φορτώνουν μία φορά. Ίδιο αποτέλεσμα, πολύ πιο γρήγορα.
 async function siCrest(name) {
     if (!name) return null;
+    const memo = siCrest.memo || (siCrest.memo = new Map());
+    if (!memo.has(name)) memo.set(name, siCrestLoad(name));
+    return memo.get(name);
+}
+async function siCrestLoad(name) {
     const chain = isMyTeam(name) ? poloCrestChain() : [crestFor(name)].filter(Boolean);
     for (const src of chain) {
         const im = await siLoadImg(src);
