@@ -2625,11 +2625,16 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
     .nm-vs, .nm-stadium { color: #aaa !important; }
 }
 /* --- ΚΟΙΝΟΠΟΙΗΣΗ ΕΙΔΗΣΗΣ ---
-   Κουμπί: το ίδιο στρογγυλό .nx-share της αρχικής.
+   Κουμπί: το ίδιο στρογγυλό .nx-share της αρχικής, στην κάτω γραμμή της είδησης,
+   δεξιά, στην ίδια γραμμή με την καρδιά (.news-actions). Μένει ορατό και όταν
+   η είδηση είναι κλειστή, και όταν τα likes κρύβονται (χωρίς Firebase).
    Κινητό: ανοίγει το μενού κοινοποίησης του τηλεφώνου (shareNews).
    Υπολογιστής: μικρό μενού κάτω από το κουμπί (.share-menu). */
-.news-item .news-header { flex-direction: row; flex-wrap: nowrap; align-items: flex-start; }
-.news-item .news-header > div:first-child { flex: 1; min-width: 0; }
+.news-actions {
+    margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--line);
+    display: flex; align-items: center; gap: 8px;
+}
+.news-actions .nx-share { margin-left: auto; }
 
 .share-menu {
     position: absolute;
@@ -4974,8 +4979,16 @@ const firebaseConfig = {
   appId: "1:8188589480:web:19d7e804a1ac81395ed99d"
 };
 
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+// Τα likes είναι στολίδι, όχι θεμέλιο: αν το Firebase δεν φορτώσει (δίκτυο, blocker),
+// το site δουλεύει κανονικά και απλώς κρύβει τις καρδιές. ΠΡΙΝ: ένα σφάλμα εδώ
+// σταματούσε όλο το script και το site έμενε χωρίς βαθμολογία, πρόγραμμα, ειδήσεις.
+let database = null;
+try {
+    firebase.initializeApp(firebaseConfig);
+    database = firebase.database();
+} catch (e) {
+    console.warn('Το Firebase δεν φόρτωσε. Τα likes κρύβονται.', e);
+}
 
         const FIXTURES = [];
 
@@ -6680,9 +6693,10 @@ function removeNewsPhoto() {
 
     const sortedNews = [...data.news].sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    // ΠΡΙΝ: 21 σειριακά await στο Firebase, ένα ανά είδηση.
-    // ΤΩΡΑ: ένα read για όλα τα likes μαζί.
-    const allLikes = await getAllLikes();
+    // Οι ειδήσεις ΔΕΝ περιμένουν τα likes. ΠΡΙΝ: αν το Firebase δεν απαντούσε,
+    // η σελίδα Νέα έμενε άδεια. ΤΩΡΑ: δείχνουμε ό,τι ξέρουμε (likesCache) και
+    // οι αριθμοί συμπληρώνονται όταν έρθουν (refreshLikeCounts, ένα read για όλα).
+    const allLikes = likesCache;
 
     // Κανονική ροή, χωρίς πτυσσόμενα. Οι παλιές σεζόν ζουν στο Ιστορικό.
     for (const newsItem of sortedNews) {
@@ -6707,8 +6721,8 @@ function removeNewsPhoto() {
                               loading="lazy" onerror="this.style.display='none';">`;
         }
 
-        const likes = allLikes[newsItem.id] || 0;
-        const hasLiked = localStorage.getItem('liked_' + newsItem.id);
+        const likes = newsItem.id in allLikes ? (allLikes[newsItem.id] || 0) : '';
+        const hasLiked = likedHere(newsItem.id);
         const likeIcon = hasLiked ? '❤️' : '🤍';
         const safeId = esc(newsItem.id);
 
@@ -6718,23 +6732,24 @@ function removeNewsPhoto() {
                     <h3 class="news-title">${esc(newsItem.title)} <span class="news-toggle">🔽</span></h3>
                     <span class="news-date">${formattedDate}</span>
                 </div>
-                <button type="button" class="nx-share" data-id="${safeId}"
-                        onclick="event.stopPropagation(); shareNews(this.dataset.id, this)"
-                        title="Κοινοποίηση" aria-label="Κοινοποίηση" aria-haspopup="menu">
-                    <i class="fa-solid fa-share" aria-hidden="true"></i>
-                </button>
             </div>
             <div class="news-content">${esc(newsItem.content).replace(/\n/g, '<br>')}</div>
             ${imageHTML}
             ${newsVideoHTML(newsItem.video)}
 
-          <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid #f0f0f0; display: flex; align-items: center; gap: 8px;">
-             <button class="like-btn" data-id="${safeId}"
+          <div class="news-actions">
+             ${database ? `<button type="button" class="like-btn" data-id="${safeId}"
+                aria-label="Μου αρέσει" aria-pressed="${hasLiked ? 'true' : 'false'}"
                 onclick="event.stopPropagation(); toggleLike(this.dataset.id)"
                 style="background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 4px 8px; transition: transform 0.2s;"
                 onmouseover="this.style.transform='scale(1.2)'"
                 onmouseout="this.style.transform='scale(1)'">${likeIcon}</button>
-             <span class="like-count" style="color: #999; font-size: 0.8rem;">${likes}</span>
+             <span class="like-count" style="color: #999; font-size: 0.8rem;">${likes}</span>` : ''}
+             <button type="button" class="nx-share" data-id="${safeId}"
+                     onclick="event.stopPropagation(); shareNews(this.dataset.id, this)"
+                     title="Κοινοποίηση" aria-label="Κοινοποίηση" aria-haspopup="menu">
+                 <i class="fa-solid fa-share" aria-hidden="true"></i>
+             </button>
           </div>
         `;
         
@@ -6745,6 +6760,7 @@ function removeNewsPhoto() {
 
         container.appendChild(div);
     }
+    refreshLikeCounts();
 }
         function addNews() {
             const title = document.getElementById('newsTitle').value.trim();
@@ -10135,36 +10151,53 @@ function closeShareImgModal() {
     document.getElementById('shareImgModal').style.display = 'none';
 }
 // ===== LIKE FUNCTIONALITY =====
+// Ο αριθμός ζει στο Firebase (likes/<id είδησης>). Το «το πάτησα» ζει στη συσκευή
+// (localStorage liked_<id>): όποιος αλλάξει browser ή σβήσει τα δεδομένα του μπορεί
+// να ξαναπατήσει. Για site ακαδημίας αρκεί· δεν υπάρχει λογαριασμός χρήστη.
+// Αλλαγές Οκτ. 2026:
+//  - Διπλό γρήγορο πάτημα έδινε +2 από τον ίδιο άνθρωπο. Τώρα όσο ένα like
+//    ταξιδεύει, το κουμπί δεν δέχεται δεύτερο (likeBusy).
+//  - Η καρδιά αλλάζει αμέσως. Αν το Firebase αρνηθεί, γυρίζει πίσω με μήνυμα
+//    (ΠΡΙΝ: δεν γινόταν τίποτα και κανείς δεν μάθαινε γιατί).
+//  - Ο αριθμός μετά το like είναι αυτός που γράφτηκε στον server, όχι υπολογισμός μας.
+let likesCache = {};
+const likeBusy = new Set();
+
+function likedHere(id) {
+    try { return !!localStorage.getItem('liked_' + id); } catch (e) { return false; }
+}
+function rememberLike(id, liked) {
+    try { liked ? localStorage.setItem('liked_' + id, 'true') : localStorage.removeItem('liked_' + id); }
+    catch (e) { /* χωρίς πρόσβαση στη μνήμη του browser */ }
+}
+
 async function toggleLike(newsId) {
-    const likesRef = database.ref('likes/' + newsId);
-    const userLikedKey = 'liked_' + newsId;
-    
-    const hasLiked = localStorage.getItem(userLikedKey);
-    
+    if (!database || likeBusy.has(newsId)) return;
+    likeBusy.add(newsId);
+
+    const wasLiked = likedHere(newsId);
+    const step = wasLiked ? -1 : 1;
+    const item = document.getElementById('news-item-' + newsId);
+    const shown = item && item.querySelector('.like-count');
+    const before = shown && shown.textContent.trim() !== '' ? (parseInt(shown.textContent, 10) || 0) : null;
+
+    // Αμέσως στην οθόνη, πριν απαντήσει ο server
+    updateLikeDisplay(newsId, before === null ? '' : Math.max(0, before + step), !wasLiked);
+
     try {
-        let newCount = 0;
-        
-        if (hasLiked) {
-            // Unlike
-            await likesRef.transaction((currentLikes) => {
-                newCount = Math.max(0, (currentLikes || 0) - 1);
-                return newCount;
-            });
-            localStorage.removeItem(userLikedKey);
-        } else {
-            // Like
-            await likesRef.transaction((currentLikes) => {
-                newCount = (currentLikes || 0) + 1;
-                return newCount;
-            });
-            localStorage.setItem(userLikedKey, 'true');
-        }
-        
-        // Ενημέρωση μόνο του συγκεκριμένου άρθρου (χωρίς reload)
-        updateLikeDisplay(newsId, newCount, !hasLiked);
-        
+        const res = await database.ref('likes/' + newsId)
+            .transaction(cur => Math.max(0, (cur || 0) + step));
+        if (!res || !res.committed) throw new Error('Η αλλαγή δεν γράφτηκε');
+        const count = res.snapshot.val() || 0;
+        rememberLike(newsId, !wasLiked);
+        likesCache[newsId] = count;
+        updateLikeDisplay(newsId, count, !wasLiked);
     } catch (error) {
         console.error('Σφάλμα like:', error);
+        updateLikeDisplay(newsId, before === null ? '' : before, wasLiked);
+        showToast('Το like δεν καταχωρήθηκε. Δοκίμασε ξανά σε λίγο.', 'error');
+    } finally {
+        likeBusy.delete(newsId);
     }
 }
 
@@ -10177,29 +10210,39 @@ function updateLikeDisplay(newsId, count, isLiked) {
     const likeBtn   = newsItem.querySelector('.like-btn');
     const likeCount = newsItem.querySelector('.like-count');
 
-    if (likeBtn)   likeBtn.textContent = isLiked ? '❤️' : '🤍';
+    if (likeBtn) {
+        likeBtn.textContent = isLiked ? '❤️' : '🤍';
+        likeBtn.setAttribute('aria-pressed', isLiked ? 'true' : 'false');
+    }
     if (likeCount) likeCount.textContent = count;
 }
 
-// Ένα read για όλα τα likes μαζί
+// Ένα read για όλα τα likes μαζί, με όριο χρόνου: αν το Firebase δεν απαντήσει
+// σε 6", τα νούμερα απλώς δεν εμφανίζονται. null = δεν ήρθαν.
 async function getAllLikes() {
+    if (!database) return null;
     try {
-        const snapshot = await database.ref('likes').once('value');
+        const snapshot = await Promise.race([
+            database.ref('likes').once('value'),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Το Firebase δεν απάντησε')), 6000))
+        ]);
         return snapshot.val() || {};
     } catch (error) {
         console.error('Σφάλμα φόρτωσης likes:', error);
-        return {};
+        return null;
     }
 }
 
-async function getLikes(newsId) {
-    try {
-        const snapshot = await database.ref('likes/' + newsId).once('value');
-        return snapshot.val() || 0;
-    } catch (error) {
-        console.error('Σφάλμα φόρτωσης likes:', error);
-        return 0;
-    }
+// Συμπληρώνει τους αριθμούς στις ειδήσεις που είναι ήδη στη σελίδα
+async function refreshLikeCounts() {
+    const all = await getAllLikes();
+    if (!all) return;
+    likesCache = all;
+    document.querySelectorAll('.news-item .like-btn[data-id]').forEach(btn => {
+        const id = btn.dataset.id;
+        if (likeBusy.has(id)) return;
+        updateLikeDisplay(id, all[id] || 0, likedHere(id));
+    });
 }
 </script>
 <button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})"><i class="fa-solid fa-chevron-up"></i></button>
