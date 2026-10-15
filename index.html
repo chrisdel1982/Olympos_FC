@@ -2626,7 +2626,7 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
 }
 /* --- ΚΟΙΝΟΠΟΙΗΣΗ ΕΙΔΗΣΗΣ ---
    Κουμπί: το ίδιο στρογγυλό .nx-share της αρχικής, στην κάτω γραμμή της είδησης,
-   δεξιά, στην ίδια γραμμή με την καρδιά (.news-actions). Μένει ορατό και όταν
+   αριστερά, αμέσως δίπλα στην καρδιά (.news-actions). Μένει ορατό και όταν
    η είδηση είναι κλειστή, και όταν τα likes κρύβονται (χωρίς Firebase).
    Κινητό: ανοίγει το μενού κοινοποίησης του τηλεφώνου (shareNews).
    Υπολογιστής: μικρό μενού κάτω από το κουμπί (.share-menu). */
@@ -2634,7 +2634,9 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
     margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--line);
     display: flex; align-items: center; gap: 8px;
 }
-.news-actions .nx-share { margin-left: auto; }
+.news-actions .nx-share { margin-left: 4px; }
+/* Σταθερό πλάτος στον αριθμό: όταν έρθουν τα likes, το share δεν μετακινείται */
+.news-actions .like-count { min-width: 2ch; }
 
 .share-menu {
     position: absolute;
@@ -9145,10 +9147,11 @@ function openShareMenu(btn, title, url) {
     });
     document.body.appendChild(menu);
 
-    // Θέση: κάτω από το κουμπί, δεξιά στοιχισμένο. Αν δεν χωράει από κάτω, από πάνω.
+    // Θέση: κάτω από το κουμπί, αριστερά στοιχισμένο (το κουμπί ζει πια αριστερά).
+    // Αν δεν χωράει από κάτω, από πάνω.
     const r = btn.getBoundingClientRect();
     const w = menu.offsetWidth, h = menu.offsetHeight;
-    let left = r.right - w;
+    let left = r.left;
     left = Math.max(8, Math.min(left, document.documentElement.clientWidth - w - 8));
     let top = r.bottom + 6;
     if (top + h > window.innerHeight - 8 && r.top - h - 6 > 8) top = r.top - h - 6;
