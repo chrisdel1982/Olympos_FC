@@ -2624,103 +2624,37 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
     .nm-team.my-team { color: #81c784 !important; }
     .nm-vs, .nm-stadium { color: #aaa !important; }
 }
-/* --- SHARE MODAL STYLES --- */
-.share-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.85);
-    z-index: 9999; /* Πάνω από όλα */
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(5px);
-}
+/* --- ΚΟΙΝΟΠΟΙΗΣΗ ΕΙΔΗΣΗΣ ---
+   Κουμπί: το ίδιο στρογγυλό .nx-share της αρχικής.
+   Κινητό: ανοίγει το μενού κοινοποίησης του τηλεφώνου (shareNews).
+   Υπολογιστής: μικρό μενού κάτω από το κουμπί (.share-menu). */
+.news-item .news-header { flex-direction: row; flex-wrap: nowrap; align-items: flex-start; }
+.news-item .news-header > div:first-child { flex: 1; min-width: 0; }
 
-.share-modal-content {
-    background: white;
-    padding: 2rem;
-    border-radius: var(--r-lg);
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    position: relative;
+.share-menu {
+    position: absolute;
+    z-index: 9999;
+    min-width: 210px;
+    padding: 4px 0;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
     box-shadow: var(--sh-3);
 }
-
-.share-options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-top: 1.5rem;
-}
-
-.share-option {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem;
-    border-radius: var(--r-md);
-    background: #f5f5f5;
+.share-menu button {
+    -webkit-appearance: none; appearance: none;
+    display: flex; align-items: center; gap: 12px;
+    width: 100%; margin: 0; padding: 10px 16px;
+    background: none; border: 0; text-align: left;
+    font: inherit; font-size: 0.92rem; color: var(--ink);
     cursor: pointer;
-    transition: transform 0.2s;
 }
+.share-menu button:hover { background: var(--surface-alt); }
+.share-menu button:focus-visible { outline: 2px solid var(--accent-color); outline-offset: -2px; }
+.share-menu i { width: 18px; text-align: center; font-size: 1.05rem; color: var(--ink-muted); }
+.share-menu .fa-whatsapp { color: #25D366; }
+.share-menu .fa-facebook-f { color: #1877F2; }
 
-.share-option:active { transform: scale(0.95); }
-
-.share-icon { font-size: 2rem; margin-bottom: 0.5rem; }
-/* ΧΡΩΜΑΤΑ ΕΙΚΟΝΙΔΙΩΝ SOCIAL MEDIA */
-.share-icon i {
-    transition: transform 0.2s;
-}
-
-/* WhatsApp Πράσινο */
-.fa-whatsapp { color: #25D366; }
-
-/* Viber Μωβ */
-.fa-viber { color: #7360f2; }
-
-/* Facebook Μπλε */
-.fa-facebook-f { color: #1877F2; }
-
-/* Copy Γκρι (και λευκό στο dark mode) */
-.fa-copy { color: #555; }
-
-/* Εφέ όταν περνάει το ποντίκι */
-.share-option:hover .share-icon i {
-    transform: scale(1.2); /* Μεγαλώνει λίγο το εικονίδιο */
-}
-
-/* DARK MODE fix για το εικονίδιο αντιγραφής */
-@media (prefers-color-scheme: dark) {
-    .fa-copy { color: #e0e0e0; }
-}
-.share-text { font-weight: 600; font-size: 0.9rem; color: #333; }
-
-/* Κουμπί Share μέσα στην είδηση */
-.btn-share {
-    background: transparent;
-    border: 1px solid var(--primary-color);
-    color: var(--primary-color);
-    padding: 0.4rem 0.8rem;
-    border-radius: var(--r-lg);
-    font-size: 0.85rem;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    margin-top: 10px;
-}
-
-/* Dark Mode υποστήριξη για το Share */
-@media (prefers-color-scheme: dark) {
-    .share-modal-content { background: #252525; border: 1px solid #444; }
-    .share-option { background: #333; }
-    .share-text { color: #fff; }
-    .btn-share { border-color: #ffd700; color: #ffd700; }
-}
 /* --- SCORERS STYLES (ΝΕΟ) --- */
 .match-scorers {
     font-size: 0.8rem;
@@ -3382,7 +3316,7 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
         @keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); } 20%, 40%, 60%, 80% { transform: translateX(10px); } }
 
         /* FULL SCREEN MODALS */
-        #shareModal .share-modal-content, #pinModal .modal-content {
+        #pinModal .modal-content {
             width: 100% !important; height: 100% !important; max-width: none !important; border-radius: 0 !important; margin: 0 !important;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
@@ -4839,43 +4773,6 @@ function showToast(message, type = 'success') {
             </div>
         </div>
     </div>
-<div id="shareModal" class="share-modal" onclick="closeShareModal()">
-    <div class="share-modal-content" onclick="event.stopPropagation()">
-        <h3 style="margin-bottom: 10px; color: var(--primary-color);">📤 Κοινοποίηση</h3>
-        <p id="shareTitlePreview" style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;"></p>
-        
-        <div class="share-options">
-            <div class="share-option" onclick="doShare('whatsapp')">
-                <div class="share-icon">
-                    <i class="fab fa-whatsapp"></i>
-                </div>
-                <div class="share-text">WhatsApp</div>
-            </div>
-            
-            <div class="share-option" onclick="doShare('viber')">
-                <div class="share-icon">
-                    <i class="fab fa-viber"></i>
-                </div>
-                <div class="share-text">Viber</div>
-            </div>
-            
-            <div class="share-option" onclick="doShare('copy')">
-                <div class="share-icon">
-                    <i class="fas fa-copy"></i>
-                </div>
-                <div class="share-text">Αντιγραφή</div>
-            </div>
-            
-             <div class="share-option" onclick="doShare('facebook')">
-                <div class="share-icon">
-                    <i class="fab fa-facebook-f"></i>
-                </div>
-                <div class="share-text">Facebook</div>
-            </div>
-        </div>
-        <button class="btn btn-secondary" style="width: 100%; margin-top: 1.5rem;" onclick="closeShareModal()">Ακύρωση</button>
-    </div>
-</div>
 <div id="squadModal" class="modal" style="z-index: 3000;">
     <div class="modal-content" style="max-width: 500px;">
         <h3 style="color: var(--primary-color); border-bottom: 2px solid var(--accent-color); padding-bottom: 10px;">
@@ -6821,9 +6718,10 @@ function removeNewsPhoto() {
                     <h3 class="news-title">${esc(newsItem.title)} <span class="news-toggle">🔽</span></h3>
                     <span class="news-date">${formattedDate}</span>
                 </div>
-                <button class="btn-share" data-id="${safeId}"
-                        onclick="event.stopPropagation(); openShareModal(this.dataset.id)">
-                    📤 Share
+                <button type="button" class="nx-share" data-id="${safeId}"
+                        onclick="event.stopPropagation(); shareNews(this.dataset.id, this)"
+                        title="Κοινοποίηση" aria-label="Κοινοποίηση" aria-haspopup="menu">
+                    <i class="fa-solid fa-share" aria-hidden="true"></i>
                 </button>
             </div>
             <div class="news-content">${esc(newsItem.content).replace(/\n/g, '<br>')}</div>
@@ -9159,57 +9057,125 @@ navLinks.forEach(n => n.addEventListener("click", () => {
         navMenu.classList.remove("active");
     }
 }));
-/* --- SHARE FUNCTIONALITY --- */
-let currentShareId = null;
-
-function openShareModal(id) {
-    const item = data.news.find(n => String(n.id) === String(id));
-    if(!item) return;
-    
-    currentShareId = id;
-    document.getElementById('shareTitlePreview').textContent = item.title;
-    document.getElementById('shareModal').style.display = 'flex';
+/* --- ΚΟΙΝΟΠΟΙΗΣΗ ΕΙΔΗΣΗΣ ---
+   Κινητό/tablet: το μενού κοινοποίησης του ίδιου του τηλεφώνου (Viber, WhatsApp,
+   Facebook, Messenger, Instagram...). Το Facebook ανοίγει από την εφαρμογή του,
+   ήδη συνδεδεμένο. Υπολογιστής: μικρό μενού κάτω από το κουμπί.
+   Ο σύνδεσμος βγαίνει ΠΑΝΤΑ από το og:url (https://www.olymposfc.gr/), όχι από τη
+   διεύθυνση της καρτέλας: έτσι δεν κουβαλά ?fbclid=… ούτε file:// από τοπικό αντίγραφο.
+   Το Facebook αγνοεί το #news-…: δείχνει την προεπισκόπηση της αρχικής σελίδας,
+   αλλά όποιος πατήσει το link προσγειώνεται στην είδηση (checkDeepLink). */
+function newsShareLink(id) {
+    const og = document.querySelector('meta[property="og:url"]');
+    const base = (og && og.content) ? og.content : (location.origin + location.pathname);
+    return base.split('#')[0].split('?')[0] + '#news-' + encodeURIComponent(id);
 }
 
-function closeShareModal() {
-    document.getElementById('shareModal').style.display = 'none';
-    currentShareId = null;
-}
-
-function doShare(platform) {
-    if(!currentShareId) return;
-    
-    // Δημιουργία του "Εξυπνου Link"
-    // Παίρνει το site url και κολλάει το #news-12345
-    const baseUrl = window.location.href.split('#')[0];
-    const deepLink = `${baseUrl}#news-${currentShareId}`;
-    
-    const item = data.news.find(n => String(n.id) === String(currentShareId));
+function shareNews(id, btn) {
+    const item = (data.news || []).find(n => String(n.id) === String(id));
     if (!item) return;
-    const text = `🔴 ${item.title}\n\nΔείτε το εδώ: ${deepLink}`;
-    
-    let url = '';
-    
-    if (platform === 'whatsapp') {
-        url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-    } else if (platform === 'viber') {
-        url = `viber://forward?text=${encodeURIComponent(text)}`;
-    } else if (platform === 'facebook') {
-        // ΣΗΜΕΙΩΣΗ: Το Facebook βλέπει μόνο το Link, όχι το κείμενο
-        url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(deepLink)}`;
-    } else if (platform === 'copy') {
-        navigator.clipboard.writeText(text).then(() => {
-            showToast(' Το Link αντιγράφηκε!');
-            closeShareModal();
-        }).catch(() => {
-            prompt("Αντιγράψτε το link:", deepLink);
+    const url = newsShareLink(id);
+    const title = item.title || 'Όλυμπος Δενδροποτάμου';
+
+    const touch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    if (touch && navigator.share) {
+        navigator.share({ title, text: title, url }).catch(err => {
+            // Ακύρωση από τον χρήστη: τίποτα. Οτιδήποτε άλλο: το μικρό μενού.
+            if (!err || err.name !== 'AbortError') openShareMenu(btn, title, url);
         });
         return;
     }
-    
-    if(url) {
-        window.open(url, '_blank');
-        closeShareModal();
+    openShareMenu(btn, title, url);
+}
+
+function closeShareMenu(returnFocus) {
+    const menu = document.getElementById('shareMenu');
+    if (!menu) return;
+    const btn = menu._btn;
+    menu.remove();
+    document.removeEventListener('click', menu._outside, true);
+    document.removeEventListener('keydown', menu._keys, true);
+    window.removeEventListener('resize', menu._resize);
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+    if (returnFocus && btn) btn.focus();
+}
+
+function openShareMenu(btn, title, url) {
+    const wasOpenHere = document.getElementById('shareMenu') && document.getElementById('shareMenu')._btn === btn;
+    closeShareMenu(false);
+    if (wasOpenHere) return;          // δεύτερο πάτημα στο ίδιο κουμπί = κλείσιμο
+
+    const enc = encodeURIComponent;
+    const actions = [
+        { icon: 'fa-solid fa-link',     label: 'Αντιγραφή συνδέσμου', run: () => copyShareLink(url) },
+        { icon: 'fa-brands fa-whatsapp', label: 'WhatsApp',           run: () => window.open(`https://wa.me/?text=${enc(title + '\n' + url)}`, '_blank', 'noopener') },
+        { icon: 'fa-brands fa-facebook-f', label: 'Facebook',         run: () => window.open(`https://www.facebook.com/sharer/sharer.php?u=${enc(url)}`, 'fbshare', 'width=626,height=520,noopener') },
+        { icon: 'fa-solid fa-envelope', label: 'Email',               run: () => { location.href = `mailto:?subject=${enc(title)}&body=${enc(title + '\n\n' + url)}`; } }
+    ];
+
+    const menu = document.createElement('div');
+    menu.id = 'shareMenu';
+    menu.className = 'share-menu';
+    menu.setAttribute('role', 'menu');
+    menu.setAttribute('aria-label', 'Κοινοποίηση');
+    actions.forEach(a => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('role', 'menuitem');
+        b.innerHTML = `<i class="${a.icon}" aria-hidden="true"></i><span></span>`;
+        b.querySelector('span').textContent = a.label;
+        b.addEventListener('click', e => { e.stopPropagation(); closeShareMenu(false); a.run(); });
+        menu.appendChild(b);
+    });
+    document.body.appendChild(menu);
+
+    // Θέση: κάτω από το κουμπί, δεξιά στοιχισμένο. Αν δεν χωράει από κάτω, από πάνω.
+    const r = btn.getBoundingClientRect();
+    const w = menu.offsetWidth, h = menu.offsetHeight;
+    let left = r.right - w;
+    left = Math.max(8, Math.min(left, document.documentElement.clientWidth - w - 8));
+    let top = r.bottom + 6;
+    if (top + h > window.innerHeight - 8 && r.top - h - 6 > 8) top = r.top - h - 6;
+    menu.style.left = (left + window.scrollX) + 'px';
+    menu.style.top  = (top  + window.scrollY) + 'px';
+
+    menu._btn = btn;
+    menu._outside = e => { if (!menu.contains(e.target) && !btn.contains(e.target)) closeShareMenu(false); };
+    menu._keys = e => {
+        const items = [...menu.querySelectorAll('button')];
+        const i = items.indexOf(document.activeElement);
+        if (e.key === 'Escape') { e.preventDefault(); closeShareMenu(true); }
+        else if (e.key === 'ArrowDown') { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+        else if (e.key === 'ArrowUp')   { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+        else if (e.key === 'Tab') { closeShareMenu(false); }
+    };
+    menu._resize = () => closeShareMenu(false);
+    document.addEventListener('click', menu._outside, true);
+    document.addEventListener('keydown', menu._keys, true);
+    window.addEventListener('resize', menu._resize);
+
+    btn.setAttribute('aria-expanded', 'true');
+    menu.querySelector('button').focus({ preventScroll: true });
+}
+
+function copyShareLink(url) {
+    const done = () => showToast('Ο σύνδεσμος αντιγράφηκε.');
+    const old = () => {
+        const ta = document.createElement('textarea');
+        ta.value = url;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        let ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+        ta.remove();
+        if (ok) done(); else prompt('Αντίγραψε τον σύνδεσμο:', url);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(done).catch(old);
+    } else {
+        old();
     }
 }
 
