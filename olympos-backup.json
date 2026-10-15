@@ -1,11 +1,11 @@
 {
   "liveScore": {
-    "active": true,
+    "active": false,
     "home": "0",
-    "away": "1",
+    "away": "0",
     "half": "1",
     "duration": "40",
-    "startTime": "15:25"
+    "startTime": "12:30"
   },
   "announcement": "",
   "matchDate": "Σάββατο 17/10",
