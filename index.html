@@ -5012,8 +5012,9 @@ function showToast(message, type = 'success') {
         //  - ΠΡΟΣΟΧΗ: μετά από αλλαγή απευθείας στο GitHub, στο admin πάτα «Ακύρωση» στην
         //    ερώτηση για drafts. Αλλιώς το επόμενο Export σβήνει ό,τι έγραψες στο GitHub.
         // ΚΛΗΣΗ: μία οθόνη (openSquadModal). PIN μία φορά ανά συσκευή (squadPinOk).
-        //  - Οι δύο εικόνες (αποστολή / μόνο ο αγώνας) είναι ΑΜΕΤΑΒΛΗΤΕΣ (απόφαση
-        //    διαχειριστή). Ελέγχθηκε byte προς byte πριν και μετά.
+        //  - Οι δύο εικόνες (αποστολή / μόνο ο αγώνας): ίδιος σχεδιασμός (15/10).
+        //    16/10: η αποστολή (SQUAD LIST) από χρυσό σε λαχανί της φανέλας, όλα τα
+        //    χρυσά της μαζί (SI_FLUO). Η «μόνο ο αγώνας» μένει χρυσή (απόφαση διαχειριστή).
         //  - Λογική θέσεων: squadCategory, ίδια για λίστα, κείμενο και εικόνα.
         // ΑΝΟΙΧΤΑ: live μέσω Firebase (θέλει κλείδωμα εγγραφών), share με link «Κλήση».
         // =========================================================
@@ -9996,7 +9997,7 @@ function executeShareSquad() {
 
 // ===== SHARE ΩΣ ΕΙΚΟΝΑ =====
 // Δύο όρθιες εικόνες 1080×1350 (στο Viber του κινητού γεμίζουν την οθόνη):
-//  • με παίκτες: «SQUAD LIST» σε ανθρακί και χρυσό, με αριθμούς φανέλας
+//  • με παίκτες: «SQUAD LIST» σε ανθρακί και λαχανί, με αριθμούς φανέλας
 //  • χωρίς παίκτες: η κάρτα του επόμενου αγώνα, όρθια
 // Η εικόνα φτιάχνεται πρώτα και εμφανίζεται σε προεπισκόπηση. Το share γίνεται με
 // ξεχωριστό πάτημα, γιατί ο Safari δεν επιτρέπει share αν μεσολαβήσει αναμονή.
@@ -10006,6 +10007,10 @@ const SI_W = 1080, SI_H = 1350;
 const SI_RC = '"RC Share","Roboto Condensed",Arial,sans-serif';
 const SI_IN = '"Inter Share",Inter,Arial,sans-serif';
 const SI_SLOGAN = 'Μια οικογένεια, μια ομάδα, ένα πάθος';
+// Λαχανί της φανέλας, μόνο για την εικόνα της αποστολής (ίδιο με το --fluo-color,
+// χωρίς τη διαφάνεια). Η εικόνα «μόνο ο αγώνας» μένει χρυσή (απόφαση 16/10/2026).
+const SI_FLUO = '#ccff00';
+const siFluo = a => `rgba(204,255,0,${a})`;
 
 // Γραμματοσειρές για τον καμβά, με δικό τους όνομα ώστε να μην αγγίζουν τη σελίδα
 // (η σελίδα φορτώνει μόνο το Roboto Condensed 700· εδώ χρειάζεται και το λεπτό 400).
@@ -10239,7 +10244,7 @@ async function drawSquadImage(squad, coaches) {
     ctx.fillRect(0, 0, W, H);
     ctx.textBaseline = 'alphabetic';
 
-    // Κάθετο «ΟΛΥΜΠΟΣ» με χρυσό περίγραμμα, ολόκληρο, από κάτω προς τα πάνω
+    // Κάθετο «ΟΛΥΜΠΟΣ» με λαχανί περίγραμμα, ολόκληρο, από κάτω προς τα πάνω
     const pad = 44, word = 'ΟΛΥΜΠΟΣ';
     ctx.font = `700 100px ${SI_RC}`;
     const fs = 100 * (H - 2 * pad) / ctx.measureText(word).width;
@@ -10251,7 +10256,7 @@ async function drawSquadImage(squad, coaches) {
     ctx.translate(bx, H - pad - (H - 2 * pad - wm.width) / 2);
     ctx.rotate(-Math.PI / 2);
     ctx.lineWidth = 3; ctx.lineJoin = 'round';
-    ctx.strokeStyle = 'rgba(255,215,0,.38)';
+    ctx.strokeStyle = siFluo(.38);
     ctx.strokeText(word, 0, 0);
     ctx.restore();
 
@@ -10292,7 +10297,7 @@ async function drawSquadImage(squad, coaches) {
         const col = i < rows ? 0 : 1, r = i < rows ? i : i - rows;
         const x = x0 + col * (colW + gap), y = listTop + r * rowH + rowH * 0.72;
         ctx.textAlign = 'left';
-        ctx.fillStyle = p.num != null ? '#ffd700' : 'rgba(255,215,0,.45)';
+        ctx.fillStyle = p.num != null ? SI_FLUO : siFluo(.45);
         ctx.font = `700 ${fz}px ${SI_RC}`;
         ctx.fillText(p.num != null ? String(p.num) : '–', x, y);
         ctx.fillStyle = '#ffffff';
@@ -10325,17 +10330,17 @@ async function drawSquadImage(squad, coaches) {
     ctx.textAlign = 'center';
     ctx.fillText('VS', axis, yCrest + 13);
 
-    // Χρυσή γραμμή και πληροφορίες
-    ctx.fillStyle = 'rgba(255,215,0,.35)';
+    // Λαχανί γραμμή και πληροφορίες
+    ctx.fillStyle = siFluo(.35);
     ctx.fillRect(x0, yRule, cw, 2);
     const ix = x0 + 56;
     if (M.when) {
-        siIconCalendar(ctx, x0, yDate - 30, 34, '#ffd700');
+        siIconCalendar(ctx, x0, yDate - 30, 34, SI_FLUO);
         ctx.fillStyle = '#e8e8e2';
         siText(ctx, M.when, ix, yDate, cw - 56, 400, 36, 26, SI_IN);
     }
     if (M.stadName) {
-        siIconPin(ctx, x0 + 17, yVenue - 32, 38, '#ffd700', '#1b201d');
+        siIconPin(ctx, x0 + 17, yVenue - 32, 38, SI_FLUO, '#1b201d');
         ctx.fillStyle = '#e8e8e2';
         siText(ctx, M.stadName, ix, yVenue, cw - 56, 400, 36, 24, SI_IN);
     }
@@ -10345,7 +10350,7 @@ async function drawSquadImage(squad, coaches) {
     }
     ctx.fillStyle = '#b4b2a9';
     siText(ctx, SI_SLOGAN, x0, ySlogan, cw, 400, 30, 22, SI_IN);
-    ctx.fillStyle = '#ffd700';
+    ctx.fillStyle = SI_FLUO;
     siText(ctx, siSiteLabel(), axis, yUrl, cw, 600, 32, 24, SI_IN, 'center');
     return cv;
 }
