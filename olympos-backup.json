@@ -187,15 +187,15 @@
         {
           "home": "ΑΝΑΓΕΝΝΗΣΗ ΕΠΑΝΟΜΗΣ",
           "away": "ΦΟΙΝΙΚΑΣ ΤΟΥΜΠΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
           "home": "ΜΕΝΤΕΚΑΣ",
           "away": "Μ.ΑΛΕΞΑΝΔΡΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 2,
           "isPostponed": false
         },
         {
@@ -208,8 +208,8 @@
         {
           "home": "ΕΛΠΙΔΑ ΤΟΥΜΠΑΣ",
           "away": "ΑΝΑΓΕΝΝΗΣΗ ΝΕΩΝ ΕΠΙΒΑΤΩΝ 2021",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
@@ -229,8 +229,8 @@
         {
           "home": "ΑΝΑΓΕΝΝΗΣΗ ΡΥΣΙΟΥ",
           "away": "ΑΕ ΠΥΛΑΙΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 3,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
@@ -327,8 +327,8 @@
         {
           "home": "ΠΑΝΑΘΗΝΑΪΚΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
           "away": "ΠΑΝΣΕΡΡΑΪΚΟΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
