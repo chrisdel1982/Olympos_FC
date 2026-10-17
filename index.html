@@ -708,7 +708,7 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
 .match-input-row[data-state="done"]  { border-left: 4px solid #2e7d32 !important; }
 .match-input-row[data-state="post"]  { border-left: 4px solid #9e9e9e !important; }
 /* Ονόματα ομάδων στη φόρμα: κείμενο που αναδιπλώνεται (όχι κομμένο input) —
-   με 58 ομάδες το «ΠΟ ΜΑΛ…» και το «ΠΟΤ ΗΡ…» πρέπει να διαβάζονται ολόκληρα */
+   με 59 ομάδες το «ΠΟ ΜΑΛ…» και το «ΠΟΤ ΗΡ…» πρέπει να διαβάζονται ολόκληρα */
 .adm-team {
     font-weight: 600;
     font-size: .85rem;
@@ -3334,6 +3334,8 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
         #custom-splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #ffffff; z-index: 999999; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease-out; }
         .splash-logo { max-width: 60%; height: auto; }
         .splash-hidden { opacity: 0; pointer-events: none; }
+        /* Σκούρο θέμα: ΠΡΙΝ λευκό splash -> λευκό φλας πριν από τη σκούρα σελίδα (17/10/2026) */
+        @media (prefers-color-scheme: dark) { #custom-splash { background-color: #121212; } }
 /* ================= ΙΣΤΟΡΙΚΟ ================= */
 .hist-hero {
     background: linear-gradient(135deg, #1a472a, #2d6a4f);
@@ -4161,18 +4163,26 @@ a.nx-place:hover{border-color:var(--ink-muted)}
 }
        </style>
        <script>
-window.addEventListener('load', function() {
-    // Εδώ ρυθμίζεις πόση ώρα θα μείνει (3000 = 3 δευτερόλεπτα)
-    setTimeout(function() {
+// --- SPLASH (αλλαγή 17/10/2026) ---
+// ΠΡΙΝ: έφευγε στο window 'load', δηλαδή αφού κατέβαιναν ΟΛΑ: εικόνες, σήματα,
+// Firebase, OneSignal, γραμματοσειρές. Στο γήπεδο με ένα κάγκελο σήμα: λευκή οθόνη
+// για δευτερόλεπτα, ενώ η βαθμολογία ήταν ήδη έτοιμη από πίσω.
+// ΤΩΡΑ: φεύγει μόλις εμφανιστούν τα δεδομένα (hideSplash στο τέλος του αρχικού
+// φορτώματος). Μένει τουλάχιστον 0,5" για να φανεί το σήμα, και το πολύ 3",
+// ό,τι κι αν συμβεί (π.χ. αργό δίκτυο ή σφάλμα).
+var SPLASH_T0 = Date.now();
+function hideSplash() {
+    if (hideSplash.done) return;
+    hideSplash.done = true;
+    var wait = Math.max(0, 500 - (Date.now() - SPLASH_T0));   // <-- ΕΛΑΧΙΣΤΟΣ ΧΡΟΝΟΣ
+    setTimeout(function () {
         var splash = document.getElementById('custom-splash');
+        if (!splash) return;
         splash.classList.add('splash-hidden');
-        
-        setTimeout(function() {
-            splash.style.display = 'none';
-        }, 500);
-        
-    }, 500); // <-- ΧΡΟΝΟΣ ΑΝΑΜΟΝΗΣ
-});
+        setTimeout(function () { splash.style.display = 'none'; }, 500);
+    }, wait);
+}
+setTimeout(hideSplash, 3000);   // <-- ΑΝΩΤΑΤΟΣ ΧΡΟΝΟΣ
 // ΣΥΝΑΡΤΗΣΗ ΓΙΑ TOAST NOTIFICATIONS 🍞
 function showToast(message, type = 'success') {
     const container = document.getElementById('toast-container');
@@ -4233,7 +4243,7 @@ function showToast(message, type = 'success') {
             </div>
         </div>
         <nav>
-    <div class="hamburger">
+    <div class="hamburger" role="button" tabindex="0" aria-label="Μενού" aria-expanded="false">
         <span class="bar"></span>
         <span class="bar"></span>
         <span class="bar"></span>
@@ -4502,7 +4512,7 @@ function showToast(message, type = 'success') {
                  </div>
                  <div>
                 <small style="display:block; font-size:0.7rem;">Διάρκεια (λ):</small>
-                <input type="number" id="liveHalfDuration" value="20" style="text-align: center; padding:5px;">
+                <input type="number" id="liveHalfDuration" value="40" style="text-align: center; padding:5px;" title="Λεπτά ΑΝΑ ΗΜΙΧΡΟΝΟ (Κ15 2026-27: 40, ή 45 όπου ισχύει)">
                  </div>
                      <div>
                 <small style="display:block; font-size:0.7rem;">Έναρξη:</small>
@@ -4957,7 +4967,7 @@ function showToast(message, type = 'success') {
 
         // =========================================================
         // ΣΗΜΕΙΩΣΕΙΣ — ΝΕΟ ΣΥΣΤΗΜΑ ΕΠΣΜ (σεζόν 2026-27, Κ15 LEAGUE 1)
-        // 58 ομάδες σε ενιαία βαθμολογία (League Phase), 16-20 μονοί αγώνες.
+        // 59 ομάδες σε ενιαία βαθμολογία (League Phase), 19 αγωνιστικές μονών αγώνων (κλήρωση 10/10).
         // Θέσεις 1-16 -> συνεχίζουν για τον τίτλο. Θέσεις 17+ -> αγώνες κατάταξης.
         // (Ονομασίες: στις 1/10 και 8/10 «Β' Φάση» λεγόταν η κατάταξη 17+· στην ανακοίνωση
         //  της 9/10 «β' φάση» λέγεται η συνέχεια των 16. Γι' αυτό οι ετικέτες είναι ουδέτερες.)
@@ -5017,6 +5027,23 @@ function showToast(message, type = 'success') {
         //    χρυσά της μαζί (SI_FLUO). Η «μόνο ο αγώνας» μένει χρυσή (απόφαση διαχειριστή).
         //  - Λογική θέσεων: squadCategory, ίδια για λίστα, κείμενο και εικόνα.
         // ΑΝΟΙΧΤΑ: live μέσω Firebase (θέλει κλείδωμα εγγραφών), share με link «Κλήση».
+        // =========================================================
+
+        // =========================================================
+        // ΑΛΛΑΓΕΣ 17/10/2026 (review κώδικα)
+        //  - ΙΣΟΒΑΘΜΙΑ σαν Champions League (rankTable): βαθμοί, ΔΤ, γκολ, γκολ εκτός,
+        //    νίκες, νίκες εκτός, βαθμοί/ΔΤ/γκολ αντιπάλων, αλφαβητικά. Χωρίς «μεταξύ τους».
+        //    Το παλιό «μεταξύ τους» ανά ζευγάρι έβγαζε κύκλους. Ίδια σειρά και στο Ιστορικό.
+        //  - SPLASH: φεύγει μόλις φανούν τα δεδομένα (0,5"-3"), όχι στο 'load'. Σκούρο στο σκούρο θέμα.
+        //  - Λεπτό live + αντίστροφη μέτρηση σε ώρα Ελλάδας (athensMinutesNow, athensTimeToMs).
+        //  - Admin: διάρκεια ημιχρόνου 40 (ήταν 20). Το "duration" είναι ΑΝΑ ΗΜΙΧΡΟΝΟ.
+        //  - Μικρά: μηνύματα σφάλματος με ⚠️, Export και σε Safari, χαλασμένο πρόχειρο
+        //    δεν αφήνει λευκό admin, μενού (χάμπουργκερ) και από πληκτρολόγιο.
+        //  - Εκτός index.html: logo_front.png 720px (397KB αντί για 1,6MB, ίδιο σήμα),
+        //    manifest.json με icon-192.png / icon-512.png. Το start_url ΜΕΝΕΙ "index.html"
+        //    (αν αλλάξει, οι εγκατεστημένες εφαρμογές μπορεί να φανούν σαν άλλη εφαρμογή).
+        //  - ΔΕΝ ΑΛΛΑΞΑΝ ΕΠΙΤΗΔΕΣ: Google Analytics (απόφαση διαχειριστή), η ερώτηση για τα
+        //    drafts (OK = πρόχειρο, Ακύρωση = GitHub — η συνήθεια μένει ίδια), Firebase.
         // =========================================================
         const KO_STAGES = [
             { key: 'R16', round: 101, label: 'Φάση των 16',  ties: 8, at: 'στη Φάση των 16' },
@@ -5411,8 +5438,14 @@ async function loadData() {
     if (isAdmin) {
         const saved = localStorage.getItem('footballData');
         if (saved) {
-            console.log('⚙️ Admin Mode: Χρήση τοπικών drafts.');
-            return JSON.parse(saved);
+            try {
+                const d = JSON.parse(saved);
+                console.log('⚙️ Admin Mode: Χρήση τοπικών drafts.');
+                return d;
+            } catch (e) {
+                // ΠΡΙΝ: χαλασμένο πρόχειρο = σφάλμα = άδειο site. ΤΩΡΑ: συνεχίζει από το GitHub.
+                console.warn('Χαλασμένο πρόχειρο, φόρτωση από GitHub.', e);
+            }
         }
     }
     
@@ -5434,18 +5467,49 @@ async function loadData() {
         news: []
     };
 }
+        // =========================================================
+        // ΩΡΑ ΕΛΛΑΔΑΣ (17/10/2026) — για το λεπτό του live και την αντίστροφη μέτρηση.
+        // Οι ώρες στο JSON («12:30», «2026-10-17T12:30») είναι πάντα ώρα Ελλάδας.
+        // Όπου δεν υπάρχει Intl (πολύ παλιός browser), πέφτει στην ώρα της συσκευής.
+        // =========================================================
+        function athensMinutesNow() {
+            try {
+                const p = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Athens', hour: '2-digit',
+                            minute: '2-digit', second: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+                const g = t => Number((p.find(x => x.type === t) || {}).value) || 0;
+                return (g('hour') % 24) * 60 + g('minute') + g('second') / 60;
+            } catch (e) {
+                const d = new Date();
+                return d.getHours() * 60 + d.getMinutes() + d.getSeconds() / 60;
+            }
+        }
+        // «2026-10-17T12:30» (χωρίς ζώνη, όπως το γράφει το admin) -> χρονική στιγμή σε ms
+        function athensTimeToMs(str) {
+            const s = String(str || '');
+            if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/.test(s)) return new Date(s).getTime();
+            const asUTC = Date.parse(s + 'Z');
+            try {
+                const p = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Athens', year: 'numeric',
+                            month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
+                            second: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(asUTC));
+                const g = t => Number((p.find(x => x.type === t) || {}).value) || 0;
+                const shown = Date.UTC(g('year'), g('month') - 1, g('day'), g('hour') % 24, g('minute'), g('second'));
+                return asUTC - (shown - asUTC);
+            } catch (e) {
+                return new Date(s).getTime();
+            }
+        }
         function calculateLiveMinute(startTime, half, duration) {
     if (half === "FT") return "FT";
     if (half === "HT") return "HT";
     if (!startTime) return "LIVE";
 
-    const now = new Date();
-    const [startHours, startMinutes] = startTime.split(':');
-    const start = new Date();
-    start.setHours(startHours, startMinutes, 0);
+    const [startHours, startMinutes] = String(startTime).split(':');
 
-    // Διαφορά σε λεπτά
-    let diffInMinutes = Math.floor((now - start) / 60000);
+    // Διαφορά σε λεπτά, σε ΩΡΑ ΕΛΛΑΔΑΣ (17/10/2026). ΠΡΙΝ: ώρα της συσκευής, οπότε
+    // όποιος έβλεπε από Γερμανία είχε «0'» για μία ώρα. Η «12:30» είναι ώρα Ελλάδας.
+    let diffInMinutes = Math.floor(athensMinutesNow() - (Number(startHours) * 60 + Number(startMinutes)));
+    if (!isFinite(diffInMinutes)) return "LIVE";   // λάθος μορφή ώρας (π.χ. «12.30»)
     
     if (diffInMinutes < 0) return "0'";
 
@@ -5544,8 +5608,11 @@ function updateStorageMeter(usedMB) {
     const link = document.createElement('a');
     link.href = url;
     link.download = `olympos-backup-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
     link.click();
-    URL.revokeObjectURL(url);
+    link.remove();
+    // ΠΡΙΝ: revoke αμέσως μετά το κλικ -> σε Safari το κατέβασμα μπορούσε να χαθεί (17/10/2026)
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
     showToast('Τα δεδομένα εξήχθησαν - Live Score στην κορυφή!');
 }
 
@@ -5590,7 +5657,7 @@ function updateStorageMeter(usedMB) {
                     }
                 } catch (error) {
                     console.error('Import Error:', error);
-                    showToast(' Σφάλμα: Μη έγκυρο αρχείο δεδομένων!\n\nΛεπτομέρειες: ' + error.message);
+                    showToast('Σφάλμα: Μη έγκυρο αρχείο δεδομένων! Λεπτομέρειες: ' + esc(error.message), 'error');
                 }
             };
             reader.readAsText(file);
@@ -5672,35 +5739,54 @@ function updateStorageMeter(usedMB) {
         team.gd = team.gf - team.ga;
     });
 
-    // --- Ταξινόμηση κατά κανονισμό ΕΠΣ ---
-    // 1) Βαθμοί  2) Αποτελέσματα ΜΕΤΑΞΥ ΤΟΥΣ  3) Διαφορά τερμάτων  4) Τέρματα υπέρ
-    const sorted = Object.values(standings).sort((a, b) => {
-        if (b.points !== a.points) return b.points - a.points;
-        const h2h = headToHead(a.team, b.team);
-        if (h2h !== 0) return h2h;
-        if (b.gd !== a.gd) return b.gd - a.gd;
-        return b.gf - a.gf;
-    });
-
-    return sorted;
+    return rankTable(Object.values(standings), leagueRounds());
 }
 
-// Μίνι-βαθμολογία μόνο ανάμεσα σε δύο ομάδες (για ισοβαθμία)
-function headToHead(teamA, teamB) {
-    let pa = 0, pb = 0, ga = 0, gb = 0;
-    leagueRounds().forEach(r => (r.matches || []).forEach(m => {
-        if (m.isPostponed || m.homeScore === null || m.awayScore === null) return;
-        const pair = (m.home === teamA && m.away === teamB) || (m.home === teamB && m.away === teamA);
-        if (!pair) return;
-        const aIsHome = m.home === teamA;
-        const sa = aIsHome ? m.homeScore : m.awayScore;
-        const sb = aIsHome ? m.awayScore : m.homeScore;
-        ga += sa; gb += sb;
-        if (sa > sb) pa += 3; else if (sa < sb) pb += 3; else { pa++; pb++; }
+// =========================================================
+// ΙΣΟΒΑΘΜΙΑ — όπως η League Phase του Champions League (απόφαση 17/10/2026)
+// ΠΡΙΝ: βαθμοί -> «μεταξύ τους» ανά ΖΕΥΓΑΡΙ -> ΔΤ -> γκολ. Με 59 ομάδες που δεν
+// παίζουν όλες μεταξύ τους αυτό έβγαζε κύκλους (Α>Β στα γκολ, Β>Γ στη ΔΤ, Γ>Α στο
+// μεταξύ τους): σωστή σειρά δεν υπήρχε και η θέση κρινόταν από τη σειρά των ονομάτων
+// στη λίστα. Σε δοκιμές, περίπου μία σεζόν στις πέντε άλλαζε ακόμα και ποιοι μπαίνουν στους 16.
+// ΤΩΡΑ: κάθε κριτήριο είναι νούμερο της ίδιας της ομάδας, άρα η σειρά βγαίνει πάντα ίδια.
+// Σειρά (κανονισμός UEFA 2026/27, άρθρο 18): βαθμοί, ΔΤ, γκολ, γκολ εκτός, νίκες,
+// νίκες εκτός, βαθμοί αντιπάλων, ΔΤ αντιπάλων, γκολ αντιπάλων. Κάρτες και συντελεστή
+// δεν έχουμε: στη θέση τους μπαίνει η αλφαβητική σειρά, για να μην αποφασίζει η τύχη.
+// Αν η προκήρυξη της ΕΠΣΜ ορίσει άλλα κριτήρια, αλλάζει ΜΟΝΟ αυτή η συνάρτηση.
+// Τη χρησιμοποιούν η βαθμολογία, το νοκ άουτ (1-16) και το Ιστορικό.
+// =========================================================
+function rankTable(rows, rounds) {
+    const byTeam = {}, ex = {};
+    rows.forEach(t => { byTeam[t.team] = t; ex[t.team] = { awayGF: 0, awayW: 0, opp: [] }; });
+    rounds.forEach(r => (r.matches || []).forEach(m => {
+        if (m.isPostponed || m.homeScore == null || m.awayScore == null) return;
+        const h = ex[m.home], a = ex[m.away];
+        if (!h || !a) return;
+        a.awayGF += m.awayScore;
+        if (m.awayScore > m.homeScore) a.awayW++;
+        h.opp.push(m.away);
+        a.opp.push(m.home);
     }));
-    if (pa !== pb) return pb - pa;
-    if (ga !== gb) return gb - ga;
-    return 0;
+    const gd = t => (t ? t.gf - t.ga : 0);
+    rows.forEach(t => {
+        const e = ex[t.team], opp = e.opp.map(o => byTeam[o]).filter(Boolean);
+        e.oppPts = opp.reduce((s, o) => s + o.points, 0);
+        e.oppGD  = opp.reduce((s, o) => s + gd(o), 0);
+        e.oppGF  = opp.reduce((s, o) => s + o.gf, 0);
+    });
+    return [...rows].sort((x, y) => {
+        const a = ex[x.team], b = ex[y.team];
+        return (y.points - x.points)
+            || (gd(y) - gd(x))
+            || (y.gf - x.gf)
+            || (b.awayGF - a.awayGF)
+            || (y.won - x.won)
+            || (b.awayW - a.awayW)
+            || (b.oppPts - a.oppPts)
+            || (b.oppGD - a.oppGD)
+            || (b.oppGF - a.oppGF)
+            || String(x.team).localeCompare(String(y.team), 'el');
+    });
 }
 
 function displayStandings() {
@@ -6464,7 +6550,7 @@ function addPlayer() {
     const isCaptain = document.getElementById('isCaptainPlayer').checked;
 
     if (!name || !position) {
-        showToast(' Συμπλήρωσε Όνομα και Θέση!');
+        showToast('Συμπλήρωσε Όνομα και Θέση!', 'error');
         return;
     }
     
@@ -6922,7 +7008,7 @@ function removeNewsPhoto() {
             const content = document.getElementById('newsContent').value.trim();
 
             if (!title || !content) {
-                showToast(' Συμπλήρωσε τίτλο και περιεχόμενο!');
+                showToast('Συμπλήρωσε τίτλο και περιεχόμενο!', 'error');
                 return;
             }
             const videoRaw = (document.getElementById('newsVideo') || {}).value || '';
@@ -7083,7 +7169,7 @@ function saveGeneralSettings() {
     if (liveHome) data.liveScore.home = liveHome.value || 0;
     if (liveAway) data.liveScore.away = liveAway.value || 0;
     if (liveHalf) data.liveScore.half = liveHalf.value;
-    if (liveDur) data.liveScore.duration = liveDur.value || 20;
+    if (liveDur) data.liveScore.duration = liveDur.value || 40;   // λεπτά ανά ημίχρονο (ήταν 20)
     if (liveStart) data.liveScore.startTime = liveStart.value;
 
     // Special Match
@@ -7433,7 +7519,7 @@ function startCountdown(targetDateString) {
     const display = document.getElementById('countdown-display');
     if (!display) return;
 
-    const targetDate = new Date(targetDateString).getTime();
+    const targetDate = athensTimeToMs(targetDateString);   // ώρα Ελλάδας, όχι της συσκευής (17/10/2026)
     
     // Καθαρισμός προηγούμενου χρονομέτρου για να μην τρέχουν διπλά
     if (countdownInterval) clearInterval(countdownInterval);
@@ -7504,9 +7590,15 @@ async function checkPassword() {
                 "Πατήστε 'Ακύρωση' για να φορτώσετε τα δεδομένα του GitHub (Live)."
             );
             
+            // Χαλασμένο πρόχειρο (17/10/2026): δεν ανοίγει, οπότε πάμε στο GitHub με μήνυμα
+            let draft = null;
             if (userChoice) {
+                try { draft = JSON.parse(localDraft); }
+                catch (e) { showToast('Το πρόχειρο είναι χαλασμένο. Φορτώνω τα δεδομένα του GitHub.', 'error'); }
+            }
+            if (draft) {
                 // Κράτα τα drafts
-                data = JSON.parse(localDraft);
+                data = draft;
                 syncDerived();
                 console.log('✏️ Admin: Χρήση τοπικών Drafts.');
             } else {
@@ -8026,8 +8118,9 @@ function computeArchiveTable(d) {
         else if (m.homeScore < m.awayScore) { a.won++;  h.lost++; a.points += 3; }
         else                                { h.drawn++; a.drawn++; h.points++; a.points++; }
     }));
-    return Object.values(st).sort((x, y) =>
-        y.points - x.points || (y.gf - y.ga) - (x.gf - x.ga) || y.gf - x.gf);
+    // Ίδια σειρά με τη ζωντανή βαθμολογία (rankTable). Για παλιές σεζόν αλλάζει μόνο
+    // ό,τι ήταν ισόπαλο σε βαθμούς, ΔΤ ΚΑΙ γκολ — εκεί πριν αποφάσιζε η τύχη.
+    return rankTable(Object.values(st), (d.fixtures || []).filter(r => !r.stage));
 }
 
 function renderHistorySeason(d) {
@@ -8234,7 +8327,7 @@ function parseFixturesText(text, teams) {
     teams.forEach(t => index.set(_norm(t), t));
 
     // Ταιριάζει ονόματα ακόμα κι αν γράφτηκαν συντομευμένα ή με τόνους.
-    // ΚΑΝΟΝΑΣ (Οκτ. 2026, 58 ομάδες): όταν ένα όνομα ταιριάζει σε >1 ομάδες,
+    // ΚΑΝΟΝΑΣ (Οκτ. 2026, 59 ομάδες): όταν ένα όνομα ταιριάζει σε >1 ομάδες,
     // ΔΕΝ μαντεύουμε — επιστρέφουμε τις επιλογές και ρωτάμε τον admin.
     // π.χ. «ΗΡΑΚΛΗΣ» -> ΗΡΑΚΛΗΣ ΑΜΠΕΛΟΚΗΠΩΝ ή ΠΟΤ ΗΡΑΚΛΗΣ (1);
     const _tok = v => v.replace(/[.,()\/«»'"\-–]/g, ' ').split(/\s+/).filter(Boolean);
@@ -8743,7 +8836,7 @@ function refreshAdminForms() {
             document.getElementById('liveHomeScore').value = data.liveScore.home ?? 0;
             document.getElementById('liveAwayScore').value = data.liveScore.away ?? 0;
             document.getElementById('liveHalf').value = data.liveScore.half || "1";
-            document.getElementById('liveHalfDuration').value = data.liveScore.duration || 20;
+            document.getElementById('liveHalfDuration').value = data.liveScore.duration || 40;
             document.getElementById('liveStartTime').value = data.liveScore.startTime || "";
             document.getElementById('liveInputs').style.display = data.liveScore.active ? 'block' : 'none';
         }
@@ -8965,7 +9058,7 @@ function toggleScorerPanel(index) {
 function saveResults() {
     const roundNum = parseInt(document.getElementById('roundSelect').value);
     if (!roundNum) {
-        showToast('Επέλεξε πρώτα μια αγωνιστική!');
+        showToast('Επέλεξε πρώτα μια αγωνιστική!', 'error');
         return;
     }
 
@@ -9059,10 +9152,11 @@ function saveResults() {
 // --- SMART AUTO-REFRESH ---
 // ΠΡΙΝ: κάθε 20" τραβούσε ΟΛΟ το JSON με '?t=' -> ~285 MB/ώρα ανά ανοιχτή καρτέλα,
 // ακόμα κι όταν το κινητό ήταν στην τσέπη.
-// ΤΩΡΑ: 20" όταν παίζει ματς, 3 λεπτά αλλιώς, τίποτα όταν η σελίδα είναι κρυφή.
+// ΤΩΡΑ: 20" όταν παίζει ματς, 1 λεπτό αλλιώς, τίποτα όταν η σελίδα είναι κρυφή.
 const REFRESH_LIVE_MS = 20000;
 const REFRESH_IDLE_MS = 60000;    // ήταν 180000 όταν το JSON ζύγιζε 1.5MB.
-                                  // Τώρα είναι 6KB με ETag (304 = ~200 bytes),
+                                  // Τώρα είναι ~140KB (όλο το πρόγραμμα των 59),
+                                  // αλλά με ETag ό,τι δεν άλλαξε γυρίζει 304 = ~200 bytes,
                                   // οπότε το λεπτό δεν κοστίζει τίποτα και οι
                                   // αλλαγές που κάνεις απευθείας στο GitHub
                                   // φαίνονται σχεδόν αμέσως.
@@ -9236,6 +9330,7 @@ async function refreshFromServer() {
     checkNewNews();
 
     scheduleRefresh();   // ξεκινάει ο προσαρμοστικός κύκλος ανανέωσης
+    hideSplash();        // τα δεδομένα φάνηκαν: φεύγει το splash (όχι στο 'load')
 });
 
 // ===================== OFFLINE MODE (ΑΝΕΝΕΡΓΟ) =====================
@@ -9281,6 +9376,11 @@ if(hamburger) {
     hamburger.addEventListener("click", () => {
         hamburger.classList.toggle("active");
         navMenu.classList.toggle("active");
+        hamburger.setAttribute("aria-expanded", navMenu.classList.contains("active") ? "true" : "false");
+    });
+    // Enter / Space: να ανοίγει και από πληκτρολόγιο (17/10/2026)
+    hamburger.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); hamburger.click(); }
     });
 }
 
@@ -9289,6 +9389,7 @@ navLinks.forEach(n => n.addEventListener("click", () => {
     if(hamburger) {
         hamburger.classList.remove("active");
         navMenu.classList.remove("active");
+        hamburger.setAttribute("aria-expanded", "false");
     }
 }));
 /* --- ΚΟΙΝΟΠΟΙΗΣΗ ΕΙΔΗΣΗΣ ---
