@@ -9682,10 +9682,46 @@ function removeCleanSheetFromMatch(roundNum, matchIndex, csIndex) {
     }
 }
 
+// --- ΚΡΑΤΑ ΤΑ ΑΣΩΣΤΑ ΣΚΟΡ (Οκτ. 2026) ---
+// ΠΡΙΝ: το ➕/✖ σε σκόρερ ή clean sheet ξαναζωγράφιζε όλη την αγωνιστική από
+// τα αποθηκευμένα δεδομένα, οπότε ό,τι σκορ είχες γράψει χωρίς «Αποθήκευση»
+// (σε ΟΛΟΥΣ τους αγώνες της αγωνιστικής) έσβηνε, και το πάνελ έκλεινε.
+// ΤΩΡΑ: φωτογραφίζουμε τα κουτάκια πριν, τα ξαναβάζουμε μετά.
+function snapshotRoundInputs() {
+    const box = document.getElementById('matchInputs');
+    if (!box) return null;
+    const values = {};
+    box.querySelectorAll('input[id]').forEach(el => {
+        values[el.id] = el.type === 'checkbox' ? el.checked : el.value;
+    });
+    const openPanels = [...box.querySelectorAll('.admin-scorers-panel')]
+        .filter(p => p.style.display === 'block')
+        .map(p => p.id);
+    return { values, openPanels };
+}
+
+function restoreRoundInputs(snap) {
+    if (!snap) return;
+    Object.entries(snap.values).forEach(([id, v]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (el.type === 'checkbox') el.checked = v;
+        else el.value = v;
+    });
+    snap.openPanels.forEach(id => {
+        const p = document.getElementById(id);
+        if (p) p.style.display = 'block';
+    });
+    const roundNum = parseInt(document.getElementById('roundSelect').value);
+    if (roundNum) updateRoundCounter(roundNum);   // σωστά χρώματα/μετρητής
+}
+
 // Κοινή συνάρτηση αποθήκευσης
 function saveAndRefresh() {
+    const snap = snapshotRoundInputs();
     saveData(data);
     loadMatchesForRound(); 
+    restoreRoundInputs(snap);
     updateRosterList();    
     displayTopScorers();
     displayResults();
