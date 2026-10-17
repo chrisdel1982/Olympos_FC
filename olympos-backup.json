@@ -1,6 +1,6 @@
 {
   "liveScore": {
-    "active": true,
+    "active": false,
     "home": "4",
     "away": "2",
     "half": "FT",
@@ -201,8 +201,8 @@
         {
           "home": "ΜΑΡΑΘΩΝΑΣ",
           "away": "ΛΙΜΑΝΙ ΠΟΣΕΙΔΩΝΑ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 6,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
@@ -222,8 +222,8 @@
         {
           "home": "ΓΕΡΜΑΝΙΚΗ ΑΚΑΔΗΜΙΑ",
           "away": "ΜΠΕΜΠΗΔΕΣ 2000",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 4,
           "isPostponed": false
         },
         {
@@ -236,29 +236,29 @@
         {
           "home": "ΠΟΣΕΙΔΩΝΑΣ ΜΗΧΑΝΙΩΝΑΣ",
           "away": "ΑΧΙΛΛΕΑΣ ΤΡΙΑΝΔΡΙΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 2,
           "isPostponed": false
         },
         {
           "home": "ΑΓΙΟΣ ΓΕΩΡΓΙΟΣ Ν.ΚΡΗΝΗΣ",
           "away": "ΑΝΑΓΕΝΝΗΣΗ ΑΓ. ΙΩΑΝΝΗ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 7,
           "isPostponed": false
         },
         {
           "home": "ΑΣ ΠΟΔ. ΤΟΥΜΠΑΣ",
           "away": "ΠΑΝΟΡΑΜΑ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 4,
           "isPostponed": false
         },
         {
           "home": "ΝΙΚΗ ΕΥΚΑΡΠΙΑΣ",
           "away": "ΜΠΕΜΠΗΔΕΣ ΙΩΝΙΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 3,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
@@ -271,8 +271,8 @@
         {
           "home": "ΗΡΑΚΛΗΣ ΑΜΠΕΛΟΚΗΠΩΝ",
           "away": "Μ.ΑΛΕΞΑΝΔΡΟΣ ΜΕΛΙΣΣΟΧΩΡΙΟΥ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 3,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
@@ -285,8 +285,8 @@
         {
           "home": "ΔΟΞΑ ΠΕΡΙΒΟΛΑΚΙΟΥ",
           "away": "ΑΘΛΗΤΙΚΗ ΑΚΑΔΗΜΙΑ ΓΙΑΝΝΙΤΣΩΝ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 2,
           "isPostponed": false
         },
         {
@@ -306,8 +306,8 @@
         {
           "home": "ΕΛΕΥΘΕΡΙΑΚΟΣ",
           "away": "ΝΤΙΝΟΣ ΚΟΥΗΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 7,
           "isPostponed": false
         },
         {
@@ -341,8 +341,8 @@
         {
           "home": "ΠΙΕΡΙΚΟΣ 1961",
           "away": "ΑΛΕΞΑΝΔΡΟΣ ΚΙΛΚΙΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
@@ -355,29 +355,33 @@
         {
           "home": "ΠΟΤ ΗΡΑΚΛΗΣ",
           "away": "ΠΡΩΤΕΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 2,
           "isPostponed": false
         },
         {
           "home": "ΑΚΑΔ. ΠΟΔ. ΘΕΣΣΑΛΟΝΙΚΗΣ 2020",
           "away": "ΑΠΟΛΛΩΝ ΚΑΛΑΜΑΡΙΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 9,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
           "home": "ΑΕ ΝΕΩΝ ΣΙΝΔΟΥ",
           "away": "ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ",
-          "homeScore": null,
-          "awayScore": null,
-          "isPostponed": false
+          "homeScore": 4,
+          "awayScore": 2,
+          "isPostponed": false,
+          "scorers": [
+            "Βασίλης Μέλλιος",
+            "Νίκος Κυρτζαλιώτης"
+          ]
         },
         {
           "home": "ΑΜΣ ΝΙΚΟΠΟΛΗ",
           "away": "ΝΕΑ ΠΟΛΙΤΕΙΑ ΕΥΟΣΜΟΥ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
@@ -4237,7 +4241,7 @@
       "birthYear": 2013,
       "position": "Πλάγιος Επιθετικός - Δεξιός (RW) / Κεντρικός Επιθετικός (CF) / Δεύτερος Επιθετικός (SS)",
       "isCaptain": false,
-      "goals": 0,
+      "goals": 1,
       "cleanSheets": 0,
       "nickname": ""
     },
@@ -4267,7 +4271,7 @@
       "birthYear": 2012,
       "position": "Επιθετικός Μέσος (AM) / Αμυντικός Μέσος (DM) / Κεντρικός Μέσος (CM)",
       "isCaptain": true,
-      "goals": 0,
+      "goals": 1,
       "cleanSheets": 0,
       "nickname": "ΚΥΡΤΖΑ"
     },
