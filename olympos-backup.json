@@ -215,8 +215,8 @@
         {
           "home": "ΑΣΤΕΡΙΑ",
           "away": "ΧΑΝΘ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 6,
           "isPostponed": false
         },
         {
@@ -278,8 +278,8 @@
         {
           "home": "ΜΑΚΕΔΟΝΙΚΟΣ",
           "away": "ΑΚΑΔ. Γ. ΚΟΥΔΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 5,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
@@ -299,8 +299,8 @@
         {
           "home": "ΑΕ ΦΙΛΥΡΟΥ",
           "away": "ΦΟΙΝΙΚΑΣ ΠΟΛΙΧΝΗΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
@@ -320,8 +320,8 @@
         {
           "home": "ΠΑΕ ΠΑΟΚ Κ14",
           "away": "ΖΗΤΑ ΕΠΤΑ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 4,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
