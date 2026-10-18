@@ -264,8 +264,8 @@
         {
           "home": "ΑΙΑΣ ΕΥΟΣΜΟΥ",
           "away": "ΑΟ ΜΕΣΗΜΒΡΙΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 7,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
@@ -313,8 +313,8 @@
         {
           "home": "ΑΟΚ ΑΓΙΟΥ ΑΘΑΝΑΣΙΟΥ",
           "away": "ΜΠΑΜ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 3,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
