@@ -334,8 +334,8 @@
         {
           "home": "ΣΚΙΟΥΡΟΙ",
           "away": "ΠΟ ΜΑΛΑΚΟΠΗΣ ΠΥΛΑΙΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
@@ -387,8 +387,8 @@
         {
           "home": "ΑΚΡΙΤΕΣ ΣΥΚΕΩΝ",
           "away": "ΠΑΟ ΚΟΥΦΑΛΙΩΝ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 4,
+          "awayScore": 2,
           "isPostponed": false
         }
       ]
