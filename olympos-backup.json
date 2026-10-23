@@ -8,11 +8,11 @@
     "startTime": "13:25"
   },
   "announcement": "",
-  "matchDate": "",
-  "matchTime": "",
-  "matchStadium": "",
-  "matchMapLink": "",
-  "countdownTarget": "2026-10-17T12:30",
+  "matchDate": "Σάββατο 31/10",
+  "matchTime": "10:45",
+  "matchStadium": "Δημοτικό Γήπεδο «Κωνσταντίνος Μιγκοτζίδης»",
+  "matchMapLink": "https://maps.app.goo.gl/FRNAcSBNPFjq2YVv9",
+  "countdownTarget": "2026-10-31T10:45",
   "specialMatch": {
     "type": "ΦΙΛΙΚΟΣ ΑΓΩΝΑΣ",
     "home": null,
