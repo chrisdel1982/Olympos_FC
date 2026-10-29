@@ -36,7 +36,26 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="shortcut icon" href="favicon.ico">
-    
+
+    <script>
+    // --- SPLASH ΣΤΗΝ ΕΦΑΡΜΟΓΗ ANDROID (29/10/2026) ---
+    // Στην εγκατεστημένη εφαρμογή, το Android δείχνει ΠΡΩΤΑ μια δική του οθόνη, πριν τρέξει
+    // οτιδήποτε από εδώ: φόντο = "background_color" του manifest.json (πράσινο #1a472a) και στη
+    // μέση το εικονίδιο της εφαρμογής (icon-512.png) στα 240dp. Αυτή ΔΕΝ σβήνεται από τον κώδικα.
+    // ΠΡΙΝ: πράσινο + παλιό σήμα σε λευκό τετράγωνο, μετά το δικό μας λευκό + logo_front.png.
+    //       Δύο διαφορετικές οθόνες στη σειρά.
+    // ΤΩΡΑ: τα icon-192.png / icon-512.png είναι το γυαλιστερό σήμα (κομμένο από το logo_front.png),
+    //       και μόνο στην εφαρμογή Android το δικό μας splash γίνεται πράσινο, με το σήμα στο ίδιο
+    //       μέγεθος (CSS .android-app, κάτω από το "SPLASH SCREEN"). Το μάτι βλέπει μία οθόνη.
+    // Browser και iPhone: ΟΠΩΣ ΠΡΙΝ (λευκό, ή σκούρο στο σκούρο θέμα, + logo_front.png).
+    // Είναι εδώ, πριν από τα CSS, για να μπει η κλάση πριν ζωγραφιστεί οτιδήποτε.
+    (function () {
+        var isApp = /Android/i.test(navigator.userAgent) && window.matchMedia &&
+            window.matchMedia('(display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui)').matches;
+        if (isApp) document.documentElement.classList.add('android-app');
+    })();
+    </script>
+
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&family=Inter:wght@400;600;700;900&family=Saira+Stencil+One&family=Commissioner:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -3336,6 +3355,19 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
         .splash-hidden { opacity: 0; pointer-events: none; }
         /* Σκούρο θέμα: ΠΡΙΝ λευκό splash -> λευκό φλας πριν από τη σκούρα σελίδα (17/10/2026) */
         @media (prefers-color-scheme: dark) { #custom-splash { background-color: #121212; } }
+        /* Εφαρμογή Android (29/10/2026, βλ. σχόλιο στο <head>): το splash γίνεται ΙΔΙΟ με την
+           οθόνη που βγάζει πρώτα το ίδιο το Android, για να φαίνονται σαν μία οθόνη.
+           Μπαίνει μετά το σκούρο θέμα ΕΠΙΤΗΔΕΣ: το Android βγάζει πράσινο και στο σκούρο. */
+        .android-app #custom-splash { background-color: #1a472a; }   /* <-- = "background_color" του manifest.json */
+        .android-app .splash-logo {
+            /* Το icon-512.png είναι το logo_front.png κομμένο στο κέντρο (τα 600 από τα 720px).
+               Το Android δείχνει το εικονίδιο στα 240dp, άρα εδώ το logo_front.png θέλει
+               240 x 720/600 = 288px για να βγει το σήμα στο ΙΔΙΟ μέγεθος. Το logo_front.png
+               φορτώνει έτσι κι αλλιώς για την κεφαλίδα: κανένα επιπλέον κατέβασμα. */
+            width: 288px;                   /* <-- ΜΕΓΕΘΟΣ */
+            max-width: none;
+            transform: translateY(0px);     /* <-- ΘΕΣΗ: αν το σήμα «πηδάει» λίγο στην αλλαγή, π.χ. 10px = πιο κάτω */
+        }
 /* ================= ΙΣΤΟΡΙΚΟ ================= */
 .hist-hero {
     background: linear-gradient(135deg, #1a472a, #2d6a4f);
@@ -5044,6 +5076,25 @@ function showToast(message, type = 'success') {
         //    (αν αλλάξει, οι εγκατεστημένες εφαρμογές μπορεί να φανούν σαν άλλη εφαρμογή).
         //  - ΔΕΝ ΑΛΛΑΞΑΝ ΕΠΙΤΗΔΕΣ: Google Analytics (απόφαση διαχειριστή), η ερώτηση για τα
         //    drafts (OK = πρόχειρο, Ακύρωση = GitHub — η συνήθεια μένει ίδια), Firebase.
+        // =========================================================
+
+        // =========================================================
+        // ΑΛΛΑΓΗ 29/10/2026 — ΔΙΠΛΟ SPLASH ΣΤΗΝ ΕΦΑΡΜΟΓΗ ANDROID
+        //  - Πρόβλημα: η εγκατεστημένη εφαρμογή έβγαζε δύο οθόνες: πρώτα του Android
+        //    (πράσινο + παλιό σήμα σε λευκό τετράγωνο, από το manifest.json, δεν σβήνεται)
+        //    και μετά τη δική μας (λευκό + logo_front.png).
+        //  - Λύση (απόφαση διαχειριστή: γυαλιστερό σήμα, πράσινο φόντο):
+        //    * icon-192.png / icon-512.png = το logo_front.png κομμένο στο κέντρο (600 από 720px),
+        //      διάφανο φόντο. Γίνεται και το εικονίδιο στην αρχική οθόνη του κινητού.
+        //    * Μόνο στην εφαρμογή Android, το δικό μας splash γίνεται πράσινο, με το logo_front.png
+        //      στα 288px = ίδιο μέγεθος με το εικονίδιο του Android (κλάση .android-app στο <html>,
+        //      script στο <head>, CSS κάτω από "SPLASH SCREEN").
+        //  - Browser και iPhone: όπως πριν. Το manifest.json ΔΕΝ άλλαξε (ίδια ονόματα αρχείων).
+        //  - Όσοι έχουν ήδη την εφαρμογή παίρνουν το νέο εικονίδιο όταν ο Chrome ενημερώσει την
+        //    εφαρμογή (έλεγχος 1 φορά/24ώρες, με WiFi + φόρτιση, και ίσως ζητήσει έγκριση από το ⋮).
+        //    Ως τότε βλέπουν ακόμα το παλιό σήμα στην πρώτη οθόνη.
+        //  - Αν αλλάξει το "background_color" ή το εικονίδιο στο manifest, αλλάζει και εδώ
+        //    (.android-app #custom-splash / .android-app .splash-logo).
         // =========================================================
         const KO_STAGES = [
             { key: 'R16', round: 101, label: 'Φάση των 16',  ties: 8, at: 'στη Φάση των 16' },
