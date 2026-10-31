@@ -504,8 +504,8 @@
         {
           "home": "ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ",
           "away": "ΠΑΟ ΚΟΥΦΑΛΙΩΝ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 7,
           "isPostponed": false,
           "scorers": [
             "Γιώργος Βότσης"
