@@ -427,8 +427,8 @@
         {
           "home": "ΑΝΑΓΕΝΝΗΣΗ ΝΕΩΝ ΕΠΙΒΑΤΩΝ 2021",
           "away": "ΓΕΡΜΑΝΙΚΗ ΑΚΑΔΗΜΙΑ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 5,
           "isPostponed": false
         },
         {
@@ -441,8 +441,8 @@
         {
           "home": "ΜΠΕΜΠΗΔΕΣ 2000",
           "away": "ΠΟΣΕΙΔΩΝΑΣ ΜΗΧΑΝΙΩΝΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 6,
+          "awayScore": 6,
           "isPostponed": false
         },
         {
@@ -455,8 +455,8 @@
         {
           "home": "ΑΧΙΛΛΕΑΣ ΤΡΙΑΝΔΡΙΑΣ",
           "away": "ΠΑΝΟΡΑΜΑ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
@@ -476,8 +476,8 @@
         {
           "home": "Μ.ΑΛΕΞΑΝΔΡΟΣ ΜΕΛΙΣΣΟΧΩΡΙΟΥ",
           "away": "ΕΛΕΥΘΕΡΙΑΚΟΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 10,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
@@ -514,15 +514,15 @@
         {
           "home": "ΝΕΑ ΠΟΛΙΤΕΙΑ ΕΥΟΣΜΟΥ",
           "away": "ΑΚΡΙΤΕΣ ΣΥΚΕΩΝ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
           "home": "ΔΟΞΑ ΠΕΡΙΒΟΛΑΚΙΟΥ",
           "away": "ΜΑΚΕΔΟΝΙΚΟΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 5,
           "isPostponed": false
         },
         {
@@ -542,8 +542,8 @@
         {
           "home": "ΚΕΝΤΑΥΡΟΣ ΛΑΓΚΑΔΑ",
           "away": "ΠΑΝΑΘΗΝΑΪΚΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 9,
           "isPostponed": false
         },
         {
@@ -563,8 +563,8 @@
         {
           "home": "ΠΟ ΜΑΛΑΚΟΠΗΣ ΠΥΛΑΙΑΣ",
           "away": "ΟΛΥΜΠΙΑΚΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
