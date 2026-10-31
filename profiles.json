@@ -1,0 +1,1428 @@
+[
+  {
+    "label": "Bianca",
+    "type": "pro",
+    "description": "Darker Roasts - Very Fine- 25-35s - 1:1.5-2.2",
+    "temperature": 90,
+    "utility": false,
+    "phases": [
+      {
+        "name": "preinfusion",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 10,
+        "temperature": 88,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 2.2,
+          "flow": 5
+        },
+        "targets": [
+          {
+            "type": "pressure",
+            "operator": "gte",
+            "value": 2.2
+          }
+        ]
+      },
+      {
+        "name": "ramp-up",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 4,
+        "temperature": 88,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 8.2,
+          "flow": 0
+        },
+        "targets": [
+          {
+            "type": "pressure",
+            "operator": "gte",
+            "value": 8.1
+          }
+        ]
+      },
+      {
+        "name": "Main extraction",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 40,
+        "temperature": 88,
+        "transition": {
+          "type": "linear",
+          "target": "time",
+          "duration": 0,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 7,
+          "flow": 0
+        },
+        "targets": [
+          {
+            "type": "volumetric",
+            "operator": "gte",
+            "value": 45
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "Dark Sparrow 19g",
+    "type": "pro",
+    "description": "Daily lever profile for freddo & espresso - medium blend (Lighttell 65) - 19g in / 45-46g out (1:2.4) - 92C",
+    "temperature": 92,
+    "utility": false,
+    "phases": [
+      {
+        "name": "preinfusion",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 8,
+        "temperature": 92,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 3,
+          "flow": 0
+        }
+      },
+      {
+        "name": "bloom",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 5,
+        "temperature": 92,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 0.5,
+          "flow": 0
+        }
+      },
+      {
+        "name": "rise to 9 bar",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 8,
+        "temperature": 92,
+        "transition": {
+          "type": "ease-in-out",
+          "target": "time",
+          "duration": 4,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 9,
+          "flow": 0
+        }
+      },
+      {
+        "name": "lever decline",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 30,
+        "temperature": 92,
+        "transition": {
+          "type": "linear",
+          "target": "time",
+          "duration": 24,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 5.5,
+          "flow": 0
+        },
+        "targets": [
+          {
+            "type": "volumetric",
+            "operator": "gte",
+            "value": 46
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "Dark Sparrow Flat White",
+    "type": "pro",
+    "description": "Weekend flat white - same grind & dose as daily - 19g in / 38g out (1:2) - 93C",
+    "temperature": 93,
+    "utility": false,
+    "phases": [
+      {
+        "name": "preinfusion",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 8,
+        "temperature": 93,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 3,
+          "flow": 0
+        }
+      },
+      {
+        "name": "bloom",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 5,
+        "temperature": 93,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 0.5,
+          "flow": 0
+        }
+      },
+      {
+        "name": "rise to 9 bar",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 8,
+        "temperature": 93,
+        "transition": {
+          "type": "ease-in-out",
+          "target": "time",
+          "duration": 4,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 9,
+          "flow": 0
+        }
+      },
+      {
+        "name": "lever decline",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 24,
+        "temperature": 93,
+        "transition": {
+          "type": "linear",
+          "target": "time",
+          "duration": 20,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 6,
+          "flow": 0
+        },
+        "targets": [
+          {
+            "type": "volumetric",
+            "operator": "gte",
+            "value": 38
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "Freddo Sweet",
+    "type": "standard",
+    "description": "Freddo espresso profile for medium roast blends - sweet extraction",
+    "temperature": 93,
+    "utility": false,
+    "phases": [
+      {
+        "name": "Bloom preinfusion",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 5,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": 25
+      },
+      {
+        "name": "Ramp to extraction",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 5,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 6.5,
+          "flow": 0
+        }
+      },
+      {
+        "name": "Main extraction",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 11,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 8,
+          "flow": 0
+        }
+      },
+      {
+        "name": "Sweet decline",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 5,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 6,
+          "flow": 0
+        }
+      },
+      {
+        "name": "Finish",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 3,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 5,
+          "flow": 0
+        }
+      }
+    ]
+  },
+  {
+    "label": "Sweet Lever",
+    "type": "pro",
+    "description": "",
+    "temperature": 93,
+    "utility": false,
+    "phases": [
+      {
+        "name": "Prefill",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 4,
+        "temperature": 93,
+        "transition": {
+          "type": "ease-out",
+          "target": "time",
+          "duration": 2,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "flow",
+          "pressure": 0,
+          "flow": 7
+        }
+      },
+      {
+        "name": "Soak",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 4,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 3,
+          "flow": 0
+        }
+      },
+      {
+        "name": "Ramp",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 6,
+        "temperature": 0,
+        "transition": {
+          "type": "ease-out",
+          "target": "time",
+          "duration": 4,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 7,
+          "flow": 0
+        }
+      },
+      {
+        "name": "Extraction ",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 25,
+        "temperature": 0,
+        "transition": {
+          "type": "ease-out",
+          "target": "time",
+          "duration": 4,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 8,
+          "flow": 0
+        },
+        "targets": [
+          {
+            "type": "volumetric",
+            "operator": "gte",
+            "value": 45
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "Warm up profile",
+    "type": "standard",
+    "description": "",
+    "temperature": 93,
+    "utility": false,
+    "phases": [
+      {
+        "name": "Warm flush 1",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 5,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": true
+        },
+        "pump": 100
+      },
+      {
+        "name": "Pause heat soak ",
+        "phase": "brew",
+        "valve": 0,
+        "duration": 20,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": true
+        },
+        "pump": 0
+      },
+      {
+        "name": "Warm flush 1",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 5,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": true
+        },
+        "pump": 100
+      }
+    ]
+  },
+  {
+    "label": "9 Bar Espresso",
+    "type": "standard",
+    "description": "",
+    "temperature": 93,
+    "utility": false,
+    "phases": [
+      {
+        "name": "Pump",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 28,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 9,
+          "flow": 0
+        },
+        "targets": [
+          {
+            "type": "volumetric",
+            "operator": "gte",
+            "value": 36
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "Damian's LM Leva",
+    "type": "pro",
+    "description": "Light to Medium Roasts - Very Fine - 20-45 - 1:2.0 - 2.5 | Simulates La Marzocco Leva",
+    "temperature": 89,
+    "utility": false,
+    "phases": [
+      {
+        "name": "fill start",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 2,
+        "temperature": 89,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 1.8,
+          "flow": 0
+        },
+        "targets": [
+          {
+            "type": "pumped",
+            "operator": "gte",
+            "value": 100
+          }
+        ]
+      },
+      {
+        "name": "fill",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 20,
+        "temperature": 89,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 1.8,
+          "flow": 0
+        },
+        "targets": [
+          {
+            "type": "pumped",
+            "operator": "gte",
+            "value": 100
+          },
+          {
+            "type": "pressure",
+            "operator": "gte",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "name": "preinfusion",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 10,
+        "temperature": 88.5,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 2.2,
+          "flow": 0
+        },
+        "targets": [
+          {
+            "type": "pumped",
+            "operator": "gte",
+            "value": 100
+          },
+          {
+            "type": "pressure",
+            "operator": "gte",
+            "value": 4
+          }
+        ]
+      },
+      {
+        "name": "rise",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 5,
+        "temperature": 88,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 8,
+          "flow": 0
+        },
+        "targets": [
+          {
+            "type": "pumped",
+            "operator": "gte",
+            "value": 100
+          },
+          {
+            "type": "pressure",
+            "operator": "gte",
+            "value": 8
+          }
+        ]
+      },
+      {
+        "name": "hold",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 5,
+        "temperature": 88,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 8,
+          "flow": 0
+        },
+        "targets": [
+          {
+            "type": "pumped",
+            "operator": "gte",
+            "value": 100
+          },
+          {
+            "type": "flow",
+            "operator": "gte",
+            "value": 1.5
+          }
+        ]
+      },
+      {
+        "name": "decline",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 58,
+        "temperature": 88,
+        "transition": {
+          "type": "linear",
+          "target": "time",
+          "duration": 58,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 2.2,
+          "flow": 0
+        },
+        "targets": [
+          {
+            "type": "pumped",
+            "operator": "gte",
+            "value": 100
+          },
+          {
+            "type": "volumetric",
+            "operator": "gte",
+            "value": 44
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "Cremina lever machine",
+    "type": "pro",
+    "description": "Darker Roasts - Very Fine- 40-60s - 1:1.5-2.2",
+    "temperature": 86.5,
+    "utility": false,
+    "phases": [
+      {
+        "name": "preinfusion start",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 2,
+        "temperature": 86.5,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 1.1,
+          "flow": 0
+        }
+      },
+      {
+        "name": "preinfusion",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 3,
+        "temperature": 86.5,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 1.1,
+          "flow": 0
+        },
+        "targets": [
+          {
+            "type": "pressure",
+            "operator": "gte",
+            "value": 3
+          }
+        ]
+      },
+      {
+        "name": "soak",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 10,
+        "temperature": 86.5,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 1.1,
+          "flow": 0
+        }
+      },
+      {
+        "name": "ramp",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 10,
+        "temperature": 86.5,
+        "transition": {
+          "type": "ease-in-out",
+          "target": "time",
+          "duration": 10,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 9,
+          "flow": 0
+        }
+      },
+      {
+        "name": "ramp-down",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 50,
+        "temperature": 87,
+        "transition": {
+          "type": "linear",
+          "target": "time",
+          "duration": 50,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 3,
+          "flow": 0
+        },
+        "targets": [
+          {
+            "type": "volumetric",
+            "operator": "gte",
+            "value": 44
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "6-Bar Level",
+    "type": "standard",
+    "description": "",
+    "temperature": 93,
+    "utility": false,
+    "phases": [
+      {
+        "name": "Gentle Soak",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 10,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": true
+        },
+        "pump": 25
+      },
+      {
+        "name": "Ramp",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 5,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 7,
+          "flow": 0
+        }
+      },
+      {
+        "name": "Level Extraction ",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 18,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 6,
+          "flow": 0
+        }
+      },
+      {
+        "name": "Finish",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 7,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 5,
+          "flow": 0
+        }
+      }
+    ]
+  },
+  {
+    "label": "Medium 18g 1:2",
+    "type": "standard",
+    "description": "",
+    "temperature": 93,
+    "utility": false,
+    "phases": [
+      {
+        "name": "Pre-infusion",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 3,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 5,
+          "flow": 0
+        }
+      },
+      {
+        "name": "Bloom",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 7,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": 0
+      },
+      {
+        "name": "Pressurise",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 10,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 9,
+          "flow": 0
+        },
+        "targets": [
+          {
+            "type": "volumetric",
+            "operator": "gte",
+            "value": 20
+          }
+        ]
+      },
+      {
+        "name": "Ramp down",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 8,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 5,
+          "flow": 0
+        },
+        "targets": [
+          {
+            "type": "volumetric",
+            "operator": "gte",
+            "value": 36
+          }
+        ]
+      },
+      {
+        "name": "Hammer",
+        "phase": "brew",
+        "valve": 0,
+        "duration": 1,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": 100
+      }
+    ]
+  },
+  {
+    "label": "Pure Flow (aka Direct Lever)",
+    "type": "pro",
+    "description": "Balanced flow profile for all bean types and grind sizes. Consistent flow throughout, with only maximum pressure and two small stop parameters controlling the phases. ",
+    "temperature": 94,
+    "utility": false,
+    "phases": [
+      {
+        "name": "Infuse",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 4,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "flow",
+          "pressure": 2,
+          "flow": 6
+        },
+        "targets": [
+          {
+            "type": "volumetric",
+            "operator": "gte",
+            "value": 0.5
+          }
+        ]
+      },
+      {
+        "name": "Infusion Bloom",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 15,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "flow",
+          "pressure": 2,
+          "flow": 2
+        },
+        "targets": [
+          {
+            "type": "volumetric",
+            "operator": "gte",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "name": "Pure Flowing",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 26,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "flow",
+          "pressure": 12,
+          "flow": 2
+        },
+        "targets": [
+          {
+            "type": "volumetric",
+            "operator": "gte",
+            "value": 45
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "Adaptive v2",
+    "type": "pro",
+    "description": "Light to Medium - Fine - 25-40s - 1:2-2.5",
+    "temperature": 93,
+    "utility": false,
+    "phases": [
+      {
+        "name": "Prefill",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 5,
+        "temperature": 93,
+        "transition": {
+          "type": "ease-out",
+          "target": "time",
+          "duration": 2,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "flow",
+          "pressure": 0,
+          "flow": 8
+        },
+        "targets": [
+          {
+            "type": "pumped",
+            "operator": "gte",
+            "value": 100
+          }
+        ]
+      },
+      {
+        "name": "Fill",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 12,
+        "temperature": 93,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "flow",
+          "pressure": 0,
+          "flow": 8
+        },
+        "targets": [
+          {
+            "type": "pumped",
+            "operator": "gte",
+            "value": 100
+          },
+          {
+            "type": "pressure",
+            "operator": "gte",
+            "value": 3
+          }
+        ]
+      },
+      {
+        "name": "Compressing",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 12,
+        "temperature": 88,
+        "transition": {
+          "type": "ease-out",
+          "target": "time",
+          "duration": 2,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 3,
+          "flow": 0
+        },
+        "targets": [
+          {
+            "type": "pumped",
+            "operator": "gte",
+            "value": 100
+          },
+          {
+            "type": "flow",
+            "operator": "lte",
+            "value": 3
+          }
+        ]
+      },
+      {
+        "name": "Dripping",
+        "phase": "preinfusion",
+        "valve": 1,
+        "duration": 6,
+        "temperature": 88,
+        "transition": {
+          "type": "ease-out",
+          "target": "time",
+          "duration": 2,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 0.1,
+          "flow": 0
+        }
+      },
+      {
+        "name": "Pressurize",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 6,
+        "temperature": 88,
+        "transition": {
+          "type": "linear",
+          "target": "time",
+          "duration": 6,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "pressure",
+          "pressure": 11,
+          "flow": 3.5
+        },
+        "targets": [
+          {
+            "type": "pumped",
+            "operator": "gte",
+            "value": 100
+          },
+          {
+            "type": "pressure",
+            "operator": "gte",
+            "value": 8.8
+          },
+          {
+            "type": "volumetric",
+            "operator": "gte",
+            "value": 38
+          }
+        ]
+      },
+      {
+        "name": "Extraction",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 69,
+        "temperature": 88,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": true
+        },
+        "pump": {
+          "target": "flow",
+          "pressure": 9.5,
+          "flow": -1
+        },
+        "targets": [
+          {
+            "type": "pumped",
+            "operator": "gte",
+            "value": 100
+          },
+          {
+            "type": "volumetric",
+            "operator": "gte",
+            "value": 44
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "Flush",
+    "type": "standard",
+    "description": "",
+    "temperature": 93,
+    "utility": true,
+    "phases": [
+      {
+        "name": "Flush",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 5,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": true
+        },
+        "pump": 100
+      }
+    ]
+  },
+  {
+    "label": "[Utility] Backflush",
+    "type": "standard",
+    "description": "",
+    "temperature": 93,
+    "utility": true,
+    "phases": [
+      {
+        "name": "Pressurize",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 10,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": 100
+      },
+      {
+        "name": "Depressurize",
+        "phase": "brew",
+        "valve": 0,
+        "duration": 10,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": 0
+      },
+      {
+        "name": "Pressurize",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 10,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": 100
+      },
+      {
+        "name": "Depressurize",
+        "phase": "brew",
+        "valve": 0,
+        "duration": 10,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": 0
+      },
+      {
+        "name": "Pressurize",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 10,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": 100
+      },
+      {
+        "name": "Depressurize",
+        "phase": "brew",
+        "valve": 0,
+        "duration": 10,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": 0
+      },
+      {
+        "name": "Pressurize",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 10,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": 100
+      },
+      {
+        "name": "Depressurize",
+        "phase": "brew",
+        "valve": 0,
+        "duration": 10,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": 0
+      },
+      {
+        "name": "Pressurize",
+        "phase": "brew",
+        "valve": 1,
+        "duration": 10,
+        "temperature": 0,
+        "transition": {
+          "type": "instant",
+          "target": "time",
+          "duration": 0,
+          "adaptive": false
+        },
+        "pump": 100
+      }
+    ]
+  }
+]
