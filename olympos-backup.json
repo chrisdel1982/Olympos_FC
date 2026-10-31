@@ -1,6 +1,6 @@
 {
   "liveScore": {
-    "active": true,
+    "active": false,
     "home": "1",
     "away": "7",
     "half": "FT",
@@ -8,11 +8,11 @@
     "startTime": "11:55"
   },
   "announcement": "",
-  "matchDate": "Σάββατο 31/10",
-  "matchTime": "10:45",
-  "matchStadium": "Δημοτικό Γήπεδο «Κωνσταντίνος Μιγκοτζίδης»",
-  "matchMapLink": "https://maps.app.goo.gl/FRNAcSBNPFjq2YVv9",
-  "countdownTarget": "2026-10-31T10:45",
+  "matchDate": "",
+  "matchTime": "",
+  "matchStadium": "",
+  "matchMapLink": "",
+  "countdownTarget": "",
   "specialMatch": {
     "type": "ΦΙΛΙΚΟΣ ΑΓΩΝΑΣ",
     "home": null,
@@ -506,7 +506,10 @@
           "away": "ΠΑΟ ΚΟΥΦΑΛΙΩΝ",
           "homeScore": null,
           "awayScore": null,
-          "isPostponed": false
+          "isPostponed": false,
+          "scorers": [
+            "Γιώργος Βότσης"
+          ]
         },
         {
           "home": "ΝΕΑ ΠΟΛΙΤΕΙΑ ΕΥΟΣΜΟΥ",
@@ -4260,7 +4263,7 @@
       "name": "Γιώργος Βότσης",
       "birthYear": 2012,
       "position": "Πλάγιος Επιθετικός - Αριστερός (LW)",
-      "goals": 0,
+      "goals": 1,
       "cleanSheets": 0,
       "nickname": "ΓΙΩΡΓΟΣ",
       "isCaptain": false
