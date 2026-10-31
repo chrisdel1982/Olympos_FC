@@ -406,8 +406,8 @@
         {
           "home": "ΦΟΙΝΙΚΑΣ ΤΟΥΜΠΑΣ",
           "away": "ΜΑΡΑΘΩΝΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 10,
           "isPostponed": false
         },
         {
@@ -420,8 +420,8 @@
         {
           "home": "ΛΙΜΑΝΙ ΠΟΣΕΙΔΩΝΑ",
           "away": "ΑΣΤΕΡΙΑ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 2,
           "isPostponed": false
         },
         {
@@ -434,8 +434,8 @@
         {
           "home": "ΧΑΝΘ",
           "away": "ΑΝΑΓΕΝΝΗΣΗ ΡΥΣΙΟΥ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 6,
+          "awayScore": 8,
           "isPostponed": false
         },
         {
@@ -448,8 +448,8 @@
         {
           "home": "ΑΕ ΠΥΛΑΙΑΣ",
           "away": "ΑΓΙΟΣ ΓΕΩΡΓΙΟΣ Ν.ΚΡΗΝΗΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
