@@ -2,7 +2,7 @@
   "liveScore": {
     "active": true,
     "home": "0",
-    "away": "0",
+    "away": "1",
     "half": "1",
     "duration": "45",
     "startTime": "11:02"
