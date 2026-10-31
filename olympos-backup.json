@@ -413,8 +413,8 @@
         {
           "home": "Μ.ΑΛΕΞΑΝΔΡΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
           "away": "ΕΛΠΙΔΑ ΤΟΥΜΠΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
@@ -462,8 +462,8 @@
         {
           "home": "ΑΝΑΓΕΝΝΗΣΗ ΑΓ. ΙΩΑΝΝΗ",
           "away": "ΑΣ ΠΟΔ. ΤΟΥΜΠΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 7,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
@@ -483,22 +483,22 @@
         {
           "home": "ΦΟΙΝΙΚΑΣ ΠΟΛΙΧΝΗΣ",
           "away": "ΑΟΚ ΑΓΙΟΥ ΑΘΑΝΑΣΙΟΥ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 6,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
           "home": "ΝΤΙΝΟΣ ΚΟΥΗΣ",
           "away": "ΑΕ ΝΕΩΝ ΣΙΝΔΟΥ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 3,
+          "awayScore": 4,
           "isPostponed": false
         },
         {
           "home": "ΜΠΑΜ",
           "away": "ΑΜΣ ΝΙΚΟΠΟΛΗ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 2,
           "isPostponed": false
         },
         {
@@ -556,8 +556,8 @@
         {
           "home": "ΠΑΝΣΕΡΡΑΪΚΟΣ",
           "away": "ΠΙΕΡΙΚΟΣ 1961",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
@@ -577,8 +577,8 @@
         {
           "home": "ΠΡΩΤΑΘΛΗΤΕΣ ΠΕΥΚΩΝ",
           "away": "ΑΠΟΛΛΩΝ ΚΑΛΑΜΑΡΙΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 4,
+          "awayScore": 4,
           "isPostponed": false
         },
         {
