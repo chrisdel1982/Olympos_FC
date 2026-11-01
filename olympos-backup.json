@@ -8,11 +8,11 @@
     "startTime": "11:55"
   },
   "announcement": "",
-  "matchDate": "",
-  "matchTime": "",
-  "matchStadium": "",
-  "matchMapLink": "",
-  "countdownTarget": "",
+  "matchDate": "Σάββατο 7/11",
+  "matchTime": "14:15",
+  "matchStadium": "Γήπεδο Ελπίδας Εύοσμου ",
+  "matchMapLink": "https://maps.app.goo.gl/8Vux9rjr5oer9xUa8?g_st=ic",
+  "countdownTarget": "2026-11-07T14:15",
   "specialMatch": {
     "type": "ΦΙΛΙΚΟΣ ΑΓΩΝΑΣ",
     "home": null,
@@ -528,8 +528,8 @@
         {
           "home": "ΑΚΑΔ. Γ. ΚΟΥΔΑΣ",
           "away": "ΔΙΑΠΛΑΣΙΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 4,
           "isPostponed": false
         },
         {
@@ -549,8 +549,8 @@
         {
           "home": "ΖΗΤΑ ΕΠΤΑ",
           "away": "ΣΚΙΟΥΡΟΙ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 4,
+          "awayScore": 2,
           "isPostponed": false
         },
         {
@@ -570,8 +570,8 @@
         {
           "home": "ΑΛΕΞΑΝΔΡΟΣ ΚΙΛΚΙΣ",
           "away": "ΠΟΤ ΗΡΑΚΛΗΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
