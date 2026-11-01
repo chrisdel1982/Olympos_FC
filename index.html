@@ -476,6 +476,39 @@ table thead th:nth-child(1),
 table thead th:nth-child(2) {
     z-index: 30;
 }
+
+/* 3η Στήλη: Βαθμοί (Β) — σταθερή ΜΟΝΟ στη Βαθμολογία, ΜΟΝΟ στο κινητό (1/11/2026).
+   Το left = εκεί που τελειώνει η «Ομάδα». Το μετράει η syncStandingsStickyPoints,
+   γιατί το πλάτος της «Ομάδας» αλλάζει (π.χ. όταν η Φόρμα φτάσει τα 5 κυκλάκια).
+   Η κάθετη γραμμή μετακομίζει από μετά την Ομάδα σε μετά τους Β: εκεί τελειώνει το «παγωμένο».
+   Είναι inset box-shadow, όχι border: με border-collapse τα border ΔΕΝ ακολουθούν τα sticky
+   κελιά στο scroll (γι' αυτό χανόταν και η παλιά γραμμή της Ομάδας). */
+@media (max-width: 768px) {
+    #standingsTable th:nth-child(2),
+    #standingsTable td:nth-child(2) { border-right: none; }
+    #standingsTable th:nth-child(3),
+    #standingsTable td:nth-child(3) {
+        position: sticky;
+        left: var(--st-pts-left, 218.5px);
+        z-index: 20;
+        background-color: #ffffff;
+        border-right: none;
+        box-shadow: inset -1px 0 0 #ddd;
+    }
+    #standingsTable thead th:nth-child(3) { z-index: 30; }
+}
+@media (max-width: 768px) and (prefers-color-scheme: dark) {
+    #standingsTable td:nth-child(3) { background-color: #1e1e1e !important; box-shadow: inset -1px 0 0 #444; }
+    #standingsTable th:nth-child(3) { background-color: #333 !important; box-shadow: inset -1px 0 0 #555; }
+}
+
+/* Admin: λάμψη στα «Ημερομηνία»/«Ώρα» όταν τα γεμίζει η αντίστροφη μέτρηση (1/11/2026) */
+@keyframes autofillFlash {
+    from { box-shadow: 0 0 0 3px rgba(102, 187, 106, .6); }
+    to   { box-shadow: 0 0 0 3px rgba(102, 187, 106, 0); }
+}
+input.autofilled { animation: autofillFlash 1.4s ease-out; }
+@media (prefers-reduced-motion: reduce) { input.autofilled { animation: none; } }
 /* --- ΧΡΩΜΑΤΙΣΤΕΣ ΜΠΑΡΕΣ (INDICATORS - FLOATING STYLE) --- */
 /* Το κελί της θέσης χρειάζεται relative για να τοποθετηθεί η μπάρα μέσα του */
 .pos-cell {
@@ -4499,10 +4532,13 @@ function showToast(message, type = 'success') {
 </div>
 <div class="form-group" class="tint-ok" style="padding: 10px; border-radius: var(--r-sm); margin-top: 10px;">
     <label class="tint-ok-text" style="font-weight: bold;">⏳ Ρύθμιση Αντίστροφης Μέτρησης (Ακριβής Ώρα):</label>
-    <input type="datetime-local" id="countdownTargetInput" style="background: white; border: 1px solid #a5d6a7;">
+    <!-- 1/11/2026: όταν αλλάζει, γεμίζει μόνο του και τα «Ημερομηνία» / «Ώρα» (fillMatchWhenFromCountdown) -->
+    <input type="datetime-local" id="countdownTargetInput" style="background: white; border: 1px solid #a5d6a7;"
+           oninput="fillMatchWhenFromCountdown(this.value)" onchange="fillMatchWhenFromCountdown(this.value)">
     <small style="color: var(--ink-muted); display: block; margin-top: 5px;">
-        💡 <b>Προσοχή:</b> Αυτό ρυθμίζει <u>μόνο</u> το ρολόι που μετράει αντίστροφα.
-        Η ημερομηνία/ώρα που φαίνεται στην κάρτα είναι αυτή που γράφεις στα από πάνω κουτάκια.
+        💡 Μόλις διαλέξεις μέρα και ώρα εδώ, γεμίζουν <b>μόνα τους</b> και τα κουτάκια
+        «Ημερομηνία» και «Ώρα» από πάνω (π.χ. «Σάββατο 7/11», «14:15»).
+        Η κάρτα δείχνει ό,τι γράφουν εκείνα: αν θέλεις κάτι άλλο, το διορθώνεις εκεί, <u>αφού</u> ρυθμίσεις το ρολόι.
     </small>
 </div>
 <div class="form-group">
@@ -5097,6 +5133,17 @@ function showToast(message, type = 'success') {
         //    Ως τότε βλέπουν ακόμα το παλιό σήμα στην πρώτη οθόνη.
         //  - Αν αλλάξει το "background_color" ή το εικονίδιο στο manifest, αλλάζει και εδώ
         //    (.android-app #custom-splash / .android-app .splash-logo).
+        // =========================================================
+
+        // =========================================================
+        // ΑΛΛΑΓΕΣ 1/11/2026
+        //  - ΒΑΘΜΟΛΟΓΙΑ ΣΤΟ ΚΙΝΗΤΟ: στο οριζόντιο scroll μένουν σταθερά Θέση, Ομάδα ΚΑΙ Β.
+        //    CSS: «3η Στήλη: Βαθμοί» (μόνο #standingsTable, μόνο ≤768px — ο υπολογιστής ίδιος).
+        //    Το left της Β το μετράει η syncStandingsStickyPoints (μεταβλητή --st-pts-left).
+        //    Η κάθετη γραμμή πήγε από μετά την Ομάδα σε μετά τους Β. Το Ιστορικό δεν άλλαξε.
+        //  - ADMIN: η «Αντίστροφη Μέτρηση» γεμίζει μόνη της «Ημερομηνία» («Σάββατο 7/11») και
+        //    «Ώρα» («14:15») όταν την αλλάζεις (fillMatchWhenFromCountdown). Τα κουτάκια
+        //    διορθώνονται με το χέρι μετά. Στο άνοιγμα του admin δεν αλλάζει τίποτα.
         // =========================================================
         const KO_STAGES = [
             { key: 'R16', round: 101, label: 'Φάση των 16',  ties: 8, at: 'στη Φάση των 16' },
@@ -5953,8 +6000,32 @@ function displayStandings() {
     if (lg) lg.textContent = hasZone
         ? `. Πράσινη μπάρα: θέσεις 1–${Q}, συνεχίζουν για τον τίτλο. Θέσεις ${Q + 1}–${totalTeams}: αγώνες κατάταξης.` : '';
 
+    syncStandingsStickyPoints();
     renderRoundProgress();
     renderKnockout();
+}
+
+// ===== Σταθεροί βαθμοί (Β) στο οριζόντιο scroll του κινητού (1/11/2026) =====
+// Η στήλη Β «κολλάει» αμέσως μετά την Ομάδα. Η θέση της = left της Ομάδας + πλάτος της.
+// ResizeObserver: ξαναμετράει όταν αλλάξει το πλάτος (περιστροφή, γραμματοσειρά, Φόρμα)
+// και όταν ξαναφανεί η σελίδα. Σε κρυφή σελίδα (πλάτος 0) κρατάει την προηγούμενη τιμή.
+var _stPtsRO = null;
+function syncStandingsStickyPoints() {
+    const t = document.getElementById('standingsTable');
+    const th = t && t.querySelector('thead th:nth-child(2)');
+    if (!th) return;
+    const apply = () => {
+        const w = th.getBoundingClientRect().width;
+        if (!w) return;
+        const left = (parseFloat(getComputedStyle(th).left) || 0) + w;
+        t.style.setProperty('--st-pts-left', left + 'px');
+    };
+    apply();
+    if (window.ResizeObserver) {
+        if (_stPtsRO) _stPtsRO.disconnect();
+        _stPtsRO = new ResizeObserver(apply);
+        _stPtsRO.observe(th);
+    }
 }
 
 // ===== Συμπαγής βαθμολογία (κινητό) =====
@@ -7189,6 +7260,24 @@ document.querySelectorAll('.nav-link').forEach(link => {
         function closeAdminPanel() {
             document.getElementById('adminModal').classList.remove('active');
         }
+// Αντίστροφη μέτρηση -> «Ημερομηνία» + «Ώρα» (1/11/2026). Μόνο προς αυτή την κατεύθυνση:
+// "2026-11-07T14:15" -> «Σάββατο 7/11» και «14:15». Γράφει πάνω σε ό,τι υπάρχει, αλλά ΜΟΝΟ
+// όταν αλλάζεις το ρολόι — στο άνοιγμα του admin δεν πειράζει τίποτα (εκεί δεν τρέχει event).
+// Άδειο ή μισό ρολόι: τα κουτάκια μένουν όπως είναι. Η μέρα βγαίνει σε UTC, για να μην
+// την επηρεάζει ζώνη ώρας ή αλλαγή ώρας.
+function fillMatchWhenFromCountdown(v) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(v || '');
+    if (!m) return;
+    const [, y, mo, d, hh, mm] = m;
+    const day = GR_DAYS[new Date(Date.UTC(+y, +mo - 1, +d)).getUTCDay()];
+    [['matchDateInput', `${day} ${+d}/${+mo}`], ['matchTimeInput', `${hh}:${mm}`]].forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (!el || el.value === val) return;
+        el.value = val;
+        el.classList.remove('autofilled'); void el.offsetWidth; el.classList.add('autofilled'); // μικρή λάμψη: «άλλαξα»
+    });
+}
+
 function saveGeneralSettings() {
     console.log('🔄 Ξεκινάει η διαδικασία αποθήκευσης (Full Version)...');
 
