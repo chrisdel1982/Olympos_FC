@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <!-- ΕΚΔΟΣΗ 1/11/2026 δ΄ — «ΤΕΛΙΚΟ ΣΚΟΡ» στο FT, «Πέτα τις αλλαγές» στο πρόχειρο.
+    <!-- ΕΚΔΟΣΗ 1/11/2026 ε΄ — πιο διακριτικό «Μοιράσου το live» (απαλό, με το εικονίδιο share της Κλήσης).
+         Από τη δ΄: «ΤΕΛΙΚΟ ΣΚΟΡ» στο FT, «Πέτα τις αλλαγές» στο πρόχειρο.
          Από τη γ΄: admin με κωδικό μία φορά ανά συσκευή, έξυπνο πρόχειρο (τέλος το «Βρέθηκαν αποθηκευμένες αλλαγές»),
          «Μοιράσου το live» για όλους, μεγάλη εικόνα προεπισκόπησης (og-image.jpg).
          Από τη β΄: σταθεροί Β σε «κουτί» στη βαθμολογία του κινητού, αυτόματη Ημερομηνία/Ώρα από την αντίστροφη μέτρηση.
@@ -4031,18 +4032,27 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
   background:transparent;color:var(--ink-muted);display:grid;place-items:center;
   cursor:pointer;font-size:1rem;transition:color .15s,border-color .15s}
 .nx-share:hover{color:var(--ink);border-color:var(--ink-muted)}
-/* «Μοιράσου το live»: για όλους, μόνο στο live (1/11/2026) */
+/* «Μοιράσου το live»: για όλους, μόνο στο live (1/11/2026). Επιλογή «Α · Απαλό» του διαχειριστή:
+   απαλό φόντο στο χρώμα του LIVE, χωρίς σκιά, ίδιο εικονίδιο share με την Κλήση και τις ειδήσεις. */
 .nx-live-share{-webkit-appearance:none;appearance:none;margin:0;flex:none;display:inline-flex;align-items:center;gap:8px;
-  padding:9px 14px;border:0;border-radius:999px;background:#e53935;color:#fff;font:inherit;font-size:.88rem;font-weight:700;
-  line-height:1.1;white-space:nowrap;cursor:pointer;box-shadow:var(--sh-1)}
-.nx-live-share:hover{filter:brightness(1.06)}
+  padding:7px 12px;border:0;border-radius:999px;background:rgba(209,0,60,.08);color:var(--live-ink);
+  font:inherit;font-size:.82rem;font-weight:700;line-height:1.1;white-space:nowrap;cursor:pointer}
+.nx-live-share:hover{background:rgba(209,0,60,.14)}
 .nx-live-share:focus-visible{outline:2px solid var(--accent-color);outline-offset:2px}
-/* Λήξη (FT): χρυσό πλαίσιο και ταμπέλα, πράσινο κουμπί (1/11/2026) */
+@media (prefers-color-scheme: dark){
+  .nx-live-share{background:rgba(255,122,144,.13)}
+  .nx-live-share:hover{background:rgba(255,122,144,.2)}
+}
+/* Λήξη (FT): χρυσό πλαίσιο και ταμπέλα, το κουμπί σε απαλό πράσινο (1/11/2026) */
 .nx.is-ft{border:2px solid var(--accent-dark)}
 .nx-ft{display:inline-block;padding:4px 11px;border-radius:999px;background:var(--accent-color);color:#14301e;
   font-weight:700;font-size:.74rem;letter-spacing:.6px;line-height:1.2}
-.nx.is-ft .nx-live-share{background:var(--primary-color)}
-@media (prefers-color-scheme: dark){ .nx.is-ft .nx-live-share{background:#2e7d32} }
+.nx.is-ft .nx-live-share{background:rgba(26,71,42,.09);color:var(--primary-color)}
+.nx.is-ft .nx-live-share:hover{background:rgba(26,71,42,.15)}
+@media (prefers-color-scheme: dark){
+  .nx.is-ft .nx-live-share{background:rgba(129,199,132,.14);color:#81c784}
+  .nx.is-ft .nx-live-share:hover{background:rgba(129,199,132,.22)}
+}
 
 .nx-row{display:flex;align-items:center;gap:10px}
 .nx-ico{flex:none;width:20px;text-align:center;font-size:1.05rem;color:var(--ink-muted)}
@@ -5252,7 +5262,8 @@ function showToast(message, type = 'success') {
         //    (κλείνοντας το admin έβλεπες κενό site).
         //  - «ΜΟΙΡΑΣΟΥ ΤΟ LIVE» για όλους, όσο το live είναι ενεργό (openLiveShare, drawLiveImage):
         //    εικόνα JPEG 1080×1080 + λεζάντα με link ?utm_source=live&utm_medium=share.
-        //    Έξω από το live, το κουμπί της κάρτας μένει η Κλήση με PIN.
+        //    Έξω από το live, το κουμπί της κάρτας μένει η Κλήση με PIN. Εμφάνιση: απαλό (επιλογή «Α»),
+        //    εικονίδιο fa-share όπως η Κλήση και οι ειδήσεις.
         //  - og:image = og-image.jpg (1200×630), ανεβαίνει δίπλα στο index.html.
         //  - FT στο live: χρυσό «ΤΕΛΙΚΟ ΣΚΟΡ» αντί για «● LIVE», χωρίς λεπτό, ώσπου να κλείσει το live.
         //  - «↩️ Πέτα τις αλλαγές» στη γραμμή του προχείρου (discardDraft): π.χ. μετά από δοκιμή του live.
@@ -7764,7 +7775,7 @@ if (!nextMatch) {
                     </div>
                     ${isLive ? `
                     <button type="button" class="nx-live-share" onclick="openLiveShare()">
-                        <i class="fa-solid fa-share-nodes" aria-hidden="true"></i><span>${data.liveScore.half === 'FT' ? 'Μοιράσου το σκορ' : 'Μοιράσου το live'}</span>
+                        <i class="fa-solid fa-share" aria-hidden="true"></i><span>${data.liveScore.half === 'FT' ? 'Μοιράσου το σκορ' : 'Μοιράσου το live'}</span>
                     </button>` : `
                     <button type="button" class="nx-share" onclick="openSquadModal()"
                             title="Αποστολή κλήσης" aria-label="Αποστολή κλήσης">
