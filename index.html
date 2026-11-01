@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <!-- ΕΚΔΟΣΗ 1/11/2026 β΄ — σταθεροί Β σε «κουτί» στη βαθμολογία του κινητού, σταθερά «Θέσεις 17–59» / «⋮ ομάδες»,
-         αυτόματη Ημερομηνία/Ώρα από την αντίστροφη μέτρηση.
+    <!-- ΕΚΔΟΣΗ 1/11/2026 δ΄ — «ΤΕΛΙΚΟ ΣΚΟΡ» στο FT, «Πέτα τις αλλαγές» στο πρόχειρο.
+         Από τη γ΄: admin με κωδικό μία φορά ανά συσκευή, έξυπνο πρόχειρο (τέλος το «Βρέθηκαν αποθηκευμένες αλλαγές»),
+         «Μοιράσου το live» για όλους, μεγάλη εικόνα προεπισκόπησης (og-image.jpg).
+         Από τη β΄: σταθεροί Β σε «κουτί» στη βαθμολογία του κινητού, αυτόματη Ημερομηνία/Ώρα από την αντίστροφη μέτρηση.
          (Δεξί κλικ > Προβολή πηγαίου κώδικα: αν το βλέπεις αυτό, το site τρέχει τη νέα έκδοση.) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-9BRZWJM3FQ"></script>
     <script>
@@ -25,7 +27,16 @@
 
     <meta property="og:title" content="Ακαδημία - Όλυμπος Δενδροποτάμου">
     <meta property="og:description" content="Δείτε ζωντανά την πορεία της ομάδας μας! Βαθμολογίες, Αποτελέσματα και Στατιστικά.">
-    <meta property="og:image" content="https://www.olymposfc.gr/android-chrome-192x192.png">
+    <!-- 1/11/2026: μεγάλη εικόνα προεπισκόπησης (1200×630) αντί για το εικονίδιο 192px.
+         Το αρχείο og-image.jpg ανεβαίνει δίπλα στο index.html. Αν αλλάξει: ?v=2 κ.ο.κ.,
+         αλλιώς Facebook/Viber δείχνουν για καιρό την παλιά από τη μνήμη τους. -->
+    <meta property="og:image" content="https://www.olymposfc.gr/og-image.jpg?v=1">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:alt" content="Όλυμπος Δενδροποτάμου: Live σκορ, βαθμολογία, πρόγραμμα, νέα">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://www.olymposfc.gr/og-image.jpg?v=1">
     <meta property="og:url" content="https://www.olymposfc.gr/">
     <meta property="og:type" content="website">
 
@@ -506,6 +517,51 @@ table thead th:nth-child(2) {
 @media (max-width: 768px) and (prefers-color-scheme: dark) {
     #standingsTable td:nth-child(3) { background-color: #1e1e1e !important; box-shadow: inset 1px 0 0 #444, inset -1px 0 0 #444; }
     #standingsTable th:nth-child(3) { background-color: #333 !important; box-shadow: inset 1px 0 0 #555, inset -1px 0 0 #555; }
+}
+
+/* Admin: κεφαλίδα με ✕, κατάσταση προχείρου, ταμπελάκι, παράθυρο διαφορών (1/11/2026) */
+.adm-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex: none; }
+.adm-head h2 { margin: 0; }
+.adm-x {
+    flex: none; width: 40px; height: 40px; border-radius: 50%; margin: 1.1rem 1.2rem 0 0;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+    font-size: 1.1rem; line-height: 1; cursor: pointer;
+}
+.adm-x:focus-visible, .draft-pill:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+.draft-status { margin: 2px 0 10px; font-size: .85rem; line-height: 1.45; }
+.draft-status .ds-ok { color: #2e7d32; font-weight: 600; }
+.draft-status .ds-pending { color: var(--ink); }
+.draft-status .ds-warn { color: #b26a00; font-weight: 700; }
+.draft-status .ds-muted { color: var(--ink-muted); }
+.draft-status .ds-btn {
+    margin-left: 4px; padding: 2px 10px; border-radius: var(--r-sm);
+    border: 1px solid #b26a00; background: transparent; color: #b26a00; font: inherit; font-weight: 700; cursor: pointer;
+}
+.draft-status .ds-btn-plain { display: inline-block; margin: 6px 0 0; border-color: var(--line); color: var(--ink); font-weight: 600; }
+.draft-pill {
+    position: fixed; left: 14px; bottom: 16px; z-index: 1500;
+    padding: 8px 14px; border-radius: 999px; border: none;
+    background: var(--primary-color); color: #fff; font: inherit; font-size: .85rem; font-weight: 700;
+    box-shadow: var(--sh-2); cursor: pointer;
+}
+.draft-pill.is-warn { background: #b26a00; }
+.draft-pill[hidden] { display: none; }
+#draftConflictModal .modal-content.dc-box {
+    max-width: 440px !important; width: 92% !important; height: auto !important;
+    max-height: 90vh; padding: 1.4rem 1.4rem 1rem !important; display: block;
+}
+.dc-title { margin: 0 0 .6rem; padding: 0; border: 0; color: var(--primary-color); }
+.dc-body p { margin: .4rem 0; }
+.dc-body ul { margin: .3rem 0 .6rem 1.2rem; font-weight: 700; }
+.dc-body .dc-when { font-size: .85rem; color: var(--ink-muted); }
+.dc-actions { display: flex; flex-direction: column; gap: 4px; margin-top: .8rem; }
+.dc-actions .btn { width: 100%; }
+.dc-actions small { margin: 0 0 8px; font-size: .78rem; color: var(--ink-muted); }
+@media (prefers-color-scheme: dark) {
+    .dc-title { color: #c0dd97; }
+    .draft-status .ds-ok { color: #81c784; }
+    .draft-status .ds-warn, .draft-status .ds-btn { color: #ffb74d; border-color: #ffb74d; }
+    .draft-status .ds-btn-plain { color: var(--ink); border-color: var(--line); }
 }
 
 /* Admin: λάμψη στα «Ημερομηνία»/«Ώρα» όταν τα γεμίζει η αντίστροφη μέτρηση (1/11/2026) */
@@ -3975,6 +4031,18 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
   background:transparent;color:var(--ink-muted);display:grid;place-items:center;
   cursor:pointer;font-size:1rem;transition:color .15s,border-color .15s}
 .nx-share:hover{color:var(--ink);border-color:var(--ink-muted)}
+/* «Μοιράσου το live»: για όλους, μόνο στο live (1/11/2026) */
+.nx-live-share{-webkit-appearance:none;appearance:none;margin:0;flex:none;display:inline-flex;align-items:center;gap:8px;
+  padding:9px 14px;border:0;border-radius:999px;background:#e53935;color:#fff;font:inherit;font-size:.88rem;font-weight:700;
+  line-height:1.1;white-space:nowrap;cursor:pointer;box-shadow:var(--sh-1)}
+.nx-live-share:hover{filter:brightness(1.06)}
+.nx-live-share:focus-visible{outline:2px solid var(--accent-color);outline-offset:2px}
+/* Λήξη (FT): χρυσό πλαίσιο και ταμπέλα, πράσινο κουμπί (1/11/2026) */
+.nx.is-ft{border:2px solid var(--accent-dark)}
+.nx-ft{display:inline-block;padding:4px 11px;border-radius:999px;background:var(--accent-color);color:#14301e;
+  font-weight:700;font-size:.74rem;letter-spacing:.6px;line-height:1.2}
+.nx.is-ft .nx-live-share{background:var(--primary-color)}
+@media (prefers-color-scheme: dark){ .nx.is-ft .nx-live-share{background:#2e7d32} }
 
 .nx-row{display:flex;align-items:center;gap:10px}
 .nx-ico{flex:none;width:20px;text-align:center;font-size:1.05rem;color:var(--ink-muted)}
@@ -4462,7 +4530,10 @@ function showToast(message, type = 'success') {
 </footer>
     <div id="adminModal" class="modal">
         <div class="modal-content">
-            <h2>🔐 Admin Panel</h2>
+            <div class="adm-head">
+                <h2>🔐 Admin Panel</h2>
+                <button type="button" class="adm-x" onclick="closeAdminPanel()" title="Κλείσιμο" aria-label="Κλείσιμο">✕</button>
+            </div>
             
             <div id="loginForm">
                 <div class="form-group">
@@ -4481,6 +4552,8 @@ function showToast(message, type = 'success') {
                 <div class="adm-pinned">
                 <div class="form-group">
                     <label>📦 Διαχείριση Δεδομένων:</label>
+                    <!-- 1/11/2026: τι δεν έχει ανέβει ακόμα στο GitHub (updateDraftUi) -->
+                    <div id="draftStatus" class="draft-status" aria-live="polite"></div>
                     <div id="storageMeter" style="margin-bottom:10px;"></div>
                     <div class="action-buttons">
                         <button class="btn btn-success" onclick="exportData()">💾 Export Δεδομένων</button>
@@ -4926,11 +4999,28 @@ function showToast(message, type = 'success') {
 
                 <div class="modal-buttons" style="margin-top: 2rem; padding-top: 1rem; border-top: 2px solid #ddd;">
                     <button class="btn btn-secondary" onclick="closeAdminPanel()">Κλείσιμο</button>
+                    <button class="btn btn-secondary" onclick="adminLogout()" title="Την επόμενη φορά θα ζητηθεί ξανά ο κωδικός σε αυτή τη συσκευή">🚪 Αποσύνδεση από αυτή τη συσκευή</button>
                     <button class="btn btn-danger" onclick="resetAllData()">⚠️ Επαναφορά Όλων</button>
                 </div>
             </div>
         </div>
     </div>
+<!-- 1/11/2026: ταμπελάκι στη συσκευή του admin όσο υπάρχει πρόχειρο που δεν ανέβηκε -->
+<button type="button" id="draftPill" class="draft-pill" hidden onclick="openAdminPanel()"
+        title="Βλέπεις το πρόχειρό σου: έχει αλλαγές που δεν ανέβηκαν στο GitHub">📝 Πρόχειρο</button>
+<!-- 1/11/2026: άλλαξαν και το πρόχειρο και το GitHub, στο ίδιο σημείο (showDraftConflict) -->
+<div id="draftConflictModal" class="modal" style="z-index: 3500;">
+    <div class="modal-content dc-box" role="dialog" aria-modal="true" aria-labelledby="dcTitle">
+        <h3 id="dcTitle" class="dc-title">Άλλαξαν και τα δύο</h3>
+        <div id="dcBody" class="dc-body"></div>
+        <div class="dc-actions">
+            <button type="button" class="btn" onclick="resolveDraftConflicts('mine')">📝 Κράτα το πρόχειρό μου</button>
+            <small>Στο επόμενο Export θα γράψει πάνω σε ό,τι άλλαξε στο GitHub σε αυτά τα σημεία.</small>
+            <button type="button" class="btn btn-secondary" onclick="resolveDraftConflicts('theirs')">☁️ Πάρε του GitHub</button>
+            <small>Χάνονται οι αλλαγές του προχείρου μόνο σε αυτά τα σημεία.</small>
+        </div>
+    </div>
+</div>
 <!-- Κλήση: ΜΙΑ οθόνη (Οκτ. 2026). Επιλογή, εικόνα και αποστολή μαζί.
      Οι δύο εικόνες (με αποστολή / μόνο ο αγώνας) είναι ΑΚΡΙΒΩΣ οι ίδιες με πριν:
      φτιάχνονται από τις ίδιες drawSquadImage / drawMatchImage. Άλλαξε μόνο ο δρόμος ως εκεί. -->
@@ -4976,7 +5066,7 @@ function showToast(message, type = 'success') {
 <!-- Share ως εικόνα: προεπισκόπηση πριν την αποστολή -->
 <div id="shareImgModal" class="modal" style="z-index: 3001;" onclick="if (event.target === this) closeShareImgModal()">
     <div class="modal-content">
-        <h3 class="si-title">📤 Έτοιμο για αποστολή</h3>
+        <h3 class="si-title" id="shareImgTitle">📤 Έτοιμο για αποστολή</h3>
         <div id="shareImgBox" class="si-box"></div>
         <p id="shareImgHint" class="si-hint"></p>
         <div class="si-actions">
@@ -5155,6 +5245,17 @@ function showToast(message, type = 'success') {
         //    Τα Β σε «κουτί» (γραμμή πριν και μετά, επιλογή «Γ»). Το Ιστορικό δεν άλλαξε.
         //    Τα «Θέσεις 17–59…» και «⋮ 37 ομάδες» μένουν στη θέση τους στο scroll (.st-pin).
         //    iPhone: text-size-adjust 100% στον πίνακα (φούσκωνε το «⋮ 37 ομάδες»).
+        //  - ADMIN ΧΩΡΙΣ ΣΥΝΕΧΕΙΣ ΚΩΔΙΚΟΥΣ (έκδοση γ΄): κωδικός μία φορά ανά συσκευή, «Αποσύνδεση»
+        //    μέσα στο admin. Το πρόχειρο συγκρίνεται μόνο του με το GitHub (reconcileDraft) και
+        //    ρωτάει μόνο αν άλλαξαν και τα δύο στο ίδιο σημείο. Λεπτομέρειες: «ADMIN: ΕΜΠΙΣΤΗ ΣΥΣΚΕΥΗ».
+        //    Το φόντο δεν κλείνει πια το admin· ✕ πάνω δεξιά. Το ⚙️ δεν σβήνει πια τις σελίδες
+        //    (κλείνοντας το admin έβλεπες κενό site).
+        //  - «ΜΟΙΡΑΣΟΥ ΤΟ LIVE» για όλους, όσο το live είναι ενεργό (openLiveShare, drawLiveImage):
+        //    εικόνα JPEG 1080×1080 + λεζάντα με link ?utm_source=live&utm_medium=share.
+        //    Έξω από το live, το κουμπί της κάρτας μένει η Κλήση με PIN.
+        //  - og:image = og-image.jpg (1200×630), ανεβαίνει δίπλα στο index.html.
+        //  - FT στο live: χρυσό «ΤΕΛΙΚΟ ΣΚΟΡ» αντί για «● LIVE», χωρίς λεπτό, ώσπου να κλείσει το live.
+        //  - «↩️ Πέτα τις αλλαγές» στη γραμμή του προχείρου (discardDraft): π.χ. μετά από δοκιμή του live.
         //  - ADMIN: η «Αντίστροφη Μέτρηση» γεμίζει μόνη της «Ημερομηνία» («Σάββατο 7/11») και
         //    «Ώρα» («14:15») όταν την αλλάζεις (fillMatchWhenFromCountdown). Τα κουτάκια
         //    διορθώνονται με το χέρι μετά. Στο άνοιγμα του admin δεν αλλάζει τίποτα.
@@ -5505,6 +5606,7 @@ async function fetchServerData() {
         fetchServerData.warned = false;
         if (!(d && typeof d === 'object' && !Array.isArray(d))) return null;
         rememberGoodData(text);
+        lastServerData = JSON.parse(text);   // ξεχωριστό αντίγραφο: η βάση του επόμενου προχείρου
         return d;
     } catch (e) {
         console.warn('⚠️ Πρόβλημα σύνδεσης ή χαλασμένο JSON...', e);
@@ -5545,32 +5647,28 @@ async function readGoodData() {
 }
 
 async function loadData() {
-    // 1️⃣ ΕΛΕΓΧΟΣ: Είμαι σε Admin Mode;
-    const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
-    
-    // 2️⃣ ΑΝ ΕΙΣΑΙ ADMIN: Πρώτα τσέκαρε localStorage
-    if (isAdmin) {
-        const saved = localStorage.getItem('footballData');
-        if (saved) {
-            try {
-                const d = JSON.parse(saved);
-                console.log('⚙️ Admin Mode: Χρήση τοπικών drafts.');
-                return d;
-            } catch (e) {
-                // ΠΡΙΝ: χαλασμένο πρόχειρο = σφάλμα = άδειο site. ΤΩΡΑ: συνεχίζει από το GitHub.
-                console.warn('Χαλασμένο πρόχειρο, φόρτωση από GitHub.', e);
-            }
-        }
-    }
-    
-    // 3️⃣ ΦΟΡΤΩΣΗ ΑΠΟ GITHUB (default για όλους)
+    // 1/11/2026: ΠΡΩΤΑ ο server για όλους. Στη συσκευή του admin, αν υπάρχει πρόχειρο
+    // που δεν ανέβηκε, συγκρίνεται με τον server (reconcileDraft) και δείχνεται αυτό.
     const fromServer = await fetchServerData();
-    if (fromServer) return fromServer;
+    if (fromServer) {
+        if (draftMode()) {
+            draftState = reconcileDraft(fromServer);
+            return draftState.data;
+        }
+        return fromServer;
+    }
+
+    // Χωρίς server: ο admin συνεχίζει το πρόχειρό του (όπως πριν)
+    if (draftMode()) {
+        const d = readDraft();
+        if (d) { draftState = { state: 'pending', mine: [], theirs: [], conflicts: [] }; return d; }
+    }
 
     // 3½ Η τελευταία σωστή έκδοση αυτής της συσκευής (χωρίς σήμα ή με χαλασμένο JSON)
     const lastGood = await readGoodData();
     if (lastGood) {
         console.warn('📦 Εμφανίζεται η τελευταία σωστή έκδοση των δεδομένων.');
+        if (!lastServerData) lastServerData = lastGood;
         return lastGood;
     }
 
@@ -5644,6 +5742,8 @@ async function loadData() {
         function saveData(dataToSave) {
     dataToSave.lastUpdated = new Date().getTime();
     const payload = JSON.stringify(dataToSave);
+    // Πρώτη αλλαγή = αρχή προχείρου: σημειώνουμε από ποια έκδοση του GitHub ξεκίνησε (1/11/2026)
+    const isNewDraft = !hasDraft();
 
     // Το localStorage κρατάει ~5MB και μετρά σε UTF-16 (2 bytes/χαρακτήρα).
     const usedMB = (payload.length * 2) / 1048576;
@@ -5651,6 +5751,11 @@ async function loadData() {
 
     try {
         localStorage.setItem('footballData', payload);
+        if (isNewDraft) {
+            if (lastServerData) writeDraftBase(shapeHashes(lastServerData));
+            draftState = { state: 'pending', mine: [], theirs: [], conflicts: [] };
+        }
+        updateDraftUi();
         return true;
     } catch (err) {
         // ΠΡΙΝ: το exception πετούσε σιωπηλά και η δουλειά χανόταν.
@@ -5727,7 +5832,7 @@ function updateStorageMeter(usedMB) {
     link.remove();
     // ΠΡΙΝ: revoke αμέσως μετά το κλικ -> σε Safari το κατέβασμα μπορούσε να χαθεί (17/10/2026)
     setTimeout(() => URL.revokeObjectURL(url), 5000);
-    showToast('Τα δεδομένα εξήχθησαν - Live Score στην κορυφή!');
+    showToast('Τα δεδομένα εξήχθησαν. Ανέβασέ τα στο GitHub: μόλις ανέβουν, το πρόχειρο σβήνει μόνο του.');
 }
 
         function importData(event) {
@@ -7237,6 +7342,9 @@ function removeNewsPhoto() {
 document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', function(e) {
         e.preventDefault();
+        // ⚙️ δεν είναι σελίδα: το ανοίγει το δικό του onclick. ΠΡΙΝ (ως 1/11/2026) έσβηνε όλες
+        // τις σελίδες και μετά σκόνταφτε στο '#admin', οπότε κλείνοντας το admin έβλεπες κενό site.
+        if (this.classList.contains('admin-link')) return;
         
         // 1. ΑΝ ΠΑΤΗΣΟΥΜΕ ΤΑ "ΝΕΑ", ΣΒΗΝΟΥΜΕ ΤΟ BADGE ΑΜΕΣΩΣ
         if (this.getAttribute('href') === '#news') {
@@ -7264,15 +7372,22 @@ document.querySelectorAll('.nav-link').forEach(link => {
     });
 });
 
+        // 1/11/2026: σε έμπιστη συσκευή το ⚙️ ανοίγει κατευθείαν, χωρίς κωδικό,
+        // και ξαναβρίσκεις τη φόρμα όπως την άφησες (δες «ADMIN: ΕΜΠΙΣΤΗ ΣΥΣΚΕΥΗ»).
         function openAdminPanel() {
             document.getElementById('adminModal').classList.add('active');
+            updateDraftUi();
+            if (adminTrusted()) { enterAdmin(); return; }
             document.getElementById('loginForm').style.display = 'block';
             document.getElementById('adminContent').style.display = 'none';
-            document.getElementById('adminPassword').value = '';
+            const pw = document.getElementById('adminPassword');
+            pw.value = '';
+            setTimeout(() => { try { pw.focus(); } catch (e) {} }, 50);
         }
 
         function closeAdminPanel() {
             document.getElementById('adminModal').classList.remove('active');
+            updateDraftUi();
         }
 // Αντίστροφη μέτρηση -> «Ημερομηνία» + «Ώρα» (1/11/2026). Μόνο προς αυτή την κατεύθυνση:
 // "2026-11-07T14:15" -> «Σάββατο 7/11» και «14:15». Γράφει πάνω σε ό,τι υπάρχει, αλλά ΜΟΝΟ
@@ -7577,6 +7692,9 @@ if (!nextMatch) {
 
     // Logic για Live Score
     const isLive = data.liveScore && data.liveScore.active;
+    // FT (1/11/2026): ο αγώνας τελείωσε αλλά το live μένει ανοιχτό ώσπου να περαστούν τα σκορ.
+    // Όχι πια κόκκινο «● LIVE» που αναβοσβήνει: χρυσό «ΤΕΛΙΚΟ ΣΚΟΡ», χωρίς λεπτό κάτω από το σκορ.
+    const isFT = !!(isLive && data.liveScore.half === 'FT');
     let liveMinuteDisplay = "";
     if (isLive) {
         liveMinuteDisplay = calculateLiveMinute(
@@ -7621,13 +7739,13 @@ if (!nextMatch) {
         : '';
 
     container.innerHTML = `
-        <div class="nx ${isLive ? 'is-live' : ''}">
+        <div class="nx ${isFT ? 'is-ft' : isLive ? 'is-live' : ''}">
             <div class="nx-band">
                 ${teamSide(nextMatch.home)}
                 <div class="nx-mid">
                     ${isLive ? `
                         <div class="nx-score">${esc(data.liveScore.home || 0)}<em>–</em>${esc(data.liveScore.away || 0)}</div>
-                        <div class="nx-min">${esc(liveMinuteDisplay)}</div>
+                        ${isFT ? '' : `<div class="nx-min">${esc(liveMinuteDisplay)}</div>`}
                     ` : `<div class="nx-vs">VS</div>`}
                 </div>
                 ${teamSide(nextMatch.away)}
@@ -7635,7 +7753,7 @@ if (!nextMatch) {
 
             <div class="nx-sheet">
                 <div class="nx-meta">
-                    <span class="nx-kind">${isLive ? '<i class="nx-dot"></i>LIVE' : 'Επόμενος αγώνας'}</span>
+                    <span class="nx-kind">${isFT ? '<span class="nx-ft">ΤΕΛΙΚΟ ΣΚΟΡ</span>' : isLive ? '<i class="nx-dot"></i>LIVE' : 'Επόμενος αγώνας'}</span>
                     <span class="nx-tag">${isHome ? 'Εντός' : 'Εκτός'}</span>
                 </div>
 
@@ -7644,10 +7762,14 @@ if (!nextMatch) {
                         <div class="nx-title">${esc(title)}</div>
                         ${sub ? `<div class="nx-sub">${esc(sub)}</div>` : ''}
                     </div>
+                    ${isLive ? `
+                    <button type="button" class="nx-live-share" onclick="openLiveShare()">
+                        <i class="fa-solid fa-share-nodes" aria-hidden="true"></i><span>${data.liveScore.half === 'FT' ? 'Μοιράσου το σκορ' : 'Μοιράσου το live'}</span>
+                    </button>` : `
                     <button type="button" class="nx-share" onclick="openSquadModal()"
                             title="Αποστολή κλήσης" aria-label="Αποστολή κλήσης">
                         <i class="fa-solid fa-share" aria-hidden="true"></i>
-                    </button>
+                    </button>`}
                 </div>
 
                 ${(!isLive && when) ? `
@@ -7725,58 +7847,332 @@ function startCountdown(targetDateString) {
     // Ξεκινάμε την επανάληψη κάθε δευτερόλεπτο
     countdownInterval = setInterval(updateTimer, 1000);
 }
+// =========================================================
+// ADMIN: ΕΜΠΙΣΤΗ ΣΥΣΚΕΥΗ + ΕΞΥΠΝΟ ΠΡΟΧΕΙΡΟ (1/11/2026)
+//  - Κωδικός ΜΙΑ φορά ανά συσκευή (localStorage 'adminDevice'), όπως το PIN της Κλήσης.
+//    Αν αλλάξει το ADMIN_PASSWORD, ξαναζητείται παντού. «Αποσύνδεση» μέσα στο admin.
+//    Ο κωδικός δεν είναι κλειδαριά (φαίνεται στον κώδικα): η κλειδαριά είναι το GitHub,
+//    γιατί τίποτα δεν φτάνει στο site χωρίς Export + ανέβασμα.
+//  - Πρόχειρο = 'footballData' (όπως πριν) + 'footballDraftBase': ένα «αποτύπωμα» ανά
+//    ενότητα (live, νέα, αποτελέσματα…) του GitHub από το οποίο ξεκίνησε το πρόχειρο.
+//    Σύγκριση τριών δρόμων, όπως το git: άλλαξε μόνο το πρόχειρο -> κρατάμε το πρόχειρο,
+//    μόνο το GitHub -> παίρνουμε του GitHub, και τα δύο διαφορετικά -> ρωτάμε (μόνο τότε).
+//    Όταν το πρόχειρο είναι ίδιο με το GitHub (δηλαδή ανέβηκε), σβήνει μόνο του.
+//    ΤΕΛΟΣ το «ΒΡΕΘΗΚΑΝ ΑΠΟΘΗΚΕΥΜΕΝΕΣ ΑΛΛΑΓΕΣ» με OK/Ακύρωση.
+//  - Η συσκευή δείχνει το πρόχειρο μόνο όσο είναι έμπιστη ΚΑΙ έχει αλλαγές που δεν
+//    ανέβηκαν (draftMode). Το auto-refresh ΔΕΝ σταματά πια: φέρνει μέσα στο πρόχειρο ό,τι
+//    άλλαξε μόνο στο GitHub (π.χ. το live). Παγώνει μόνο όσο είναι ανοιχτό το admin.
+//  - Το πάτημα στο σκούρο φόντο ΔΕΝ κλείνει πια το admin (έκλεινε κατά λάθος στο κινητό).
+//    Ξανανοίγοντας, η φόρμα είναι όπως την άφησες, εκτός αν στο μεταξύ ήρθαν νέα δεδομένα.
+// =========================================================
+const ADMIN_DEVICE_KEY = 'adminDevice';
+const DRAFT_KEY = 'footballData';            // ίδιο όνομα με πριν: τα παλιά πρόχειρα διαβάζονται
+const DRAFT_BASE_KEY = 'footballDraftBase';
+const DRAFT_LABELS = {
+    liveScore: 'Live σκορ', announcement: 'Ανακοίνωση',
+    matchDate: 'Επόμενος αγώνας', matchTime: 'Επόμενος αγώνας', matchStadium: 'Επόμενος αγώνας',
+    matchMapLink: 'Επόμενος αγώνας', countdownTarget: 'Επόμενος αγώνας', specialMatch: 'Επόμενος αγώνας',
+    crests: 'Σήματα', trainingStart: 'Προπονήσεις', trainings: 'Προπονήσεις', trainingExceptions: 'Προπονήσεις',
+    season: 'Σεζόν', category: 'Σεζόν', group: 'Σεζόν', league: 'Σεζόν', competition: 'Σεζόν',
+    nextCategory: 'Σεζόν', qualify: 'Σεζόν', teams: 'Ομάδες',
+    fixtures: 'Αποτελέσματα & πρόγραμμα', roster: 'Ρόστερ', news: 'Νέα'
+};
+let adminSession = false;      // αν η συσκευή δεν κρατάει localStorage: έμπιστη μόνο σε αυτή τη σελίδα
+let lastServerData = null;     // το τελευταίο JSON του server, όπως ήρθε
+let draftState = { state: 'none' };
+let dataVersion = 0;           // ανεβαίνει όταν τα δεδομένα αλλάζουν από τον server
+let adminFormsVersion = -1;    // -1 = οι φόρμες δεν γέμισαν ακόμα σε αυτή τη σελίδα
+let adminEntering = false;
+
+function cyrb53(str, seed = 0) {
+    let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+    for (let i = 0, ch; i < str.length; i++) {
+        ch = str.charCodeAt(i);
+        h1 = Math.imul(h1 ^ ch, 2654435761);
+        h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
+}
+// JSON με ταξινομημένα κλειδιά: ίδιο περιεχόμενο = ίδιο κείμενο, όποια σειρά κι αν έχουν
+function stableStr(v) {
+    if (v === undefined) return 'null';
+    if (v === null || typeof v !== 'object') return JSON.stringify(v);
+    if (Array.isArray(v)) return '[' + v.map(stableStr).join(',') + ']';
+    return '{' + Object.keys(v).sort().filter(k => v[k] !== undefined)
+        .map(k => JSON.stringify(k) + ':' + stableStr(v[k])).join(',') + '}';
+}
+// Ό,τι γράφει το Export, χωρίς ό,τι υπολογίζεται μόνο του (γκολ παικτών, σεζόν ειδήσεων,
+// παλιές ακυρώσεις προπονήσεων). Αλλιώς πρόχειρο και GitHub θα «διέφεραν» χωρίς λόγο.
+function draftShape(d) {
+    d = d || {};
+    const limit = new Date(); limit.setDate(limit.getDate() - 45);
+    const cut = ymd(limit);
+    const D = SEASON_DEFAULTS;
+    return {
+        liveScore: d.liveScore || null,
+        announcement: d.announcement || '', matchDate: d.matchDate || '', matchTime: d.matchTime || '',
+        matchStadium: d.matchStadium || '', matchMapLink: d.matchMapLink || '',
+        countdownTarget: d.countdownTarget || '', specialMatch: d.specialMatch || null,
+        crests: d.crests || {}, trainingStart: d.trainingStart || '', trainings: d.trainings || [],
+        trainingExceptions: (d.trainingExceptions || []).filter(x => !x || !x.date || x.date >= cut),
+        season: d.season || D.season, category: d.category || D.category, group: d.group ?? D.group,
+        league: d.league || D.league, competition: d.competition || D.competition,
+        nextCategory: d.nextCategory || D.nextCategory, qualify: Number(d.qualify) || D.qualify,
+        teams: resolveTeams(d),
+        fixtures: d.fixtures || [],
+        roster: (d.roster || []).map(p => {
+            if (!p || typeof p !== 'object') return p;
+            const { goals, cleanSheets, ...rest } = p;
+            return rest;
+        }),
+        news: (d.news || []).map(n => (n && typeof n === 'object' && !n.season) ? { ...n, season: seasonOfDate(n.date) } : n)
+    };
+}
+function shapeHashes(d) {
+    const sh = draftShape(d), o = {};
+    Object.keys(sh).forEach(k => { o[k] = cyrb53(stableStr(sh[k])); });
+    return o;
+}
+function draftLabels(keys) {
+    return [...new Set((keys || []).map(k => DRAFT_LABELS[k] || k))];
+}
+
+function adminTag(p) { return 'v1:' + cyrb53('olympos-admin|' + p); }
+function adminTrusted() {
+    if (adminSession) return true;
+    try { return localStorage.getItem(ADMIN_DEVICE_KEY) === adminTag(ADMIN_PASSWORD); } catch (e) { return false; }
+}
+function hasDraft() { try { return !!localStorage.getItem(DRAFT_KEY); } catch (e) { return false; } }
+function draftMode() { return adminTrusted() && hasDraft(); }
+function readDraft() { try { return JSON.parse(localStorage.getItem(DRAFT_KEY)); } catch (e) { return null; } }
+function readDraftBase() {
+    try { const b = JSON.parse(localStorage.getItem(DRAFT_BASE_KEY)); return (b && typeof b === 'object') ? b : null; }
+    catch (e) { return null; }
+}
+function writeDraftBase(b) { try { localStorage.setItem(DRAFT_BASE_KEY, JSON.stringify(b)); } catch (e) { /* χωρίς χώρο */ } }
+function clearDraft() {
+    try { localStorage.removeItem(DRAFT_KEY); localStorage.removeItem(DRAFT_BASE_KEY); } catch (e) {}
+}
+function adminPanelOpen() {
+    const m = document.getElementById('adminModal');
+    return !!(m && m.classList.contains('active'));
+}
+
+// Σύγκριση προχείρου <-> server. Γράφει το αποτέλεσμα στο localStorage και επιστρέφει
+// { data, state: 'none'|'clean'|'pending'|'conflict', mine, theirs, conflicts, server, legacy }
+function reconcileDraft(server) {
+    const raw = (() => { try { return localStorage.getItem(DRAFT_KEY); } catch (e) { return null; } })();
+    if (!raw) return { data: server, state: 'none' };
+    let draft;
+    try { draft = JSON.parse(raw); } catch (e) { draft = null; }
+    if (!draft || typeof draft !== 'object') {
+        clearDraft();
+        showToast('Το πρόχειρο της συσκευής ήταν χαλασμένο και σβήστηκε. Δείχνω τα δεδομένα του GitHub.', 'error');
+        return { data: server, state: 'none' };
+    }
+    const base = readDraftBase();
+    const hd = shapeHashes(draft), hs = shapeHashes(server);
+    const nb = {}, mine = [], theirs = [], conflicts = [];
+    Object.keys(hs).forEach(k => {
+        if (hd[k] === hs[k]) { nb[k] = hs[k]; return; }                          // ίδια
+        if (base && base[k] === hs[k]) { nb[k] = hs[k]; mine.push(k); return; }  // άλλαξε μόνο το πρόχειρο
+        if (base && base[k] === hd[k]) {                                          // άλλαξε μόνο το GitHub
+            if (server[k] === undefined) delete draft[k];
+            else draft[k] = JSON.parse(JSON.stringify(server[k]));
+            nb[k] = hs[k]; theirs.push(k); return;
+        }
+        conflicts.push(k);                                                        // και τα δύο
+        if (base && base[k]) nb[k] = base[k];
+    });
+    if (!mine.length && !conflicts.length) {
+        clearDraft();
+        return { data: server, state: 'clean', theirs };
+    }
+    try { if (theirs.length) localStorage.setItem(DRAFT_KEY, JSON.stringify(draft)); } catch (e) {}
+    if (base) writeDraftBase(nb);   // παλιό πρόχειρο χωρίς βάση: μένει «παλιό» ώσπου να διαλέξεις
+    return { data: draft, state: conflicts.length ? 'conflict' : 'pending',
+             mine, theirs, conflicts, server, legacy: !base, savedAt: draft.lastUpdated || null };
+}
+
+// Λύση διαφορών: 'mine' = κράτα το πρόχειρο, 'theirs' = πάρε του GitHub (μόνο στα σημεία της διαφοράς)
+function resolveDraftConflicts(choice) {
+    const r = draftState;
+    if (!r || r.state !== 'conflict' || !r.server) return;
+    const draft = readDraft() || r.data;
+    if (choice === 'theirs') r.conflicts.forEach(k => {
+        if (r.server[k] === undefined) delete draft[k];
+        else draft[k] = JSON.parse(JSON.stringify(r.server[k]));
+    });
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(draft)); } catch (e) {}
+    // Βάση = το τωρινό GitHub: ό,τι διαφέρει από εδώ και πέρα μετράει ως δική σου αλλαγή
+    writeDraftBase(shapeHashes(r.server));
+    draftState = reconcileDraft(r.server);
+    applyAdminData(draftState.data);
+    closeDraftConflict();
+    showToast(choice === 'theirs'
+        ? 'Κράτησα του GitHub σε: ' + draftLabels(r.conflicts).join(', ') + '.'
+        : 'Κράτησα το πρόχειρο σε: ' + draftLabels(r.conflicts).join(', ') + '. Θα ανέβει με το επόμενο Export.');
+}
+
+// Νέα δεδομένα στην οθόνη: όλες οι σελίδες + (αν είναι ανοιχτό) οι φόρμες του admin
+function applyAdminData(d) {
+    data = d;
+    syncDerived();
+    dataVersion++;
+    renderAllPublic();
+    if (adminFormsVersion !== -1 && adminPanelOpen()) {
+        refreshAdminForms();
+        adminFormsVersion = dataVersion;
+    }
+    updateDraftUi();
+}
+function renderAllPublic() {
+    [displayStandings, displayNextMatch, displayTopScorers, displayResults, displayFixtures,
+     displayRoster, displayNews, displayTraining].forEach(f => { try { f(); } catch (e) { console.warn(f.name, e); } });
+    const tb = document.getElementById('announcement-ticker'), tt = document.getElementById('announcement-text');
+    if (tb && tt) {
+        const a = (data && data.announcement || '').trim();
+        tt.textContent = a;
+        tb.style.display = a ? 'block' : 'none';
+    }
+}
+
 async function checkPassword() {
     const password = document.getElementById('adminPassword').value;
-    
-    if (password === ADMIN_PASSWORD) {
-        // 1️⃣ Εμφάνιση Admin Panel
-        document.getElementById('loginForm').style.display = 'none';
-        document.getElementById('adminContent').style.display = 'block';
-        
-        // 2️⃣ ΕΝΕΡΓΟΠΟΙΗΣΗ ADMIN MODE
-        sessionStorage.setItem('isAdmin', 'true');
-        
-        // 3️⃣ ΕΛΕΓΧΟΣ ΓΙΑ DRAFTS
-        const localDraft = localStorage.getItem('footballData');
-        
-        if (localDraft) {
-            const userChoice = confirm(
-                "⚠️ ΒΡΕΘΗΚΑΝ ΑΠΟΘΗΚΕΥΜΕΝΕΣ ΑΛΛΑΓΕΣ ΣΤΟΝ ΥΠΟΛΟΓΙΣΤΗ ΣΟΥ!\n\n" +
-                "Πατήστε 'OK' για να συνεχίσετε την επεξεργασία τους (Draft).\n" +
-                "Πατήστε 'Ακύρωση' για να φορτώσετε τα δεδομένα του GitHub (Live)."
-            );
-            
-            // Χαλασμένο πρόχειρο (17/10/2026): δεν ανοίγει, οπότε πάμε στο GitHub με μήνυμα
-            let draft = null;
-            if (userChoice) {
-                try { draft = JSON.parse(localDraft); }
-                catch (e) { showToast('Το πρόχειρο είναι χαλασμένο. Φορτώνω τα δεδομένα του GitHub.', 'error'); }
+    if (password !== ADMIN_PASSWORD) { showToast('❌ Λάθος κωδικός!', 'error'); return; }
+    adminSession = true;
+    try { localStorage.setItem(ADMIN_DEVICE_KEY, adminTag(ADMIN_PASSWORD)); } catch (e) { /* μόνο για αυτή τη σελίδα */ }
+    await enterAdmin();
+}
+
+async function enterAdmin() {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('adminContent').style.display = 'block';
+
+    if (adminFormsVersion === -1) {
+        // Πρώτο άνοιγμα σε αυτή τη σελίδα: φρέσκα δεδομένα + σύγκριση με το πρόχειρο
+        if (adminEntering) return;
+        adminEntering = true;
+        const st = document.getElementById('draftStatus');
+        if (st) st.innerHTML = '<span class="ds-muted">Φορτώνω τα δεδομένα του GitHub…</span>';
+        try {
+            const server = await fetchServerData();
+            const hadDraft = hasDraft();
+            if (server) {
+                draftState = reconcileDraft(server);
+                applyAdminData(draftState.data);
+                if (hadDraft && draftState.state === 'clean')
+                    showToast('✅ Το πρόχειρο είχε ήδη ανέβει στο GitHub. Ξεκινάς καθαρά.');
+            } else if (hadDraft) {
+                const d = readDraft();
+                if (d) applyAdminData(d);
+                showToast('Χωρίς σύνδεση με το GitHub: συνεχίζεις το πρόχειρο της συσκευής.', 'error');
             }
-            if (draft) {
-                // Κράτα τα drafts
-                data = draft;
-                syncDerived();
-                console.log('✏️ Admin: Χρήση τοπικών Drafts.');
-            } else {
-                // Διέγραψε τα drafts και ξαναφόρτωσε από GitHub
-                localStorage.removeItem('footballData');
-                data = await loadData(); // Τώρα θα φορτώσει GitHub
-                syncDerived();
-                console.log('☁️ Admin: Φόρτωση Live δεδομένων. Drafts διαγράφηκαν.');
-            }
-        } else {
-            // Δεν υπάρχουν drafts, φόρτωσε από GitHub
-            data = await loadData();
-            syncDerived();
-            console.log('☁️ Admin: Φόρτωση από GitHub (δεν υπάρχουν drafts).');
+            refreshAdminForms();
+            adminFormsVersion = dataVersion;
+        } finally {
+            adminEntering = false;
         }
-        
-        // 4️⃣ Ανανέωση φορμών
+        if (draftState.state === 'pending') {
+            let msg = '📝 Συνεχίζεις το πρόχειρο: ' + draftLabels(draftState.mine).join(', ') + '.';
+            if (draftState.theirs && draftState.theirs.length)
+                msg += ' Από το GitHub ήρθαν: ' + draftLabels(draftState.theirs).join(', ') + '.';
+            showToast(msg);
+        }
+    } else if (adminFormsVersion !== dataVersion) {
+        // Όσο ήταν κλειστό, ήρθαν νέα δεδομένα: η φόρμα δεν πρέπει να γράψει παλιές τιμές από πάνω
         refreshAdminForms();
-        
-    } else {
-        showToast('❌ Λάθος κωδικός!', 'error');
+        adminFormsVersion = dataVersion;
+        showToast('Ήρθαν νέα δεδομένα από το GitHub όσο ήταν κλειστό. Η φόρμα ενημερώθηκε.');
     }
+    updateDraftUi();
+    if (draftState.state === 'conflict') showDraftConflict();   // σε κάθε άνοιγμα, ώσπου να διαλέξεις
+}
+
+async function adminLogout() {
+    if (hasDraft() && !confirm('Έχεις αλλαγές που δεν έχουν ανέβει στο GitHub.\n\n' +
+            'Θα μείνουν φυλαγμένες σε αυτή τη συσκευή για την επόμενη σύνδεση. Αποσύνδεση;')) return;
+    adminSession = false;
+    try { localStorage.removeItem(ADMIN_DEVICE_KEY); } catch (e) {}
+    adminFormsVersion = -1;
+    draftState = { state: 'none' };
+    closeAdminPanel();
+    const server = await fetchServerData();
+    if (server) applyAdminData(server);
+    showToast('Αποσυνδέθηκες από αυτή τη συσκευή.');
+}
+
+// Γραμμή κατάστασης στο admin + ταμπελάκι «📝 Πρόχειρο» στο site
+function draftChangedKeys() {
+    const d = readDraft();
+    if (!d) return [];
+    const base = readDraftBase();
+    if (!base) return Object.keys(DRAFT_LABELS);
+    const hd = shapeHashes(d);
+    return Object.keys(hd).filter(k => hd[k] !== base[k]);
+}
+function updateDraftUi() {
+    const st = document.getElementById('draftStatus');
+    const pill = document.getElementById('draftPill');
+    const mode = draftMode();
+    if (st && !adminEntering) {
+        if (!hasDraft()) {
+            st.innerHTML = '<span class="ds-ok">✅ Ίδιο με το GitHub. Δεν εκκρεμεί τίποτα.</span>';
+        } else if (draftState.state === 'conflict') {
+            st.innerHTML = '<span class="ds-warn">⚠️ Διαφορές με το GitHub σε: ' +
+                esc(draftLabels(draftState.conflicts).join(', ')) +
+                '</span> <button type="button" class="ds-btn" onclick="showDraftConflict()">Διάλεξε</button>';
+        } else {
+            const keys = draftChangedKeys();
+            st.innerHTML = '<span class="ds-pending">📝 Δεν έχουν ανέβει: <strong>' +
+                esc(draftLabels(keys).join(', ') || 'μικρές αλλαγές') + '</strong>.</span>' +
+                ' <span class="ds-muted">Export και ανέβασμα στο GitHub· μόλις ανέβει, το πρόχειρο σβήνει μόνο του.</span>' +
+                ' <button type="button" class="ds-btn ds-btn-plain" onclick="discardDraft()">↩️ Πέτα τις αλλαγές</button>';
+        }
+    }
+    if (pill) {
+        pill.hidden = !mode || adminPanelOpen();
+        pill.classList.toggle('is-warn', draftState.state === 'conflict');
+        pill.textContent = draftState.state === 'conflict' ? '⚠️ Πρόχειρο: διάλεξε' : '📝 Πρόχειρο';
+    }
+}
+
+// «Πέτα τις αλλαγές»: σβήνει το πρόχειρο και φέρνει ό,τι έχει το GitHub (π.χ. μετά από δοκιμή του live)
+async function discardDraft() {
+    const what = draftLabels(draftChangedKeys()).join(', ');
+    if (!confirm('Να πεταχτούν οι αλλαγές που δεν έχουν ανέβει' + (what ? ' (' + what + ')' : '') +
+                 ' και να φορτώσει ό,τι έχει το GitHub;')) return;
+    clearDraft();
+    draftState = { state: 'none' };
+    const server = await fetchServerData();
+    if (server) applyAdminData(server);
+    else { location.reload(); return; }
+    showToast('Το πρόχειρο πετάχτηκε. Βλέπεις ό,τι έχει το GitHub, όπως όλοι.');
+}
+
+function showDraftConflict() {
+    const r = draftState;
+    if (!r || r.state !== 'conflict') return;
+    const m = document.getElementById('draftConflictModal');
+    const when = r.savedAt ? new Date(r.savedAt).toLocaleString('el-GR',
+        { weekday: 'long', day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+    document.getElementById('dcTitle').textContent = r.legacy
+        ? 'Βρέθηκε πρόχειρο από παλιότερα' : 'Άλλαξαν και τα δύο';
+    document.getElementById('dcBody').innerHTML =
+        (r.legacy
+            ? '<p>Σε αυτή τη συσκευή υπάρχει πρόχειρο από πριν. Διαφέρει από το GitHub σε:</p>'
+            : '<p>Αυτά τα άλλαξες στο πρόχειρο, αλλά άλλαξαν και στο GitHub:</p>') +
+        '<ul>' + draftLabels(r.conflicts).map(l => `<li>${esc(l)}</li>`).join('') + '</ul>' +
+        (when ? `<p class="dc-when">Το πρόχειρο αποθηκεύτηκε: ${esc(when)}</p>` : '') +
+        ((r.mine && r.mine.length)
+            ? `<p class="dc-when">Οι υπόλοιπες αλλαγές σου (${esc(draftLabels(r.mine).join(', '))}) μένουν όπως είναι.</p>` : '');
+    m.classList.add('active');
+}
+function closeDraftConflict() {
+    const m = document.getElementById('draftConflictModal');
+    if (m) m.classList.remove('active');
 }
 // ================= ΣΤΗΣΙΜΟ ΝΕΑΣ ΣΕΖΟΝ =================
 function saveCrests() {
@@ -9276,7 +9672,7 @@ function saveResults() {
         function resetAllData() {
             if (confirm('⚠️ ΠΡΟΣΟΧΗ! Θα διαγραφούν ΟΛΑ τα δεδομένα (αποτελέσματα & ρόστερ). Είσαι σίγουρος;')) {
                 if (confirm('Τελευταία επιβεβαίωση - Θα χαθούν όλα τα δεδομένα!')) {
-                    localStorage.removeItem('footballData');
+                    clearDraft();
                     data = { fixtures: [], roster: [], news: [], teams: [] };
                     syncDerived();
                     displayStandings();
@@ -9329,9 +9725,9 @@ function scheduleRefresh() {
 }
 
 async function runRefresh() {
-    // Κρυφή καρτέλα, ή ήδη τρέχει, ή admin με drafts -> μην κάνεις τίποτα
-    if (document.visibilityState === 'hidden' || refreshing ||
-        sessionStorage.getItem('isAdmin') === 'true') {
+    // Κρυφή καρτέλα, ή ήδη τρέχει, ή ανοιχτό admin -> μην κάνεις τίποτα.
+    // (1/11/2026: με πρόχειρο ΔΕΝ σταματά πια· το refreshFromServer φέρνει τα νέα μέσα στο πρόχειρο.)
+    if (document.visibilityState === 'hidden' || refreshing || adminPanelOpen()) {
         scheduleRefresh();
         return;
     }
@@ -9375,8 +9771,7 @@ async function onResume() {
 
     const away = hiddenSince ? now - hiddenSince : 0;
     hiddenSince = null;
-    const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
-    if (away >= RESUME_RELOAD_MS && !isAdmin && navigator.onLine && !anyModalOpen()) {
+    if (away >= RESUME_RELOAD_MS && !draftMode() && navigator.onLine && !anyModalOpen()) {
         const fresh = await fetchServerData();      // ο server απαντά; τότε μόνο reload
         if (fresh && !anyModalOpen()) { location.reload(); return; }
     }
@@ -9412,7 +9807,17 @@ async function refreshFromServer() {
     // ΠΡΙΝ: loadData() -> σε αποτυχία γύριζε ΑΔΕΙΑ δεδομένα και η κάρτα του live
     // γινόταν «Η νέα σεζόν έρχεται» (δοκιμασμένο). Στο γήπεδο, με ένα κάγκελο σήμα,
     // αυτό θα γινόταν συνέχεια. ΤΩΡΑ: χωρίς απάντηση κρατάμε ό,τι ήδη δείχνουμε.
-    const newData = await fetchServerData();
+    let newData = await fetchServerData();
+    if (newData && adminPanelOpen()) return;   // άνοιξε το admin όσο περιμέναμε: μην αλλάξεις τίποτα από κάτω
+
+    // Συσκευή του admin με πρόχειρο: ό,τι άλλαξε μόνο στο GitHub μπαίνει στο πρόχειρο (1/11/2026)
+    if (newData && draftMode()) {
+        draftState = reconcileDraft(newData);
+        newData = draftState.data;
+        updateDraftUi();
+    }
+    // Άλλαξαν τα δεδομένα; (για να ξέρει το admin ότι η φόρμα του είναι παλιά)
+    if (newData && data && stableStr(draftShape(newData)) !== stableStr(draftShape(data))) dataVersion++;
 
     if (newData) {
         // 1. ΣΥΓΚΡΙΣΗ: Κρατάμε "φωτογραφία" των παλιών ρυθμίσεων Live/Αγώνα
@@ -9486,6 +9891,7 @@ async function refreshFromServer() {
     checkNewNews();
 
     scheduleRefresh();   // ξεκινάει ο προσαρμοστικός κύκλος ανανέωσης
+    updateDraftUi();     // συσκευή του admin με πρόχειρο: ταμπελάκι «📝 Πρόχειρο» (1/11/2026)
     hideSplash();        // τα δεδομένα φάνηκαν: φεύγει το splash (όχι στο 'load')
 });
 
@@ -9517,11 +9923,8 @@ if (ENABLE_OFFLINE && 'serviceWorker' in navigator) {
     });
 }
 
-        document.getElementById('adminModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeAdminPanel();
-            }
-        });
+        // 1/11/2026: το πάτημα στο σκούρο φόντο ΔΕΝ κλείνει πια το admin (έκλεινε κατά λάθος
+        // στο κινητό, πάνω στο πέρασμα των σκορ). Κλείνει μόνο από το ✕ και το «Κλείσιμο».
         // --- MOBILE MENU LOGIC ---
 const hamburger = document.querySelector(".hamburger");
 const navMenu = document.querySelector(".nav-menu");
@@ -10747,28 +11150,188 @@ async function drawMatchImage() {
     return cv;
 }
 
+// --- Εικόνα 3: LIVE, για όλους τους επισκέπτες (1/11/2026) ---
+// Τετράγωνη 1080×1080: σκορ, λεπτό, σήματα και μεγάλο «olymposfc.gr» στο κάτω μέρος.
+// Το site γράφεται ΠΑΝΩ στην εικόνα, γιατί κάποιες εφαρμογές (κυρίως στο iPhone)
+// πετάνε τη λεζάντα με το link όταν συνοδεύει εικόνα.
+function liveStatus() {
+    const ls = (data && data.liveScore) || {};
+    if (ls.half === 'FT') return { ft: true, badge: 'ΤΕΛΙΚΟ', text: 'Τελικό' };
+    if (ls.half === 'HT') return { ft: false, badge: 'ΗΜΙΧΡΟΝΟ', text: 'Ημίχρονο' };
+    const m = calculateLiveMinute(ls.startTime, ls.half, ls.duration);
+    return { ft: false, badge: m === 'LIVE' ? '' : m, text: m === 'LIVE' ? '' : m };
+}
+
+async function drawLiveImage() {
+    await loadShareFonts();
+    const M = siMatchBits();
+    const st = liveStatus();
+    const ls = data.liveScore || {};
+    const [hc, ac] = await Promise.all([siCrest(M.home), siCrest(M.away)]);
+
+    const W = 1080, H = 1080;
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    const ctx = cv.getContext('2d');
+    ctx.textBaseline = 'alphabetic';
+
+    const css = getComputedStyle(document.documentElement);
+    const c1 = (css.getPropertyValue('--primary-color') || '').trim() || '#1a472a';
+    const c2 = (css.getPropertyValue('--secondary-color') || '').trim() || '#2d5a3d';
+    const g = ctx.createLinearGradient(0, 0, W, H);
+    g.addColorStop(0, c1); g.addColorStop(1, c2);
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+
+    // Ταμπέλα: κόκκινο «● LIVE» + λεπτό, ή χρυσό «ΤΕΛΙΚΟ»
+    ctx.font = `700 46px ${SI_RC}`;
+    const pillTxt = st.ft ? 'ΤΕΛΙΚΟ ΣΚΟΡ' : 'LIVE';
+    const dotW = st.ft ? 0 : 34;
+    const pillW = Math.round(ctx.measureText(pillTxt).width + 64 + dotW);
+    const minTxt = st.ft ? '' : st.badge;
+    ctx.font = `700 54px ${SI_RC}`;
+    const minW = minTxt ? Math.round(ctx.measureText(minTxt).width) + 26 : 0;
+    const px0 = Math.round((W - pillW - minW) / 2), py = 96, ph = 76;
+    ctx.fillStyle = st.ft ? '#ffd700' : '#e53935';
+    siRoundRect(ctx, px0, py, pillW, ph, ph / 2);
+    ctx.fill();
+    if (!st.ft) {
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath(); ctx.arc(px0 + 40, py + ph / 2, 11, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.fillStyle = st.ft ? '#14301e' : '#ffffff';
+    ctx.font = `700 46px ${SI_RC}`;
+    ctx.textAlign = 'left';
+    ctx.fillText(pillTxt, px0 + 32 + dotW, py + 54);
+    if (minTxt) {
+        ctx.fillStyle = '#ffffff';
+        ctx.font = `700 54px ${SI_RC}`;
+        ctx.fillText(minTxt, px0 + pillW + 26, py + 57);
+    }
+
+    // Διοργάνωση | αγωνιστική
+    ctx.fillStyle = '#c0dd97';
+    siText(ctx, siUpper([M.title, M.sub].filter(Boolean).join('  |  ')), W / 2, 258, W - 120, 700, 36, 24, SI_RC, 'center');
+
+    // Σήματα, ονόματα και σκορ
+    const size = 236, cy = 462, xs = [255, W - 255];
+    xs.forEach(x => siGlow(ctx, x, cy, size * 1.45, size * 1.3, 0.38));
+    [[M.home, hc, xs[0]], [M.away, ac, xs[1]]].forEach(([name, c, x]) => {
+        const mine = isMyTeam(name);
+        siDrawCrest(ctx, c, name, x, cy, size, mine ? '#ffd700' : '#6f927a', mine ? '#ffffff' : '#c0dd97');
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        let nfs = 44, lines;
+        for (;;) {
+            ctx.font = `700 ${nfs}px ${SI_RC}`;
+            lines = siWrap(ctx, siUpper(name), 400, 2);
+            if (!lines[lines.length - 1].endsWith('…') || nfs <= 32) break;
+            nfs -= 2;
+        }
+        let y = cy + size / 2 + 72;
+        lines.forEach(l => { ctx.fillText(l, x, y); y += Math.round(nfs * 1.17); });
+        if (mine) {
+            ctx.fillStyle = '#ffd700';
+            siRoundRect(ctx, x - 45, y - 28, 90, 9, 4.5);
+            ctx.fill();
+        }
+    });
+    const sh = String(ls.home ?? 0), sa = String(ls.away ?? 0);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = `700 176px ${SI_RC}`;
+    ctx.textAlign = 'right';  ctx.fillText(sh, W / 2 - 36, cy + 62);
+    ctx.textAlign = 'left';   ctx.fillText(sa, W / 2 + 36, cy + 62);
+    ctx.fillStyle = '#c0dd97';
+    ctx.font = `700 100px ${SI_RC}`;
+    ctx.textAlign = 'center'; ctx.fillText('–', W / 2, cy + 42);
+
+    // Φύλλο: πού το βλέπεις ζωντανά
+    const sy = 846, R = 54;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.moveTo(0, sy + R); ctx.arcTo(0, sy, R, sy, R);
+    ctx.lineTo(W - R, sy); ctx.arcTo(W, sy, W, sy + R, R);
+    ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#666666';
+    siText(ctx, st.ft ? 'Βαθμολογία και αποτελέσματα στο' : 'Δες το ζωντανά στο', W / 2, sy + 82, W - 120, 400, 38, 28, SI_IN, 'center');
+    ctx.fillStyle = '#1a472a';
+    siText(ctx, siSiteLabel(), W / 2, sy + 172, W - 120, 700, 76, 48, SI_IN, 'center');
+    return cv;
+}
+
+// --- Share του LIVE για όλους (1/11/2026) ---
+// Κουμπί «Μοιράσου το live» στην κάρτα, μόνο όσο το live είναι ενεργό (χωρίς PIN).
+// Στέλνει την εικόνα + λεζάντα «🔴 LIVE 34' | Α 1–0 Β / Δες το ζωντανά 👉 link».
+// Το link έχει ?utm_source=live&utm_medium=share: στο Google Analytics φαίνεται
+// ως πηγή «live / share», δηλαδή πόσοι ήρθαν από share του live.
+function liveShareUrl() {
+    const og = document.querySelector('meta[property="og:url"]');
+    const base = (og && og.content) ? og.content : (location.origin + location.pathname);
+    return base.split('#')[0].split('?')[0] + '?utm_source=live&utm_medium=share';
+}
+function liveShareTexts() {
+    const ls = (data && data.liveScore) || {};
+    const M = siMatchBits();
+    const st = liveStatus();
+    const head = st.ft ? '🏁 Τελικό' : ls.half === 'HT' ? '⏸️ Ημίχρονο' : ('🔴 LIVE' + (st.text ? ' ' + st.text : ''));
+    const line = `${head} | ${M.home} ${ls.home ?? 0}–${ls.away ?? 0} ${M.away}`;
+    const url = liveShareUrl();
+    return { line, url, text: `${line}\n${st.ft ? 'Βαθμολογία και αποτελέσματα' : 'Δες το ζωντανά'} 👉 ${url}` };
+}
+function openLiveShare() {
+    if (!(data && data.liveScore && data.liveScore.active)) return;
+    const t = liveShareTexts();
+    openShareImage({ live: true, caption: t.text, fullText: t.text });
+}
+function liveShareGo() {
+    const t = liveShareTexts();          // φρέσκο λεπτό τη στιγμή της αποστολής
+    shareImg.caption = shareImg.fullText = t.text;
+    const btn = document.getElementById('shareImgGo');
+    const menu = () => openShareMenu(btn, t.line, t.url);   // υπολογιστής: αντιγραφή, WhatsApp, Facebook
+    const f = shareImg.file;
+    if (f && navigator.canShare && navigator.canShare({ files: [f], text: t.text })) {
+        navigator.share({ files: [f], text: t.text }).catch(err => {
+            if (err && err.name !== 'AbortError') menu();
+        });
+    } else if (navigator.share && window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
+        navigator.share({ text: t.text }).catch(err => { if (err && err.name !== 'AbortError') menu(); });
+    } else {
+        menu();
+    }
+}
+
 // --- Προεπισκόπηση και αποστολή ---
 async function openShareImage(opts) {
     const modal = document.getElementById('shareImgModal');
     const box = document.getElementById('shareImgBox');
     const hint = document.getElementById('shareImgHint');
     if (shareImg && shareImg.url) URL.revokeObjectURL(shareImg.url);
-    shareImg = { caption: opts.caption, fullText: opts.fullText, blob: null, file: null, url: null };
+    shareImg = { caption: opts.caption, fullText: opts.fullText, blob: null, file: null, url: null, live: !!opts.live };
     box.innerHTML = '<div class="si-wait">Ετοιμάζω την εικόνα…</div>';
     hint.textContent = '';
+    const ttl = document.getElementById('shareImgTitle');
+    if (ttl) ttl.textContent = opts.live ? '📤 Μοιράσου το live' : '📤 Έτοιμο για αποστολή';
     siButtons(false);
     modal.style.display = 'flex';
     try {
-        const cv = opts.withSquad ? await drawSquadImage(opts.squad, opts.coaches) : await drawMatchImage();
+        const cv = opts.live ? await drawLiveImage()
+                 : opts.withSquad ? await drawSquadImage(opts.squad, opts.coaches) : await drawMatchImage();
+        // Live: JPEG (~150 KB αντί για ~800 KB PNG), γιατί στέλνεται από το γήπεδο με κινητό σήμα
+        const type = opts.live ? 'image/jpeg' : 'image/png';
         const blob = await new Promise((res, rej) =>
-            cv.toBlob(b => (b ? res(b) : rej(new Error('toBlob'))), 'image/png'));
+            cv.toBlob(b => (b ? res(b) : rej(new Error('toBlob'))), type, 0.9));
         const d = (currentMatchShareData.date || '').match(/(\d{1,2})\/(\d{1,2})/);
-        const name = `olympos-${opts.withSquad ? 'squad' : 'agonas'}${d ? '-' + d[1] + '-' + d[2] : ''}.png`;
+        const ls = (data && data.liveScore) || {};
+        const name = opts.live ? `olympos-live-${ls.home ?? 0}-${ls.away ?? 0}.jpg`
+                   : `olympos-${opts.withSquad ? 'squad' : 'agonas'}${d ? '-' + d[1] + '-' + d[2] : ''}.png`;
         shareImg.blob = blob;
-        shareImg.file = new File([blob], name, { type: 'image/png' });
+        shareImg.file = new File([blob], name, { type });
         shareImg.url = URL.createObjectURL(blob);
         box.innerHTML = `<img src="${shareImg.url}" alt="Προεπισκόπηση της εικόνας που θα σταλεί">`;
-        hint.textContent = 'Φεύγει μόνο η εικόνα. Αν θες και τον χάρτη με το site, πάτα «Αντιγραφή κειμένου» και επικόλλησέ το χωριστά.';
+        hint.textContent = opts.live
+            ? 'Φεύγει η εικόνα και από κάτω το link του site. Αν κάποια εφαρμογή κρατήσει μόνο την εικόνα, το site γράφεται πάνω της.'
+            : 'Φεύγει μόνο η εικόνα. Αν θες και τον χάρτη με το site, πάτα «Αντιγραφή κειμένου» και επικόλλησέ το χωριστά.';
     } catch (e) {
         console.error('Share image:', e);
         box.innerHTML = '<div class="si-wait">Η εικόνα δεν βγήκε σε αυτή τη συσκευή. Η «Κοινοποίηση» θα στείλει το κείμενο όπως πριν.</div>';
@@ -10803,6 +11366,9 @@ function siCopy(text, quiet) {
 function shareImgGo() {
     if (!shareImg) return;
     const hint = document.getElementById('shareImgHint');
+
+    // LIVE (1/11/2026): εικόνα ΚΑΙ λεζάντα με το link, για όλους
+    if (shareImg.live) { liveShareGo(); return; }
 
     // Υπάρχει εικόνα: φεύγει ΜΟΝΟ η εικόνα, χωρίς κείμενο που να την επαναλαμβάνει
     if (shareImg.blob) {
