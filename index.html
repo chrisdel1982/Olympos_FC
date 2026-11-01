@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <!-- ΕΚΔΟΣΗ 1/11/2026 — σταθεροί Β στη βαθμολογία του κινητού, αυτόματη Ημερομηνία/Ώρα από την αντίστροφη μέτρηση.
+    <!-- ΕΚΔΟΣΗ 1/11/2026 β΄ — σταθεροί Β σε «κουτί» στη βαθμολογία του κινητού, σταθερά «Θέσεις 17–59» / «⋮ ομάδες»,
+         αυτόματη Ημερομηνία/Ώρα από την αντίστροφη μέτρηση.
          (Δεξί κλικ > Προβολή πηγαίου κώδικα: αν το βλέπεις αυτό, το site τρέχει τη νέα έκδοση.) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-9BRZWJM3FQ"></script>
     <script>
@@ -482,9 +483,12 @@ table thead th:nth-child(2) {
 /* 3η Στήλη: Βαθμοί (Β) — σταθερή ΜΟΝΟ στη Βαθμολογία, ΜΟΝΟ στο κινητό (1/11/2026).
    Το left = εκεί που τελειώνει η «Ομάδα». Το μετράει η syncStandingsStickyPoints,
    γιατί το πλάτος της «Ομάδας» αλλάζει (π.χ. όταν η Φόρμα φτάσει τα 5 κυκλάκια).
-   Η κάθετη γραμμή μετακομίζει από μετά την Ομάδα σε μετά τους Β: εκεί τελειώνει το «παγωμένο».
-   Είναι inset box-shadow, όχι border: με border-collapse τα border ΔΕΝ ακολουθούν τα sticky
-   κελιά στο scroll (γι' αυτό χανόταν και η παλιά γραμμή της Ομάδας). */
+   Τα Β σε «κουτί»: μία γραμμή πριν και μία μετά (επιλογή «Γ» του διαχειριστή, 1/11).
+   Γι' αυτό η Ομάδα δεν έχει πια δικό της border-right (θα έβγαινε διπλή γραμμή).
+   Οι γραμμές είναι inset box-shadow, όχι border: με border-collapse τα border ΔΕΝ ακολουθούν
+   τα sticky κελιά στο scroll (γι' αυτό χανόταν και η παλιά γραμμή της Ομάδας).
+   text-size-adjust: το iPhone «φούσκωνε» το «⋮ 37 ομάδες» στον φαρδύ πίνακα. */
+#standingsTable { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 @media (max-width: 768px) {
     #standingsTable th:nth-child(2),
     #standingsTable td:nth-child(2) { border-right: none; }
@@ -495,13 +499,13 @@ table thead th:nth-child(2) {
         z-index: 20;
         background-color: #ffffff;
         border-right: none;
-        box-shadow: inset -1px 0 0 #ddd;
+        box-shadow: inset 1px 0 0 #ddd, inset -1px 0 0 #ddd;
     }
     #standingsTable thead th:nth-child(3) { z-index: 30; }
 }
 @media (max-width: 768px) and (prefers-color-scheme: dark) {
-    #standingsTable td:nth-child(3) { background-color: #1e1e1e !important; box-shadow: inset -1px 0 0 #444; }
-    #standingsTable th:nth-child(3) { background-color: #333 !important; box-shadow: inset -1px 0 0 #555; }
+    #standingsTable td:nth-child(3) { background-color: #1e1e1e !important; box-shadow: inset 1px 0 0 #444, inset -1px 0 0 #444; }
+    #standingsTable th:nth-child(3) { background-color: #333 !important; box-shadow: inset 1px 0 0 #555, inset -1px 0 0 #555; }
 }
 
 /* Admin: λάμψη στα «Ημερομηνία»/«Ώρα» όταν τα γεμίζει η αντίστροφη μέτρηση (1/11/2026) */
@@ -555,6 +559,12 @@ input.autofilled { animation: autofillFlash 1.4s ease-out; }
     background: var(--surface-alt);
 }
 #standingsTable tr.st-gap:hover td { background: var(--surface-hover); }
+/* Το κείμενο των γραμμών «Θέσεις 17–59…» και «⋮ 37 ομάδες» μένει στη θέση του στο
+   οριζόντιο scroll (1/11/2026). Το left = το padding-left του κελιού, ώστε στο 0 να μη μετακινείται. */
+#standingsTable tr.st-zone .st-pin,
+#standingsTable tr.st-gap .st-pin { display: inline-block; position: sticky; white-space: nowrap; }
+#standingsTable tr.st-zone .st-pin { left: 10px; }
+#standingsTable tr.st-gap .st-pin  { left: 1.6rem; }
 .st-toggle { text-align: center; margin-top: .8rem; }
 .st-toggle button {
     background: none;
@@ -5142,7 +5152,9 @@ function showToast(message, type = 'success') {
         //  - ΒΑΘΜΟΛΟΓΙΑ ΣΤΟ ΚΙΝΗΤΟ: στο οριζόντιο scroll μένουν σταθερά Θέση, Ομάδα ΚΑΙ Β.
         //    CSS: «3η Στήλη: Βαθμοί» (μόνο #standingsTable, μόνο ≤768px — ο υπολογιστής ίδιος).
         //    Το left της Β το μετράει η syncStandingsStickyPoints (μεταβλητή --st-pts-left).
-        //    Η κάθετη γραμμή πήγε από μετά την Ομάδα σε μετά τους Β. Το Ιστορικό δεν άλλαξε.
+        //    Τα Β σε «κουτί» (γραμμή πριν και μετά, επιλογή «Γ»). Το Ιστορικό δεν άλλαξε.
+        //    Τα «Θέσεις 17–59…» και «⋮ 37 ομάδες» μένουν στη θέση τους στο scroll (.st-pin).
+        //    iPhone: text-size-adjust 100% στον πίνακα (φούσκωνε το «⋮ 37 ομάδες»).
         //  - ADMIN: η «Αντίστροφη Μέτρηση» γεμίζει μόνη της «Ημερομηνία» («Σάββατο 7/11») και
         //    «Ώρα» («14:15») όταν την αλλάζεις (fillMatchWhenFromCountdown). Τα κουτάκια
         //    διορθώνονται με το χέρι μετά. Στο άνοιγμα του admin δεν αλλάζει τίποτα.
@@ -5933,7 +5945,7 @@ function displayStandings() {
         g.className = 'st-gap';
         g.title = 'Δείξε όλη τη βαθμολογία';
         g.onclick = () => toggleStandingsExpanded(true);
-        g.innerHTML = `<td colspan="${COLS}">⋮ ${hidden} ${hidden === 1 ? 'ομάδα' : 'ομάδες'}</td>`;
+        g.innerHTML = `<td colspan="${COLS}"><span class="st-pin">⋮ ${hidden} ${hidden === 1 ? 'ομάδα' : 'ομάδες'}</span></td>`;
         tbody.appendChild(g);
         hidden = 0;
     };
@@ -5943,7 +5955,7 @@ function displayStandings() {
             flushGap();
             const z = document.createElement('tr');
             z.className = 'st-zone';
-            z.innerHTML = `<td colspan="${COLS}">Θέσεις ${Q + 1}–${totalTeams}: αγώνες κατάταξης</td>`;
+            z.innerHTML = `<td colspan="${COLS}"><span class="st-pin">Θέσεις ${Q + 1}–${totalTeams}: αγώνες κατάταξης</span></td>`;
             tbody.appendChild(z);
         }
         if (compact && !visible.has(index)) { hidden++; return; }
