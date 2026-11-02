@@ -401,7 +401,7 @@
           "away": "ΑΝΑΓΕΝΝΗΣΗ ΕΠΑΝΟΜΗΣ",
           "homeScore": null,
           "awayScore": null,
-          "isPostponed": false
+          "isPostponed": true
         },
         {
           "home": "ΦΟΙΝΙΚΑΣ ΤΟΥΜΠΑΣ",
@@ -612,7 +612,7 @@
           "away": "ΜΑΡΑΘΩΝΑΣ",
           "homeScore": null,
           "awayScore": null,
-          "isPostponed": false
+          "isPostponed": true
         },
         {
           "home": "ΕΛΠΙΔΑ ΤΟΥΜΠΑΣ",
