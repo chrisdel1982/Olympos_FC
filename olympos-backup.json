@@ -598,8 +598,8 @@
         {
           "home": "ΜΠΕΜΠΗΔΕΣ ΙΩΝΙΑΣ",
           "away": "ΑΙΑΣ ΕΥΟΣΜΟΥ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 0,
           "isPostponed": false
         }
       ]
