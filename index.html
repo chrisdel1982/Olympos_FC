@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <!-- ΕΚΔΟΣΗ 1/11/2026 ε΄ — πιο διακριτικό «Μοιράσου το live» (απαλό, με το εικονίδιο share της Κλήσης).
+    <!-- ΕΚΔΟΣΗ 2/11/2026 — «Ματαίωση» δίπλα στην «Αναβολή» (admin, Αποτελέσματα, νοκ άουτ, επικόλληση ΕΠΣΜ).
+         Από την 1/11 ε΄: πιο διακριτικό «Μοιράσου το live» (απαλό, με το εικονίδιο share της Κλήσης).
          Από τη δ΄: «ΤΕΛΙΚΟ ΣΚΟΡ» στο FT, «Πέτα τις αλλαγές» στο πρόχειρο.
          Από τη γ΄: admin με κωδικό μία φορά ανά συσκευή, έξυπνο πρόχειρο (τέλος το «Βρέθηκαν αποθηκευμένες αλλαγές»),
          «Μοιράσου το live» για όλους, μεγάλη εικόνα προεπισκόπησης (og-image.jpg).
@@ -737,6 +738,7 @@ input.autofilled { animation: autofillFlash 1.4s ease-out; }
     border-top: 1px solid var(--line);
 }
 .ko-foot.is-post { color: #d32f2f; }
+.ko-foot.is-off  { font-weight: 700; }   /* Ματαίωση: γκρι του θέματος, έντονο */
 .ko-wait {
     display: flex; align-items: center; justify-content: center; min-height: 5rem;
     margin: 0; padding: 1rem .5rem;
@@ -990,6 +992,19 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
         background: #3e2723 !important; /* Πολύ σκούρο κόκκινο φόντο */
         color: #ff8a80 !important;      /* Ανοιχτό κόκκινο γράμμα */
         border-color: #d32f2f !important;
+    }
+}
+/* ΜΑΤΑΙΩΣΗ (2/11/2026): ίδιο σχήμα με την ΑΝΑΒΟΛΗ, σε γκρι-μπλε, για να ξεχωρίζει */
+.postponed-badge.is-cancelled {
+    background: #eceff1;
+    color: #37474f;
+    border-color: #78909c;
+}
+@media (prefers-color-scheme: dark) {
+    .postponed-badge.is-cancelled {
+        background: #263238 !important;
+        color: #cfd8dc !important;
+        border-color: #78909c !important;
     }
 }
 
@@ -1570,6 +1585,14 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
     width: auto !important; /* Επαναφορά μεγέθους για το checkbox */
     margin: 0;
 }
+/* Αναβλήθηκε / Ματαιώθηκε: δίπλα-δίπλα όπου χωράνε, αλλιώς το ένα κάτω από το άλλο */
+.match-status {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px 14px;
+}
+.postpone-label.is-cancel { color: #455a64; }
 
       /* --- ΒΕΛΤΙΩΜΕΝΑ ΚΟΥΜΠΙΑ ADMIN (IMPORT & PHOTO) --- */
         .file-input-wrapper {
@@ -3432,8 +3455,13 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
         color: #fff !important;
         border: 1px solid #555 !important;
     }
-        .postpone-label {
+        .postpone-label,
+    #adminModal .postpone-label {   /* #adminModal: αλλιώς το «#adminModal label» το έκανε λευκό (2/11) */
         color: #ff8a80 !important; /* Ανοιχτό κόκκινο για να διαβάζεται */
+    }
+    .postpone-label.is-cancel,
+    #adminModal .postpone-label.is-cancel {
+        color: #b0bec5 !important; /* Ματαίωση: ανοιχτό γκρι-μπλε */
     }
 }
         
@@ -4950,7 +4978,7 @@ function showToast(message, type = 'success') {
                     <p style="font-size:0.78rem; color:var(--ink-muted); margin:4px 0 6px;">
                         Κάνε επικόλληση το πρόγραμμα όπως το βρήκες. Δέχεται επικεφαλίδες
                         («1η ΑΓΩΝΙΣΤΙΚΗ», «ΑΓΩΝΙΣΤΙΚΗ 1», ή σκέτο «1»), ημερομηνίες, ώρες,
-                        αρίθμηση, τόνους, πεζά, σκορ και αναβολές. Πάτα πρώτα
+                        αρίθμηση, τόνους, πεζά, σκορ, αναβολές και ματαιώσεις («ΜΑΤΑΙΩΝΕΤΑΙ»). Πάτα πρώτα
                         <strong>Έλεγχος</strong> για να δεις τι κατάλαβε.<br>
                         Ό,τι υπάρχει ήδη στο site <strong>μένει</strong>: προστίθενται μόνο νέες αγωνιστικές
                         και νέοι αγώνες, και συμπληρώνονται μόνο κενά σκορ. Σκόρερ και clean sheets
@@ -5271,6 +5299,23 @@ function showToast(message, type = 'success') {
         //    «Ώρα» («14:15») όταν την αλλάζεις (fillMatchWhenFromCountdown). Τα κουτάκια
         //    διορθώνονται με το χέρι μετά. Στο άνοιγμα του admin δεν αλλάζει τίποτα.
         // =========================================================
+
+        // =========================================================
+        // ΑΛΛΑΓΗ 2/11/2026 — ΜΑΤΑΙΩΣΗ ΑΓΩΝΑ
+        //  - Η ΕΠΣΜ γράφει σε κάποιους αγώνες «ΜΑΤΑΙΩΝΕΤΑΙ». Το site το δείχνει ως «ΜΑΤΑΙΩΣΗ»
+        //    (γκρι-μπλε σήμα), δίπλα στην «ΑΝΑΒΟΛΗ» (κόκκινο).
+        //  - ΣΤΟ JSON: ματαιωμένος = "isPostponed": true ΚΑΙ "isCancelled": true.
+        //    Έτσι όλη η υπάρχουσα λογική της αναβολής ισχύει αυτούσια: δεν μετράει στη βαθμολογία,
+        //    δεν φαίνεται στο Πρόγραμμα ούτε ως «επόμενος αγώνας», φαίνεται στα Αποτελέσματα.
+        //    Το isCancelled αλλάζει ΜΟΝΟ τη λέξη και το χρώμα (matchOffLabel).
+        //    Αν γραφτεί με το χέρι μόνο "isCancelled": true, το syncDerived βάζει μόνο του και το isPostponed.
+        //    Στους κανονικούς αγώνες το πεδίο δεν υπάρχει καθόλου (το JSON δεν μεγαλώνει).
+        //  - ADMIN → Αποτελέσματα: δύο κουτάκια, «Αναβλήθηκε» / «Ματαιώθηκε». Το ένα ξετικάρει το άλλο.
+        //  - ΕΠΙΚΟΛΛΗΣΗ ΕΠΣΜ: «ΜΑΤΑΙΩΝΕΤΑΙ / ΜΑΤΑΙΩΘΗΚΕ / ΜΑΤΑΙΩΣΗ» → ματαίωση, όπου κι αν είναι
+        //    γραμμένη (στο τέλος, σε παρένθεση ή στη θέση του σκορ). Αναβολή που γίνεται ματαίωση
+        //    αλλάζει· σκορ που έρχεται αργότερα σβήνει και τα δύο σημάδια.
+        //  - Αν ο αγώνας τελικά κατακυρωθεί (π.χ. 3-0 από την ΕΠΣΜ): ξετίκαρε και γράψε το σκορ.
+        // =========================================================
         const KO_STAGES = [
             { key: 'R16', round: 101, label: 'Φάση των 16',  ties: 8, at: 'στη Φάση των 16' },
             { key: 'QF',  round: 102, label: 'Προημιτελικά', ties: 4, at: 'στα Προημιτελικά' },
@@ -5288,6 +5333,17 @@ function showToast(message, type = 'success') {
             if (m.homeScore !== m.awayScore) return m.homeScore > m.awayScore ? m.home : m.away;
             if (m.penHome == null || m.penAway == null || m.penHome === m.penAway) return null;
             return m.penHome > m.penAway ? m.home : m.away;
+        }
+        // Αγώνας που δεν θα έχει (ακόμα) σκορ: «ΑΝΑΒΟΛΗ» ή «ΜΑΤΑΙΩΣΗ» (2/11/2026).
+        // Ματαιωμένος = isPostponed ΚΑΙ isCancelled, ώστε η υπόλοιπη λογική να μένει ίδια.
+        function isCancelledMatch(m) { return !!(m && m.isPostponed && m.isCancelled); }
+        function matchOffLabel(m)    { return isCancelledMatch(m) ? 'ΜΑΤΑΙΩΣΗ' : 'ΑΝΑΒΟΛΗ'; }
+        // «1 αναβολή, 2 ματαιώσεις» — για τους μετρητές (site και admin)
+        function offCountsText(post, canc) {
+            const out = [];
+            if (post) out.push(`${post} ${post === 1 ? 'αναβολή' : 'αναβολές'}`);
+            if (canc) out.push(`${canc} ${canc === 1 ? 'ματαίωση' : 'ματαιώσεις'}`);
+            return out.join(', ');
         }
         const upGR = v => String(v).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
 
@@ -5386,6 +5442,13 @@ try {
                 competition:  data.competition  || SEASON_DEFAULTS.competition,
                 qualify:      Number(data.qualify) || SEASON_DEFAULTS.qualify
             };
+            // Ματαίωση γραμμένη με το χέρι μόνο ως "isCancelled": true (χωρίς isPostponed):
+            // χωρίς σκορ → μετράει και ως αναβολή· με σκορ → το σημάδι είναι ξεχασμένο, φεύγει.
+            data.fixtures.forEach(r => (r.matches || []).forEach(m => {
+                if (!m || !m.isCancelled || m.isPostponed) return;
+                if (m.homeScore == null && m.awayScore == null) m.isPostponed = true;
+                else delete m.isCancelled;
+            }));
             TEAMS = resolveTeams(data);
             ensureTrainingData();
             stampNewsSeasons();
@@ -6186,18 +6249,19 @@ function roundProgressInfo() {
     const r = withResults.reduce((a, b) => (b.round > a.round ? b : a));
     const ms = (r.matches || []).filter(m => m.home && m.away);
     const done = ms.filter(played).length;
-    const post = ms.filter(m => m.isPostponed).length;
-    return { round: r.round, total: ms.length, done, post, pending: ms.length - done - post };
+    const post = ms.filter(m => m.isPostponed).length;          // αναβολές + ματαιώσεις
+    const canc = ms.filter(isCancelledMatch).length;            // από αυτές, ματαιώσεις
+    return { round: r.round, total: ms.length, done, post, canc, pending: ms.length - done - post };
 }
 function renderRoundProgress() {
     const box = document.getElementById('roundProgress');
     if (!box) return;
     const p = roundProgressInfo();
     if (!p) { box.innerHTML = ''; return; }
-    const postTxt = p.post ? `, ${p.post} ${p.post === 1 ? 'αναβολή' : 'αναβολές'}` : '';
+    const off = offCountsText(p.post - p.canc, p.canc);     // «1 αναβολή, 1 ματαίωση»
     box.innerHTML = p.pending
-        ? `⏳ ${p.round}η αγωνιστική: <strong>${p.done}/${p.total}</strong> αποτελέσματα${postTxt}. Η βαθμολογία συμπληρώνεται.`
-        : `✅ Ενημερωμένη μέχρι και την <strong>${p.round}η αγωνιστική</strong>${p.post ? ` (${p.post} ${p.post === 1 ? 'αναβολή' : 'αναβολές'})` : ''}.`;
+        ? `⏳ ${p.round}η αγωνιστική: <strong>${p.done}/${p.total}</strong> αποτελέσματα${off ? `, ${off}` : ''}. Η βαθμολογία συμπληρώνεται.`
+        : `✅ Ενημερωμένη μέχρι και την <strong>${p.round}η αγωνιστική</strong>${off ? ` (${off})` : ''}.`;
 }
 // ===== Διακόπτης «Όλυμπος / Όλοι οι αγώνες» (κοινός για Πρόγραμμα & Αποτελέσματα) =====
 var matchView = 'mine';
@@ -6265,9 +6329,9 @@ function displayResults() {
 
                 if (isMyTeam(match.home) || isMyTeam(match.away)) { div.style.background = '#fffdf0'; }
 
-                // ΑΛΛΑΓΗ ΕΔΩ: Γράφουμε "ΑΝΑΒΟΛΗ" αντί για "ΑΝΑΒΛΗΘΗΚΕ"
-                let centerContent = match.isPostponed ? 
-                    `<span class="postponed-badge">ΑΝΑΒΟΛΗ</span>` : 
+                // "ΑΝΑΒΟΛΗ" (κόκκινο) ή "ΜΑΤΑΙΩΣΗ" (γκρι-μπλε, 2/11/2026) αντί για σκορ
+                let centerContent = match.isPostponed ?
+                    `<span class="postponed-badge${isCancelledMatch(match) ? ' is-cancelled' : ''}">${matchOffLabel(match)}</span>` :
                     `<div class="match-score-box">${match.homeScore} - ${match.awayScore}</div>` +
                     (match.penHome != null && match.penAway != null
                         ? `<div class="pen-line">πέναλτι ${match.penHome}-${match.penAway}</div>` : '');
@@ -6411,7 +6475,8 @@ function renderKnockout() {
         const w = koWinner(m);
         const played = !m.isPostponed && m.homeScore !== null && m.awayScore !== null;
         let foot = '';
-        if (m.isPostponed) foot = '<div class="ko-foot is-post">Αναβολή</div>';
+        if (isCancelledMatch(m)) foot = '<div class="ko-foot is-off">Ματαίωση</div>';
+        else if (m.isPostponed) foot = '<div class="ko-foot is-post">Αναβολή</div>';
         else if (played && m.homeScore === m.awayScore)
             foot = (m.penHome != null && m.penAway != null)
                 ? `<div class="ko-foot">Πέναλτι ${m.penHome}-${m.penAway}</div>`
@@ -8791,7 +8856,7 @@ function findDataIssues() {
         // 1. Μαρκαρισμένο ως αναβληθέν αλλά έχει σκορ ή σκόρερ
         if (m.isPostponed && (m.homeScore !== null || (m.scorers || []).length)) {
             issues.push({ type: 'ghost', round: r.round, index: i, label,
-                text: `${label} — μαρκαρισμένο ΑΝΑΒΟΛΗ αλλά έχει ` +
+                text: `${label} — μαρκαρισμένο ${matchOffLabel(m)} αλλά έχει ` +
                       `${m.homeScore !== null ? `σκορ ${m.homeScore}-${m.awayScore}` : ''}` +
                       `${(m.scorers||[]).length ? ` και ${m.scorers.length} σκόρερ` : ''}. ` +
                       `ΔΕΝ μετράει στη βαθμολογία.` });
@@ -8848,22 +8913,22 @@ function runDataCheck() {
             ${issues.map(i => '• ' + esc(i.text)).join('<br>')}
          </div>` +
         (ghosts.length ? `<button class="btn btn-success btn-small" style="margin-top:8px;"
-             onclick="fixGhostMatches()">🔧 Διόρθωση ${ghosts.length} «φαντασμάτων» (ξετικάρισμα ΑΝΑΒΟΛΗΣ)</button>` : '');
+             onclick="fixGhostMatches()">🔧 Διόρθωση ${ghosts.length} «φαντασμάτων» (ξετικάρισμα ΑΝΑΒΟΛΗΣ / ΜΑΤΑΙΩΣΗΣ)</button>` : '');
 
     showToast(`${issues.length} θέματα στα δεδομένα.`, 'error');
 }
 
-// Ξετικάρει την ΑΝΑΒΟΛΗ σε ματς που προφανώς παίχτηκαν
+// Ξετικάρει την ΑΝΑΒΟΛΗ / ΜΑΤΑΙΩΣΗ σε ματς που προφανώς παίχτηκαν
 function fixGhostMatches() {
     const ghosts = findDataIssues().filter(i => i.type === 'ghost');
     if (!ghosts.length) return;
-    if (!confirm(`Θα ξετικαριστεί η ΑΝΑΒΟΛΗ σε ${ghosts.length} αγώνα(ες) που έχουν σκορ.\n\nΗ βαθμολογία θα αλλάξει. Συνέχεια;`)) return;
+    if (!confirm(`Θα ξετικαριστεί η ΑΝΑΒΟΛΗ / ΜΑΤΑΙΩΣΗ σε ${ghosts.length} αγώνα(ες) που έχουν σκορ.\n\nΗ βαθμολογία θα αλλάξει. Συνέχεια;`)) return;
 
     let fixed = 0;
     ghosts.forEach(g => {
         const round = data.fixtures.find(r => r.round === g.round);
         const m = round && round.matches[g.index];
-        if (m && m.homeScore !== null && m.awayScore !== null) { m.isPostponed = false; fixed++; }
+        if (m && m.homeScore !== null && m.awayScore !== null) { m.isPostponed = false; delete m.isCancelled; fixed++; }
     });
 
     syncDerived();
@@ -8883,7 +8948,11 @@ const RE_ROUND     = /^(?:(\d+)\s*(?:Η|ΗΣ)?\s*ΑΓΩΝΙΣΤΙΚΗ|ΑΓΩΝΙ
 const RE_SEP       = /\s+(?:-|–|—|VS\.?|ΜΕ)\s+/i;
 const RE_MIDSCORE  = /^(.+?)\s+(\d{1,2})\s*[-–]\s*(\d{1,2})\s+(.+)$/;
 const RE_ENDSCORE  = /^(.*?)[\s(]+(\d{1,2})\s*[-–]\s*(\d{1,2})\s*\)?\s*$/;
-const RE_POSTPONED = /ΑΝΑΒΛ|ΑΝΑΒΟΛ|ΔΙΑΚΟΠ|ΜΗ ΤΕΛΕΣΘ/;
+const RE_POSTPONED = /ΑΝΑΒΛ|ΑΝΑΒΟΛ|ΔΙΑΚΟΠ|ΜΗ ΤΕΛΕΣΘ|ΜΑΤΑΙ/;   // σε κείμενο χωρίς τόνους (_norm)
+const RE_CANCELLED = /ΜΑΤΑΙ/;                                   // ΜΑΤΑΙΩΝΕΤΑΙ / ΜΑΤΑΙΩΘΗΚΕ / ΜΑΤΑΙΩΣΗ (2/11/2026)
+// Η λέξη της κατάστασης στο αρχικό κείμενο (με τόνους/πεζά), μόνη ή σε παρένθεση,
+// για να μην κολλάει στο όνομα της ομάδας: «ΜΠΑΜ ΜΑΤΑΙΩΝΕΤΑΙ», «(Αναβλήθηκε λόγω καιρού)»
+const RE_STATUS_TOKEN = /\([^)]*?(?:ΑΝΑΒΛ|ΑΝΑΒΟΛ|ΜΑΤΑ[ΙΊ]|ΔΙΑΚΟΠ)[^)]*\)|(?:ΑΝΑΒΛ|ΑΝΑΒΟΛ|ΜΑΤΑ[ΙΊ]|ΔΙΑΚΟΠ)[^\s()]*/gi;
 
 function parseFixturesText(text, teams) {
     const index = new Map();
@@ -8942,6 +9011,14 @@ function parseFixturesText(text, teams) {
         }
 
         const postponed = RE_POSTPONED.test(_norm(line));
+        const cancelled = postponed && RE_CANCELLED.test(_norm(line));
+        if (postponed) {
+            // Βγάζουμε τη λέξη. Αν ήταν στη θέση του σκορ («ΟΛΥΜΠΟΣ ΜΑΤΑΙΩΝΕΤΑΙ ΜΠΑΜ»,
+            // ή με tab από πίνακα) και χωρίς αυτήν δεν μένει «-», μπαίνει «-» στη θέση της.
+            const tidy = s => s.replace(/\s+/g, ' ').replace(/^[\s\-–—]+|[\s\-–—]+$/g, '').trim();
+            const bare = tidy(line.replace(RE_STATUS_TOKEN, ' '));
+            line = RE_SEP.test(bare) ? bare : tidy(line.replace(RE_STATUS_TOKEN, ' - '));
+        }
         line = line
             .replace(/^\d+[.)]\s+/, '')
             .replace(/^(?:ΔΕΥ|ΤΡΙ|ΤΕΤ|ΠΕΜ|ΠΑΡ|ΣΑΒ|ΚΥΡ)[ΤΑΕΗΆ]*\.?\s*/i, '')
@@ -8979,7 +9056,8 @@ function parseFixturesText(text, teams) {
             home, away,
             homeScore: postponed ? null : hs,
             awayScore: postponed ? null : as,
-            isPostponed: postponed
+            isPostponed: postponed,
+            ...(cancelled ? { isCancelled: true } : {})
         });
     });
 
@@ -8997,12 +9075,13 @@ let _pendingFixtures = null;
 //  - Νέος αγώνας σε υπάρχουσα αγωνιστική, ενώ κάποια ομάδα του έχει ήδη αγώνα εκεί:
 //    διόρθωση προγράμματος. Αν ο παλιός είναι «άδειος» αντικαθίσταται, αλλιώς αναφέρεται.
 function mergeFixtures(target, incoming) {
-    const rep = { newRounds: 0, newMatches: 0, filled: 0, postponed: 0, replaced: [], conflicts: [] };
+    const rep = { newRounds: 0, newMatches: 0, filled: 0, postponed: 0, cancelled: 0, replaced: [], conflicts: [] };
     const hasScore = m => m.homeScore !== null && m.awayScore !== null;
     const hasData = m => m.homeScore !== null || m.awayScore !== null || m.isPostponed
         || (m.scorers || []).length || (m.cleanSheetHolders || []).length;
     const fresh = m => ({ home: m.home, away: m.away,
-        homeScore: m.homeScore, awayScore: m.awayScore, isPostponed: !!m.isPostponed });
+        homeScore: m.homeScore, awayScore: m.awayScore, isPostponed: !!m.isPostponed,
+        ...(m.isPostponed && m.isCancelled ? { isCancelled: true } : {}) });
 
     incoming.forEach(pr => {
         if (target.some(r => r.round === pr.round && r.stage)) {
@@ -9024,6 +9103,7 @@ function mergeFixtures(target, incoming) {
             if (em) {
                 if (hasScore(pm) && !hasScore(em)) {
                     em.homeScore = pm.homeScore; em.awayScore = pm.awayScore; em.isPostponed = false;
+                    delete em.isCancelled;
                     rep.filled++;
                 } else if (hasScore(pm) && hasScore(em) &&
                            (em.homeScore !== pm.homeScore || em.awayScore !== pm.awayScore)) {
@@ -9031,7 +9111,11 @@ function mergeFixtures(target, incoming) {
                         `το κείμενο λέει ${pm.homeScore}-${pm.awayScore}. Έμεινε το ${em.homeScore}-${em.awayScore}.`);
                 } else if (pm.isPostponed && !hasScore(em) && !em.isPostponed) {
                     em.isPostponed = true;
-                    rep.postponed++;
+                    if (pm.isCancelled) { em.isCancelled = true; rep.cancelled++; }
+                    else rep.postponed++;
+                } else if (pm.isCancelled && !hasScore(em) && em.isPostponed && !em.isCancelled) {
+                    em.isCancelled = true;          // ήταν αναβολή, η ΕΠΣΜ τον ματαίωσε
+                    rep.cancelled++;
                 }
                 return;
             }
@@ -9040,7 +9124,7 @@ function mergeFixtures(target, incoming) {
             const locked = clash.filter(hasData);
             if (locked.length) {
                 rep.conflicts.push(`${label}: δεν μπήκε, γιατί στην ίδια αγωνιστική ο αγώνας ` +
-                    locked.map(m => `${m.home} - ${m.away}`).join(', ') + ` έχει ήδη σκορ, σκόρερ ή αναβολή.`);
+                    locked.map(m => `${m.home} - ${m.away}`).join(', ') + ` έχει ήδη σκορ, σκόρερ, αναβολή ή ματαίωση.`);
                 return;
             }
             clash.forEach(m => {
@@ -9093,7 +9177,7 @@ function previewPastedFixtures() {
     const missing = TEAMS.filter(t => !seen.has(t));
 
     const total = rounds.reduce((a, r) => a + r.matches.length, 0);
-    const changes = rep.newMatches + rep.filled + rep.postponed;
+    const changes = rep.newMatches + rep.filled + rep.postponed + rep.cancelled;
 
     let html = `<div style="border:1px solid #ddd; border-radius:var(--r-sm); padding:10px; background:#fff; max-height:360px; overflow:auto;">
         <div style="font-weight:800; margin-bottom:6px;">
@@ -9105,13 +9189,15 @@ function previewPastedFixtures() {
             Νέοι αγώνες: <strong>${rep.newMatches}</strong><br>
             Σκορ που θα συμπληρωθούν: <strong>${rep.filled}</strong><br>
             Αναβολές που θα σημειωθούν: <strong>${rep.postponed}</strong><br>
+            Ματαιώσεις που θα σημειωθούν: <strong>${rep.cancelled}</strong><br>
             Ό,τι υπάρχει ήδη (σκορ, σκόρερ, clean sheets) <strong>μένει ως έχει</strong>.
         </div>`;
 
     rounds.forEach(r => {
         html += `<div style="margin-top:6px; font-weight:700; font-size:0.82rem; color:#1a472a;">Αγωνιστική ${r.round}</div>`;
         r.matches.forEach(m => {
-            const res = m.isPostponed ? '<span style="color:#ef6c00;">ΑΝΑΒΟΛΗ</span>'
+            const res = m.isPostponed
+                        ? `<span style="color:${isCancelledMatch(m) ? '#546e7a' : '#ef6c00'}; font-weight:700;">${matchOffLabel(m)}</span>`
                       : (m.homeScore !== null ? `<strong>${m.homeScore}-${m.awayScore}</strong>` : 'vs');
             html += `<div style="font-size:0.8rem; padding-left:8px;">${esc(m.home)} ${res} ${esc(m.away)}</div>`;
         });
@@ -9471,7 +9557,8 @@ function refreshAdminForms() {
 
         const homeTeam = match.home || '—';
         const awayTeam = match.away || '—';
-        const isPostponed = match.isPostponed ? 'checked' : '';
+        const isCancelled = isCancelledMatch(match) ? 'checked' : '';
+        const isPostponed = match.isPostponed && !isCancelled ? 'checked' : '';
         const bgStyle = match.isPostponed ? 'background: #eee;' : '';
 
         // Έλεγχος αν παίζει ο Όλυμπος
@@ -9546,7 +9633,10 @@ function refreshAdminForms() {
                         <span>-</span>
                         <input type="number" class="score-input" id="away-${roundNum}-${index}" value="${match.awayScore !== null ? match.awayScore : ''}" min="0" placeholder="0" style="${bgStyle}">
                     </div>
-                    <label class="postpone-label"><input type="checkbox" id="postponed-${roundNum}-${index}" ${isPostponed}> Αναβλήθηκε</label>
+                    <div class="match-status">
+                        <label class="postpone-label"><input type="checkbox" id="postponed-${roundNum}-${index}" ${isPostponed} onchange="pickMatchStatus(this)"> Αναβλήθηκε</label>
+                        <label class="postpone-label is-cancel"><input type="checkbox" id="cancelled-${roundNum}-${index}" ${isCancelled} onchange="pickMatchStatus(this)"> Ματαιώθηκε</label>
+                    </div>
                     ${isKO ? `
                     <div class="pen-inputs">
                         <small>Πέναλτι, αν έληξε ισόπαλο</small>
@@ -9569,22 +9659,34 @@ function refreshAdminForms() {
     container.oninput = container.onchange = () => updateRoundCounter(roundNum);
 }
 
+// «Αναβλήθηκε» και «Ματαιώθηκε»: το ένα ξετικάρει το άλλο (2/11/2026)
+function pickMatchStatus(box) {
+    if (!box.checked) return;
+    const other = box.id.startsWith('postponed-')
+        ? box.id.replace('postponed-', 'cancelled-')
+        : box.id.replace('cancelled-', 'postponed-');
+    const o = document.getElementById(other);
+    if (o) o.checked = false;
+}
+
 // Μετρητής «22/29 συμπληρωμένα» + χρώμα σε κάθε γραμμή:
-// πορτοκαλί = κενό, κόκκινο = μισό σκορ, πράσινο = έτοιμο, γκρι = αναβολή
+// πορτοκαλί = κενό, κόκκινο = μισό σκορ, πράσινο = έτοιμο, γκρι = αναβολή ή ματαίωση
 function updateRoundCounter(roundNum) {
     const box = document.getElementById('roundCounter');
     const round = (data.fixtures || []).find(r => r.round === roundNum);
     if (!box || !round) return;
-    let done = 0, post = 0, half = 0, total = 0, pens = 0;
+    let done = 0, post = 0, canc = 0, half = 0, total = 0, pens = 0;
     round.matches.forEach((m, i) => {
         if (!m.home || !m.away) return;
         total++;
         const h = document.getElementById(`home-${roundNum}-${i}`);
         const a = document.getElementById(`away-${roundNum}-${i}`);
         const pp = document.getElementById(`postponed-${roundNum}-${i}`);
+        const cc = document.getElementById(`cancelled-${roundNum}-${i}`);
         if (!h || !a) return;
         let state = 'empty';
-        if (pp && pp.checked) { post++; state = 'post'; }
+        if (cc && cc.checked) { canc++; state = 'post'; }
+        else if (pp && pp.checked) { post++; state = 'post'; }
         else if (h.value !== '' && a.value !== '') {
             // Νοκ άουτ: ισοπαλία χωρίς πέναλτι = δεν κρίθηκε ακόμα
             const ph = document.getElementById(`penh-${roundNum}-${i}`);
@@ -9598,10 +9700,11 @@ function updateRoundCounter(roundNum) {
         const row = h.closest('.match-input-row');
         if (row) row.dataset.state = state;
     });
-    const left = total - done - post;
+    const left = total - done - post - canc;
+    const off = offCountsText(post, canc);
     box.classList.toggle('complete', left === 0);
     box.innerHTML = `<strong>${done}/${total}</strong> συμπληρωμένα` +
-        (post ? `, ${post} ${post === 1 ? 'αναβολή' : 'αναβολές'}` : '') +
+        (off ? `, ${off}` : '') +
         (left ? `. Λείπουν ${left}${half ? ` (${half} με μισό σκορ)` : ''}${pens ? ` (${pens} ${pens === 1 ? 'ισοπαλία' : 'ισοπαλίες'} χωρίς πέναλτι)` : ''}.`
               : '. Όλα έτοιμα ✅ Πάτα Αποθήκευση.');
 }
@@ -9634,12 +9737,16 @@ function saveResults() {
         const homeInput = document.getElementById(`home-${roundNum}-${index}`);
         const awayInput = document.getElementById(`away-${roundNum}-${index}`);
         const postponedInput = document.getElementById(`postponed-${roundNum}-${index}`);
-        
-        const isPostponed = postponedInput.checked;
-        
-        // Αν τσεκαριστεί το "Αναβλήθηκε", αποθηκεύουμε true και σβήνουμε τα σκορ
+        const cancelledInput = document.getElementById(`cancelled-${roundNum}-${index}`);
+
+        const isCancelled = !!(cancelledInput && cancelledInput.checked);
+        const isPostponed = postponedInput.checked || isCancelled;
+
+        // Αν τσεκαριστεί το "Αναβλήθηκε" ή το "Ματαιώθηκε", αποθηκεύουμε isPostponed: true
+        // (και isCancelled: true για τη ματαίωση) και σβήνουμε τα σκορ
         if (isPostponed) {
             match.isPostponed = true;
+            if (isCancelled) match.isCancelled = true; else delete match.isCancelled;
             match.homeScore = null;
             match.awayScore = null;
             if (round.stage) { match.penHome = null; match.penAway = null; }
@@ -9647,8 +9754,9 @@ function saveResults() {
             homeInput.value = '';
             awayInput.value = '';
         } else {
-            // Αν ΔΕΝ είναι αναβληθέν, αποθηκεύουμε τα σκορ κανονικά
+            // Αν ΔΕΝ είναι αναβληθέν/ματαιωμένο, αποθηκεύουμε τα σκορ κανονικά
             match.isPostponed = false;
+            delete match.isCancelled;
             const homeScore = homeInput.value !== '' ? parseInt(homeInput.value) : null;
             const awayScore = awayInput.value !== '' ? parseInt(awayInput.value) : null;
             
