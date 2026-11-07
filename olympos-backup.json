@@ -1,6 +1,6 @@
 {
   "liveScore": {
-    "active": true,
+    "active": false,
     "home": "0",
     "away": "4",
     "half": "FT",
@@ -8,11 +8,11 @@
     "startTime": "15:37"
   },
   "announcement": "",
-  "matchDate": "Σάββατο 7/11",
-  "matchTime": "14:15",
+  "matchDate": "Σάββατο 14/11",
+  "matchTime": "12:30",
   "matchStadium": "Γήπεδο Ελπίδας Εύοσμου ",
   "matchMapLink": "https://maps.app.goo.gl/8Vux9rjr5oer9xUa8?g_st=ic",
-  "countdownTarget": "2026-11-07T14:15",
+  "countdownTarget": "2026-11-14T12:30",
   "specialMatch": {
     "type": "ΦΙΛΙΚΟΣ ΑΓΩΝΑΣ",
     "home": null,
@@ -619,8 +619,8 @@
         {
           "home": "ΕΛΠΙΔΑ ΤΟΥΜΠΑΣ",
           "away": "ΜΕΝΤΕΚΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 9,
+          "awayScore": 5,
           "isPostponed": false
         },
         {
@@ -633,8 +633,8 @@
         {
           "home": "ΓΕΡΜΑΝΙΚΗ ΑΚΑΔΗΜΙΑ",
           "away": "Μ.ΑΛΕΞΑΝΔΡΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 5,
+          "awayScore": 2,
           "isPostponed": false
         },
         {
@@ -647,8 +647,8 @@
         {
           "home": "ΠΟΣΕΙΔΩΝΑΣ ΜΗΧΑΝΙΩΝΑΣ",
           "away": "ΑΝΑΓΕΝΝΗΣΗ ΝΕΩΝ ΕΠΙΒΑΤΩΝ 2021",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 7,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
@@ -668,15 +668,15 @@
         {
           "home": "ΑΣ ΠΟΔ. ΤΟΥΜΠΑΣ",
           "away": "ΑΕ ΠΥΛΑΙΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 6,
           "isPostponed": false
         },
         {
           "home": "ΑΝΑΓΕΝΝΗΣΗ ΑΓ. ΙΩΑΝΝΗ",
           "away": "ΑΧΙΛΛΕΑΣ ΤΡΙΑΝΔΡΙΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
@@ -689,8 +689,8 @@
         {
           "home": "ΗΡΑΚΛΗΣ ΑΜΠΕΛΟΚΗΠΩΝ",
           "away": "ΟΔΥΣΣΕΑΣ ΚΟΡΔΕΛΙΟΥ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 6,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
@@ -703,15 +703,15 @@
         {
           "home": "ΑΟΚ ΑΓΙΟΥ ΑΘΑΝΑΣΙΟΥ",
           "away": "ΑΟ ΜΕΣΗΜΒΡΙΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
           "home": "ΑΕ ΝΕΩΝ ΣΙΝΔΟΥ",
           "away": "Μ.ΑΛΕΞΑΝΔΡΟΣ ΜΕΛΙΣΣΟΧΩΡΙΟΥ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
@@ -724,8 +724,8 @@
         {
           "home": "ΠΑΟ ΚΟΥΦΑΛΙΩΝ",
           "away": "ΝΤΙΝΟΣ ΚΟΥΗΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
@@ -738,15 +738,21 @@
         {
           "home": "ΝΕΑ ΠΟΛΙΤΕΙΑ ΕΥΟΣΜΟΥ",
           "away": "ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ",
-          "homeScore": null,
-          "awayScore": null,
-          "isPostponed": false
+          "homeScore": 0,
+          "awayScore": 4,
+          "isPostponed": false,
+          "scorers": [
+            "Νίκος Κυρτζαλιώτης",
+            "Μιχάλης Τσοτουλίδης",
+            "Παναγιώτης Παπαδόπουλος",
+            "Γιώργος Βότσης"
+          ]
         },
         {
           "home": "ΜΑΚΕΔΟΝΙΚΟΣ",
           "away": "ΔΙΑΠΛΑΣΙΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 3,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
@@ -759,8 +765,8 @@
         {
           "home": "ΠΑΝΑΘΗΝΑΪΚΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
           "away": "ΑΚΑΔ. Γ. ΚΟΥΔΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 3,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
@@ -780,8 +786,8 @@
         {
           "home": "ΟΛΥΜΠΙΑΚΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
           "away": "ΖΗΤΑ ΕΠΤΑ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
@@ -4196,7 +4202,7 @@
       "name": "Μιχάλης Τσοτουλίδης",
       "birthYear": 2012,
       "position": "Πλάγιος Μέσος - Δεξιός (RM) / Δεύτερος Επιθετικός (SS)",
-      "goals": 0,
+      "goals": 1,
       "cleanSheets": 0,
       "nickname": "ΜΙΧΑΛΗΣ",
       "isCaptain": false
@@ -4206,7 +4212,7 @@
       "name": "Παναγιώτης Παπαδόπουλος",
       "birthYear": 2013,
       "position": "Πλάγιος Επιθετικός - Δεξιός (RW) / Επιθετικός Μέσος (AM)",
-      "goals": 0,
+      "goals": 1,
       "cleanSheets": 0,
       "nickname": "ΠΑΝΟΣ",
       "isCaptain": false
@@ -4265,7 +4271,7 @@
       "name": "Γιώργος Βότσης",
       "birthYear": 2012,
       "position": "Πλάγιος Επιθετικός - Αριστερός (LW)",
-      "goals": 1,
+      "goals": 2,
       "cleanSheets": 0,
       "nickname": "ΓΙΩΡΓΟΣ",
       "isCaptain": false
@@ -4276,7 +4282,7 @@
       "birthYear": 2012,
       "position": "Επιθετικός Μέσος (AM) / Αμυντικός Μέσος (DM) / Κεντρικός Μέσος (CM)",
       "isCaptain": true,
-      "goals": 1,
+      "goals": 2,
       "cleanSheets": 0,
       "nickname": "ΚΥΡΤΖΑ"
     },
@@ -4314,6 +4320,16 @@
       "nickname": "JORDAN",
       "birthYear": 2014,
       "position": "Αμυντικός Μέσος (DM) / Πλάγιος Αμυντικός - Αριστερός (LB) / Πλάγιος Αμυντικός - Δεξιός (RB)",
+      "isCaptain": false,
+      "goals": 0,
+      "cleanSheets": 0
+    },
+    {
+      "number": 72,
+      "name": "Σωτήρης Αποστολόπουλος",
+      "nickname": "Αποστολόπουλος",
+      "birthYear": 2012,
+      "position": "Κεντρικός Αμυντικός (CB) / Πλάγιος Αμυντικός - Αριστερός (LB) / Πλάγιος Αμυντικός - Δεξιός (RB)",
       "isCaptain": false,
       "goals": 0,
       "cleanSheets": 0
