@@ -3,9 +3,9 @@
     "active": true,
     "home": "0",
     "away": "1",
-    "half": "HT",
+    "half": "3",
     "duration": "20",
-    "startTime": "15:15"
+    "startTime": "15:14"
   },
   "announcement": "",
   "matchDate": "Σάββατο 7/11",
