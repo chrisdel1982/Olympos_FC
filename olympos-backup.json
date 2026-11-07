@@ -828,7 +828,8 @@
           "away": "ΑΝΑΓΕΝΝΗΣΗ ΕΠΑΝΟΜΗΣ",
           "homeScore": null,
           "awayScore": null,
-          "isPostponed": false
+          "isPostponed": true,
+          "isCancelled": true
         },
         {
           "home": "ΜΑΡΑΘΩΝΑΣ",
