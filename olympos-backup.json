@@ -681,8 +681,8 @@
         {
           "home": "ΝΙΚΗ ΕΥΚΑΡΠΙΑΣ",
           "away": "ΑΙΑΣ ΕΥΟΣΜΟΥ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 5,
+          "awayScore": 2,
           "isPostponed": false
         },
         {
