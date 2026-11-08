@@ -399,10 +399,9 @@
         {
           "home": "ΜΕΝΤΕΚΑΣ",
           "away": "ΑΝΑΓΕΝΝΗΣΗ ΕΠΑΝΟΜΗΣ",
-          "homeScore": null,
-          "awayScore": null,
-          "isPostponed": true,
-          "isCancelled": true
+          "homeScore": 3,
+          "awayScore": 0,
+          "isPostponed": false
         },
         {
           "home": "ΦΟΙΝΙΚΑΣ ΤΟΥΜΠΑΣ",
@@ -536,8 +535,8 @@
         {
           "home": "ΑΘΛΗΤΙΚΗ ΑΚΑΔΗΜΙΑ ΓΙΑΝΝΙΤΣΩΝ",
           "away": "ΠΑΕ ΠΑΟΚ Κ14",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 5,
           "isPostponed": false
         },
         {
@@ -585,8 +584,8 @@
         {
           "home": "ΠΡΩΤΕΑΣ",
           "away": "ΑΚΑΔ. ΠΟΔ. ΘΕΣΣΑΛΟΝΙΚΗΣ 2020",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
