@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <!-- ΕΚΔΟΣΗ 9/11/2026 β΄ — Αναζήτηση (β΄: χωρίς οδηγίες κάτω από το πεδίο, πιο διακριτικός φακός): στο μενού (κινητό), 🔍 ή «/» (υπολογιστής). Ομάδες, παίκτες, αγώνες, νέα, Ιστορικό.
+    <!-- ΕΚΔΟΣΗ 9/11/2026 γ΄ — Αναζήτηση (γ΄: λευκός λεπτός φακός στον υπολογιστή αντί για 🔍· β΄: χωρίς οδηγίες κάτω από το πεδίο, πιο διακριτικός φακός): στο μενού (κινητό), 🔍 ή «/» (υπολογιστής). Ομάδες, παίκτες, αγώνες, νέα, Ιστορικό.
          Από τις 2/11/2026: «Ματαίωση» δίπλα στην «Αναβολή» (admin, Αποτελέσματα, νοκ άουτ, επικόλληση ΕΠΣΜ).
          Από την 1/11 ε΄: πιο διακριτικό «Μοιράσου το live» (απαλό, με το εικονίδιο share της Κλήσης).
          Από τη δ΄: «ΤΕΛΙΚΟ ΣΚΟΡ» στο FT, «Πέτα τις αλλαγές» στο πρόχειρο.
@@ -11658,8 +11658,9 @@ async function refreshLikeCounts() {
      Το admin δεν ψάχνεται. Τίποτα εδώ δεν γράφει στα δεδομένα.
      ========================================================= -->
 <style>
-.srch-btn{background:none;border:0;color:#fff;font-size:1.05rem;cursor:pointer;padding:1rem 1.2rem;line-height:1}
-.srch-btn:hover{background:rgba(255,255,255,.1)}
+.srch-btn{background:none;border:0;color:rgba(255,255,255,.85);cursor:pointer;padding:1rem 1.2rem;line-height:0;display:flex;align-items:center;height:100%;transition:color .2s,background .2s}
+.srch-btn:hover,.srch-btn:focus-visible{color:#fff;background:rgba(255,255,255,.1)}
+.srch-li-desktop{display:flex;align-items:stretch}
 .srch-li-mobile{display:none}
 .srch-box{display:flex;align-items:center;gap:8px;background:#fff;border-radius:999px;padding:9px 14px;box-shadow:0 2px 10px rgba(0,0,0,.18)}
 .srch-box svg{flex:none;opacity:.32;color:#333}
@@ -11958,7 +11959,7 @@ const liM = document.createElement('li'); liM.className = 'srch-li-mobile';
 liM.innerHTML = `<div class="srch-box" id="srchBoxM">${ICON}<input id="srchInputM" type="search" placeholder="Αναζήτηση…" autocomplete="off" enterkeyhint="search" aria-label="Αναζήτηση"><button type="button" class="srch-clear" aria-label="Καθαρισμός">✕</button></div><div class="srch-res" id="srchResM"></div>`;
 menu.prepend(liM);
 const liD = document.createElement('li'); liD.className = 'srch-li-desktop';
-liD.innerHTML = '<button type="button" class="srch-btn" aria-label="Αναζήτηση" title="Αναζήτηση ( / )">🔍</button>';
+liD.innerHTML = '<button type="button" class="srch-btn" aria-label="Αναζήτηση" title="Αναζήτηση ( / )"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></button>';   // λευκός λεπτός φακός αντί για emoji (9/11 γ΄)
 const adm = menu.querySelector('.admin-link'); menu.insertBefore(liD, adm ? adm.parentNode : null);
 
 let active = null;   // ποιο πεδίο γράφει τώρα (για ξαναζωγράφισμα όταν έρθει το Ιστορικό)
