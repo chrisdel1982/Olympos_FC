@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <!-- ΕΚΔΟΣΗ 9/11/2026 — Αναζήτηση: στο μενού (κινητό), 🔍 ή «/» (υπολογιστής). Ομάδες, παίκτες, αγώνες, νέα, Ιστορικό.
+    <!-- ΕΚΔΟΣΗ 9/11/2026 β΄ — Αναζήτηση (β΄: χωρίς οδηγίες κάτω από το πεδίο, πιο διακριτικός φακός): στο μενού (κινητό), 🔍 ή «/» (υπολογιστής). Ομάδες, παίκτες, αγώνες, νέα, Ιστορικό.
          Από τις 2/11/2026: «Ματαίωση» δίπλα στην «Αναβολή» (admin, Αποτελέσματα, νοκ άουτ, επικόλληση ΕΠΣΜ).
          Από την 1/11 ε΄: πιο διακριτικό «Μοιράσου το live» (απαλό, με το εικονίδιο share της Κλήσης).
          Από τη δ΄: «ΤΕΛΙΚΟ ΣΚΟΡ» στο FT, «Πέτα τις αλλαγές» στο πρόχειρο.
@@ -11662,7 +11662,7 @@ async function refreshLikeCounts() {
 .srch-btn:hover{background:rgba(255,255,255,.1)}
 .srch-li-mobile{display:none}
 .srch-box{display:flex;align-items:center;gap:8px;background:#fff;border-radius:999px;padding:9px 14px;box-shadow:0 2px 10px rgba(0,0,0,.18)}
-.srch-box svg{flex:none;opacity:.55;color:#333}
+.srch-box svg{flex:none;opacity:.32;color:#333}
 .srch-box input::-webkit-search-cancel-button{display:none;-webkit-appearance:none}
 .srch-box input{flex:1;border:0!important;outline:0;box-shadow:none!important;padding:0!important;margin:0!important;background:transparent!important;font:inherit;font-size:16px;color:#222;min-width:0}
 .srch-clear{border:0;background:#e9eee9;color:#444;border-radius:50%;width:24px;height:24px;font-size:.8rem;cursor:pointer;display:none;flex:none}
@@ -11723,14 +11723,14 @@ async function refreshLikeCounts() {
   .nav-menu.searching > li:not(.srch-li-mobile){display:none}
 }
 @media (prefers-color-scheme:dark){
-  .srch-box{background:#2a2a2a}.srch-box svg{color:#ddd}.srch-box input{color:#eee}
+  .srch-box{background:#2a2a2a}.srch-box svg{color:#fff;opacity:.3}.srch-box input{color:#eee}
   .srch-ic{color:var(--accent-color)}
   .st-stats b{color:var(--accent-color)}
 }
 </style>
 
 <div id="srchOverlay" role="dialog" aria-label="Αναζήτηση"><div class="srch-panel">
-  <div class="srch-box" id="srchBoxD"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+  <div class="srch-box" id="srchBoxD"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
   <input id="srchInputD" type="search" placeholder="Ομάδα, παίκτης, αγωνιστική, είδηση…" autocomplete="off" enterkeyhint="search" aria-label="Αναζήτηση"><button type="button" class="srch-clear" aria-label="Καθαρισμός">✕</button></div>
   <div class="srch-res" id="srchResD"></div>
   <div class="srch-kbd"><b>↑</b> <b>↓</b> επιλογή · <b>Enter</b> άνοιγμα · <b>Esc</b> κλείσιμο · <b>/</b> αναζήτηση από παντού</div>
@@ -11740,7 +11740,7 @@ async function refreshLikeCounts() {
 <script>
 (function () {
 const $ = id => document.getElementById(id);
-const ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';
+const ICON = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';
 
 // ---- «Σκελετός»: τόνοι, κεφαλαία ΚΑΙ greeklish καταλήγουν στα ίδια λατινικά ----
 // «Κουφαλίων» = «koufalion» = «kufalion»· «ΜΠΑΜ» = «bam» = «mpam»· «Βότσης» = «votsis».
@@ -11837,7 +11837,7 @@ let lastItems = [];
 function render(el, raw) {
   const r = raw.trim() ? search(raw) : null;
   lastItems = [];
-  if (!r) { el.innerHTML = raw.trim() ? '' : '<div class="srch-hint">Γράψε ομάδα, παίκτη, «5η αγωνιστική», «αναβολή» ή λέξη από τα Νέα. Τόνοι, κεφαλαία και greeklish δεν πειράζουν.</div>'; return; }
+  if (!r) { el.innerHTML = ''; return; }   // χωρίς οδηγίες κάτω από το πεδίο (απόφαση 9/11)
   const cnt = (n, max, extra) => n > max ? `${n} · ${extra || 'δείχνω ' + max}` : n;
   const g = (name, arr, max, fn, extra) => arr.length ? `<div class="srch-group">${name}<span>${cnt(arr.length, max, extra)}</span></div>` + arr.slice(0, max).map(fn).join('') : '';
   let h = '';
