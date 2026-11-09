@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <!-- ΕΚΔΟΣΗ 2/11/2026 — «Ματαίωση» δίπλα στην «Αναβολή» (admin, Αποτελέσματα, νοκ άουτ, επικόλληση ΕΠΣΜ).
+    <!-- ΕΚΔΟΣΗ 9/11/2026 — Αναζήτηση: στο μενού (κινητό), 🔍 ή «/» (υπολογιστής). Ομάδες, παίκτες, αγώνες, νέα, Ιστορικό.
+         Από τις 2/11/2026: «Ματαίωση» δίπλα στην «Αναβολή» (admin, Αποτελέσματα, νοκ άουτ, επικόλληση ΕΠΣΜ).
          Από την 1/11 ε΄: πιο διακριτικό «Μοιράσου το live» (απαλό, με το εικονίδιο share της Κλήσης).
          Από τη δ΄: «ΤΕΛΙΚΟ ΣΚΟΡ» στο FT, «Πέτα τις αλλαγές» στο πρόχειρο.
          Από τη γ΄: admin με κωδικό μία φορά ανά συσκευή, έξυπνο πρόχειρο (τέλος το «Βρέθηκαν αποθηκευμένες αλλαγές»),
@@ -5315,6 +5316,25 @@ function showToast(message, type = 'success') {
         //    γραμμένη (στο τέλος, σε παρένθεση ή στη θέση του σκορ). Αναβολή που γίνεται ματαίωση
         //    αλλάζει· σκορ που έρχεται αργότερα σβήνει και τα δύο σημάδια.
         //  - Αν ο αγώνας τελικά κατακυρωθεί (π.χ. 3-0 από την ΕΠΣΜ): ξετίκαρε και γράψε το σκορ.
+        // =========================================================
+        // =========================================================
+        // ΑΛΛΑΓΗ 9/11/2026 — ΑΝΑΖΗΤΗΣΗ
+        //  - Κινητό: πεδίο στην κορυφή του μενού (3 παύλες). Όσο γράφεις, τα κουμπιά του μενού
+        //    κρύβονται και φαίνονται τα αποτελέσματα. Κλείνοντας το μενού, η αναζήτηση καθαρίζει.
+        //  - Υπολογιστής: 🔍 δίπλα στο ⚙️ ή πλήκτρο «/». ↑↓ για επιλογή, Enter, Esc.
+        //    Το «/» δεν ανοίγει την αναζήτηση όσο γράφεις κάπου ή όσο είναι ανοιχτό το admin.
+        //  - Ψάχνει: ομάδες, παίκτες (όνομα, παρατσούκλι, νούμερο), αγώνες (ομάδες, σκόρερ,
+        //    «5η αγωνιστική», «αναβολή», «ματαίωση», φάσεις νοκ άουτ), νέα, και τις παλιές σεζόν
+        //    (seasons/index.json + αρχεία σεζόν, κατεβαίνουν μία φορά, στο πρώτο άνοιγμα της αναζήτησης).
+        //  - Τόνοι, κεφαλαία, greeklish: όλα γίνονται ο ίδιος λατινικός «σκελετός» (srchSkel).
+        //    «koufal», «Κουφαλίων», «ΚΟΥΦΑΛΙΩΝ» βρίσκουν το ίδιο. Επισήμανση μόνο όταν γράφεις ελληνικά.
+        //  - Πάτημα σε ομάδα → καρτέλα: θέση, βαθμοί, Ν-Ι-Η, γκολ, όλα τα αποτελέσματα, το πρόγραμμα
+        //    και τα νέα που την αναφέρουν. Το «πίσω» του Android κλείνει την καρτέλα.
+        //  - Πάτημα σε αγώνα → Αποτελέσματα ή Πρόγραμμα, ανοιχτή η αγωνιστική του, ο αγώνας φωτισμένος.
+        //    Αν δεν είναι αγώνας του Ολύμπου, ο διακόπτης γίνεται «Όλοι» ΧΩΡΙΣ να αποθηκευτεί.
+        //  - Σε είδηση → Νέα, ανοιχτή. Σε παίκτη → Ρόστερ, φωτισμένη η κάρτα. Σε Ιστορικό → η σεζόν του.
+        //  - Όλος ο κώδικας είναι σε ένα μπλοκ στο τέλος του <body> («ΑΝΑΖΗΤΗΣΗ — 9/11/2026»).
+        //    Δεν γράφει τίποτα στα δεδομένα· αν αφαιρεθεί το μπλοκ, το site γυρίζει όπως ήταν.
         // =========================================================
         const KO_STAGES = [
             { key: 'R16', round: 101, label: 'Φάση των 16',  ties: 8, at: 'στη Φάση των 16' },
@@ -11627,5 +11647,363 @@ async function refreshLikeCounts() {
 </script>
 <button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})"><i class="fa-solid fa-chevron-up"></i></button>
 <div id="toast-container"></div>
+
+<!-- =========================================================
+     ΑΝΑΖΗΤΗΣΗ — 9/11/2026
+     Κινητό: πεδίο στην κορυφή του μενού (3 παύλες). Υπολογιστής: 🔍 δίπλα στο ⚙️ ή πλήκτρο «/».
+     Ψάχνει: ομάδες, παίκτες, αγώνες (και σκόρερ), νέα, και τις παλιές σεζόν (seasons/).
+     Τόνοι, κεφαλαία και greeklish δεν μετράνε (srchSkel: όλα γίνονται ένας λατινικός «σκελετός»).
+     Πάτημα σε ομάδα → καρτέλα με θέση, αποτελέσματα, πρόγραμμα, νέα. Σε αγώνα → η αγωνιστική του,
+     με τον αγώνα φωτισμένο. Ο διακόπτης «Όλυμπος / Όλοι» γυρίζει σε «Όλοι» μόνο προσωρινά.
+     Το admin δεν ψάχνεται. Τίποτα εδώ δεν γράφει στα δεδομένα.
+     ========================================================= -->
+<style>
+.srch-btn{background:none;border:0;color:#fff;font-size:1.05rem;cursor:pointer;padding:1rem 1.2rem;line-height:1}
+.srch-btn:hover{background:rgba(255,255,255,.1)}
+.srch-li-mobile{display:none}
+.srch-box{display:flex;align-items:center;gap:8px;background:#fff;border-radius:999px;padding:9px 14px;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+.srch-box svg{flex:none;opacity:.55;color:#333}
+.srch-box input::-webkit-search-cancel-button{display:none;-webkit-appearance:none}
+.srch-box input{flex:1;border:0!important;outline:0;box-shadow:none!important;padding:0!important;margin:0!important;background:transparent!important;font:inherit;font-size:16px;color:#222;min-width:0}
+.srch-clear{border:0;background:#e9eee9;color:#444;border-radius:50%;width:24px;height:24px;font-size:.8rem;cursor:pointer;display:none;flex:none}
+.srch-box.has-q .srch-clear{display:block}
+.srch-res{margin-top:12px}
+.srch-group{margin:14px 0 6px;font-size:.72rem;letter-spacing:.12em;font-weight:700;color:var(--accent-color);text-transform:uppercase;display:flex;justify-content:space-between;gap:8px}
+.srch-group span{color:rgba(255,255,255,.6);letter-spacing:0;font-weight:500;text-transform:none}
+.srch-item{display:flex;align-items:center;gap:10px;background:var(--surface);color:var(--ink,#222);border-radius:10px;padding:9px 11px;margin-bottom:6px;cursor:pointer;text-align:left;width:100%;border:0;font:inherit}
+.srch-item.kb{outline:2px solid var(--accent-color);outline-offset:-2px}
+.srch-item img,.srch-ic{width:28px;height:28px;object-fit:contain;flex:none}
+.srch-ic{display:grid;place-items:center;border-radius:50%;background:var(--surface-chip);font-size:.72rem;font-weight:700;color:var(--primary-color)}
+.srch-main{flex:1;min-width:0}
+.srch-t{font-weight:600;font-size:.93rem;line-height:1.25}
+.srch-item.is-match .srch-t{font-size:.84rem}
+.srch-s{font-size:.78rem;opacity:.65;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.srch-sc{font-weight:700;font-size:.9rem;white-space:nowrap}
+.srch-item mark{background:#ccff0066;color:inherit;border-radius:3px;padding:0 1px}
+.srch-empty,.srch-hint{color:rgba(255,255,255,.8);padding:14px 4px 4px;font-size:.9rem}
+.srch-hint{color:rgba(255,255,255,.6);font-size:.8rem}
+.srch-badge{font-size:.66rem;font-weight:700;padding:2px 6px;border-radius:5px;background:#d0453a;color:#fff;white-space:nowrap}
+.srch-badge.c{background:#6b7c93}
+.srch-dot{width:9px;height:9px;border-radius:50%;flex:none}
+.srch-dot.W{background:#2e9e4f}.srch-dot.D{background:#b9a23a}.srch-dot.L{background:#d0453a}
+#srchOverlay{position:fixed;inset:0;background:rgba(10,25,15,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);z-index:3000;display:none;align-items:flex-start;justify-content:center;padding-top:9vh}
+#srchOverlay.open{display:flex}
+#srchOverlay .srch-panel{width:min(640px,92vw);max-height:80vh;overflow:auto;background:var(--primary-color);border-radius:16px;padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.srch-kbd{font-size:.72rem;color:rgba(255,255,255,.55);margin-top:10px;text-align:right}
+.srch-kbd b{border:1px solid rgba(255,255,255,.35);border-radius:4px;padding:0 5px;font-weight:500}
+#srchTeam{position:fixed;inset:0;z-index:3100;display:none;background:rgba(0,0,0,.45);align-items:flex-end;justify-content:center}
+#srchTeam.open{display:flex}
+.st-sheet{background:var(--bg-light);width:min(640px,100vw);max-height:88vh;overflow:auto;border-radius:18px 18px 0 0;padding:0 0 18px;overscroll-behavior:contain}
+@media(min-width:769px){#srchTeam{align-items:center}.st-sheet{border-radius:16px}}
+.st-head{background:var(--primary-color);color:#fff;padding:18px;display:flex;gap:14px;align-items:center;position:sticky;top:0;z-index:1}
+.st-head img{width:54px;height:54px;object-fit:contain;background:#fff;border-radius:12px;padding:4px;flex:none}
+.st-head h3{font-size:1.05rem;margin:0;line-height:1.2;color:#fff}
+.st-sub{font-size:.8rem;opacity:.8;margin-top:3px}
+.st-x{margin-left:auto;background:rgba(255,255,255,.15);border:0;color:#fff;width:32px;height:32px;border-radius:50%;font-size:1rem;cursor:pointer;flex:none}
+.st-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:14px 14px 4px}
+.st-stats div{background:var(--surface);border-radius:10px;padding:8px 2px;text-align:center}
+.st-stats b{display:block;font-size:1.1rem;color:var(--primary-color)}
+.st-stats small{font-size:.68rem;opacity:.65}
+.st-sec{padding:6px 14px}
+.st-sec h4{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted,#777);margin:12px 2px 8px;display:flex;justify-content:space-between}
+.st-row{display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:10px;padding:9px 11px;margin-bottom:6px;font-size:.84rem;color:var(--ink,#222);cursor:pointer;width:100%;border:0;font-family:inherit;text-align:left}
+.st-row.my{box-shadow:inset 3px 0 0 var(--accent-color)}
+.st-r{font-size:.72rem;opacity:.6;width:34px;flex:none}
+.st-m{flex:1;min-width:0;line-height:1.3}
+.st-m .w{font-weight:700}
+.st-news{background:var(--surface);border-radius:10px;padding:10px 12px;margin-bottom:6px;font-size:.88rem;cursor:pointer;color:var(--ink,#222);width:100%;border:0;font-family:inherit;text-align:left;display:block}
+.st-news small{display:block;opacity:.6;margin-top:3px}
+.st-none{font-size:.85rem;opacity:.6;padding:4px 2px 8px}
+.srch-flash{animation:srchFlash 2.4s ease}
+@keyframes srchFlash{0%,65%{box-shadow:0 0 0 3px var(--accent-color)}100%{box-shadow:0 0 0 0 transparent}}
+@media (max-width:768px){
+  .srch-li-desktop{display:none!important}
+  .srch-li-mobile{display:block;width:calc(100% - 40px)!important;margin-bottom:14px!important}
+  .nav-menu{overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:40px}
+  .nav-menu.searching > li:not(.srch-li-mobile){display:none}
+}
+@media (prefers-color-scheme:dark){
+  .srch-box{background:#2a2a2a}.srch-box svg{color:#ddd}.srch-box input{color:#eee}
+  .srch-ic{color:var(--accent-color)}
+  .st-stats b{color:var(--accent-color)}
+}
+</style>
+
+<div id="srchOverlay" role="dialog" aria-label="Αναζήτηση"><div class="srch-panel">
+  <div class="srch-box" id="srchBoxD"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+  <input id="srchInputD" type="search" placeholder="Ομάδα, παίκτης, αγωνιστική, είδηση…" autocomplete="off" enterkeyhint="search" aria-label="Αναζήτηση"><button type="button" class="srch-clear" aria-label="Καθαρισμός">✕</button></div>
+  <div class="srch-res" id="srchResD"></div>
+  <div class="srch-kbd"><b>↑</b> <b>↓</b> επιλογή · <b>Enter</b> άνοιγμα · <b>Esc</b> κλείσιμο · <b>/</b> αναζήτηση από παντού</div>
+</div></div>
+<div id="srchTeam" role="dialog" aria-label="Ομάδα"><div class="st-sheet" id="srchTeamBody"></div></div>
+
+<script>
+(function () {
+const $ = id => document.getElementById(id);
+const ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';
+
+// ---- «Σκελετός»: τόνοι, κεφαλαία ΚΑΙ greeklish καταλήγουν στα ίδια λατινικά ----
+// «Κουφαλίων» = «koufalion» = «kufalion»· «ΜΠΑΜ» = «bam» = «mpam»· «Βότσης» = «votsis».
+const GR = {α:'a',β:'v',γ:'g',δ:'d',ε:'e',ζ:'z',η:'i',θ:'th',ι:'i',κ:'k',λ:'l',μ:'m',ν:'n',ξ:'x',ο:'o',π:'p',ρ:'r',σ:'s',ς:'s',τ:'t',υ:'i',φ:'f',χ:'x',ψ:'ps',ω:'o'};
+function srchSkel(s) {
+  s = String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  s = s.replace(/ου/g,'u').replace(/αι/g,'e').replace(/[εου]ι/g,'i').replace(/μπ/g,'b').replace(/ντ/g,'d').replace(/γκ|γγ/g,'g');
+  s = s.replace(/[α-ως]/g, c => GR[c] || c);
+  return s.replace(/ch/g,'x').replace(/ks/g,'x').replace(/w/g,'o').replace(/y/g,'i').replace(/h/g,'i')
+          .replace(/ou/g,'u').replace(/ai/g,'e').replace(/[eo]i/g,'i').replace(/mp/g,'b').replace(/nt/g,'d').replace(/gk|gg/g,'g')
+          .replace(/[^a-z0-9 ]+/g,' ').replace(/(.)\1+/g,'$1').replace(/\s+/g,' ').trim();
+}
+window.srchSkel = srchSkel;
+const hit = (text, q) => { const t = srchSkel(text); return q.split(' ').every(w => t.includes(w)); };
+// Επισήμανση (όταν γράφεις ελληνικά· στα greeklish βρίσκει, απλώς δεν κιτρινίζει)
+function hl(text, raw) {
+  const V = {α:'αά',ε:'εέ',η:'ηή',ι:'ιίϊΐ',ο:'οό',υ:'υύϋΰ',ω:'ωώ',σ:'σς',ς:'σς'};
+  let out = esc(text);
+  raw.trim().split(/\s+/).filter(w => w.length > 1).forEach(w => {
+    const k = w.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    if (/[^α-ωςa-z0-9]/.test(k)) return;
+    const re = new RegExp('(' + [...k].map(c => V[c] ? '[' + V[c] + ']' : c).join('') + ')(?![^<]*>)', 'iu');
+    out = out.replace(re, '<mark>$1</mark>');
+  });
+  return out;
+}
+const crestImg = (n, cls) => { let s = ''; try { s = crestFor(n) || ''; } catch (e) {}
+  return s ? `<img${cls ? ` class="${cls}"` : ''} src="${esc(s)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">` : '<span class="srch-ic">⚽</span>'; };
+const played = m => m.homeScore != null && m.awayScore != null && !m.isPostponed;
+const offBadge = m => m.isPostponed ? `<span class="srch-badge${isCancelledMatch(m) ? ' c' : ''}">${matchOffLabel(m)}</span>` : '';
+const same = (a, b) => normTeam(a) === normTeam(b);
+const allRounds = () => (data && data.fixtures) || [];
+
+// ---- Ιστορικό: κατεβαίνει μία φορά, την πρώτη που ανοίγει η αναζήτηση ----
+let hist = null, histState = 'idle';      // idle | loading | ok | none
+async function loadHist() {
+  if (histState !== 'idle') return;
+  histState = 'loading';
+  try {
+    const r = await fetch('seasons/index.json', { cache: 'no-cache' });
+    if (!r.ok) throw 0;
+    const list = ((await r.json()).seasons || []).filter(x => x.file && x.label !== (data && data.season));
+    const got = await Promise.all(list.map(async x => {
+      try {
+        if (!historyCache[x.file]) { const q = await fetch('seasons/' + x.file, { cache: 'no-cache' }); if (!q.ok) return null; historyCache[x.file] = await q.json(); }
+        return { file: x.file, label: x.label, d: historyCache[x.file] };
+      } catch (e) { return null; }
+    }));
+    hist = got.filter(Boolean).reverse();   // νεότερη πρώτη
+    histState = hist.length ? 'ok' : 'none';
+  } catch (e) { hist = []; histState = 'none'; }
+  rerender();
+}
+
+// ---- Η αναζήτηση ----
+function search(raw) {
+  const q = srchSkel(raw); if (q.length < 2 && !/^\d+$/.test(raw.trim())) return null;
+  const T = (() => { try { return calculateStandings(); } catch (e) { return []; } })();
+  const out = { teams: [], players: [], matches: [], news: [], hist: [] };
+  const teams = new Set(data.teams || []);
+  allRounds().forEach(r => (r.matches || []).forEach(m => { if (m.home) teams.add(m.home); if (m.away) teams.add(m.away); }));
+  teams.forEach(t => { if (hit(t, q)) { const i = T.findIndex(x => same(x.team, t)); out.teams.push({ t, pos: i + 1, row: T[i] }); } });
+  out.teams.sort((a, b) => (isMyTeam(b.t) - isMyTeam(a.t)) || ((a.pos || 99) - (b.pos || 99)));
+  (data.roster || []).forEach(p => { if (hit(p.name + ' ' + (p.nickname || ''), q) || String(p.number) === raw.trim()) out.players.push(p); });
+  const rn = raw.match(/(\d+)\s*(η|h)?\s*(αγ|ag)/i);
+  const offWord = m => m.isPostponed ? (isCancelledMatch(m) ? ' ματαιωση' : ' αναβολη') : '';
+  allRounds().forEach(r => (r.matches || []).forEach(m => {
+    const scorer = (m.scorers || []).find(s => hit(s, q));
+    if ((rn && !r.stage && +rn[1] === r.round) || hit(m.home + ' ' + m.away + offWord(m) + ' ' + roundLabel(r), q) || scorer)
+      out.matches.push({ r, m, scorer });
+  }));
+  const us = o => involvesUs(o.m) ? 1 : 0;
+  out.matches.sort((a, b) => (us(b) - us(a)) || (played(b.m) - played(a.m)) || (played(a.m) ? b.r.round - a.r.round : a.r.round - b.r.round));
+  (data.news || []).forEach(n => { if (hit(n.title + ' ' + n.content, q)) out.news.push(n); });
+  out.news.sort((a, b) => new Date(b.date) - new Date(a.date));
+  (hist || []).forEach(s => {
+    const d = s.d;
+    (d.news || []).forEach(n => { if (hit(n.title + ' ' + n.content, q)) out.hist.push({ s, kind: 'news', n, w: 3 }); });
+    (d.roster || []).forEach(p => { if (hit(p.name + ' ' + (p.nickname || ''), q)) out.hist.push({ s, kind: 'player', p, w: 2 }); });
+    (d.fixtures || []).forEach(r => (r.matches || []).forEach(m => {
+      const scorer = (m.scorers || []).find(x => hit(x, q));
+      if (hit(m.home + ' ' + m.away, q) || scorer) out.hist.push({ s, kind: 'match', r, m, scorer, w: involvesUs(m) ? 1 : 0 });
+    }));
+  });
+  out.hist.sort((a, b) => b.w - a.w);
+  return out;
+}
+function snippet(txt, raw) {
+  const words = String(txt).replace(/\s+/g, ' ').split(' '), w0 = srchSkel(raw.split(/\s+/)[0]);
+  let i = words.findIndex(w => srchSkel(w).includes(w0)); if (i < 0) i = 0;
+  return (i > 4 ? '… ' : '') + words.slice(Math.max(0, i - 4), i + 10).join(' ') + '…';
+}
+let lastItems = [];
+function render(el, raw) {
+  const r = raw.trim() ? search(raw) : null;
+  lastItems = [];
+  if (!r) { el.innerHTML = raw.trim() ? '' : '<div class="srch-hint">Γράψε ομάδα, παίκτη, «5η αγωνιστική», «αναβολή» ή λέξη από τα Νέα. Τόνοι, κεφαλαία και greeklish δεν πειράζουν.</div>'; return; }
+  const cnt = (n, max, extra) => n > max ? `${n} · ${extra || 'δείχνω ' + max}` : n;
+  const g = (name, arr, max, fn, extra) => arr.length ? `<div class="srch-group">${name}<span>${cnt(arr.length, max, extra)}</span></div>` + arr.slice(0, max).map(fn).join('') : '';
+  let h = '';
+  h += g('Ομάδες', r.teams, 5, (o, i) => `<button type="button" class="srch-item" data-k="team" data-i="${i}">${crestImg(o.t)}<span class="srch-main"><div class="srch-t">${hl(o.t, raw)}</div><div class="srch-s">${o.row ? `${o.pos}η θέση · ${o.row.points} βαθμοί · ${o.row.played} αγώνες` : ''}</div></span>›</button>`);
+  h += g('Παίκτες', r.players, 5, (p, i) => `<button type="button" class="srch-item" data-k="player" data-i="${i}"><span class="srch-ic">${esc(p.number || '–')}</span><span class="srch-main"><div class="srch-t">${hl(p.name, raw)}${p.isCaptain ? ' ©' : ''}</div><div class="srch-s">${esc(p.position || '')} · ⚽ ${p.goals || 0}${p.cleanSheets ? ' · 🧤 ' + p.cleanSheets : ''}</div></span>›</button>`);
+  const oneTeam = r.teams.length === 1 ? 'όλοι στην καρτέλα της ομάδας' : '';
+  h += g('Αγώνες', r.matches, 6, (o, i) => { const m = o.m; return `<button type="button" class="srch-item is-match" data-k="match" data-i="${i}"><span class="srch-ic">${o.r.stage ? '🏆' : o.r.round + 'η'}</span><span class="srch-main"><div class="srch-t">${hl(m.home, raw)} – ${hl(m.away, raw)}</div><div class="srch-s">${esc(roundLabel(o.r))}${o.scorer ? ' · ⚽ ' + esc(o.scorer) : ''}</div></span>${offBadge(m) || `<span class="srch-sc">${played(m) ? m.homeScore + ' – ' + m.awayScore : '—'}</span>`}</button>`; }, oneTeam);
+  h += g('Νέα', r.news, 4, (n, i) => `<button type="button" class="srch-item" data-k="news" data-i="${i}"><span class="srch-ic">📰</span><span class="srch-main"><div class="srch-t">${hl(n.title, raw)}</div><div class="srch-s">${hl(snippet(n.content, raw), raw)}</div></span></button>`);
+  if (histState === 'loading') h += '<div class="srch-group">Ιστορικό<span>φόρτωση…</span></div>';
+  else h += g('Ιστορικό', r.hist, 6, (o, i) => {
+    const sub = esc(o.s.label);
+    if (o.kind === 'news')   return `<button type="button" class="srch-item" data-k="hist" data-i="${i}"><span class="srch-ic">📰</span><span class="srch-main"><div class="srch-t">${hl(o.n.title, raw)}</div><div class="srch-s">${sub} · ${hl(snippet(o.n.content, raw), raw)}</div></span></button>`;
+    if (o.kind === 'player') return `<button type="button" class="srch-item" data-k="hist" data-i="${i}"><span class="srch-ic">${esc(o.p.number || '–')}</span><span class="srch-main"><div class="srch-t">${hl(o.p.name, raw)}</div><div class="srch-s">${sub} · ρόστερ</div></span>›</button>`;
+    const m = o.m; return `<button type="button" class="srch-item is-match" data-k="hist" data-i="${i}"><span class="srch-ic">🕰️</span><span class="srch-main"><div class="srch-t">${hl(m.home, raw)} – ${hl(m.away, raw)}</div><div class="srch-s">${sub} · ${esc(roundLabel(o.r))}${o.scorer ? ' · ⚽ ' + esc(o.scorer) : ''}</div></span>${offBadge(m) || `<span class="srch-sc">${played(m) ? m.homeScore + ' – ' + m.awayScore : '—'}</span>`}</button>`;
+  });
+  if (!r.teams.length && !r.players.length && !r.matches.length && !r.news.length && !r.hist.length && histState !== 'loading')
+    h = `<div class="srch-empty">Τίποτα για «${esc(raw.trim())}».</div>`;
+  el.innerHTML = h;
+  el._r = r;
+}
+
+// ---- Καρτέλα ομάδας ----
+function teamNews(team) {   // η πιο χαρακτηριστική λέξη του ονόματος, χωρίς την κατάληξη
+  const stop = new Set(['ae','ao','aok','ams','pao','nea','neon','agiu','agios','akadimia','atlitiki']);
+  const ws = srchSkel(team).split(' ').filter(w => w.length >= 4 && !stop.has(w)).sort((a, b) => b.length - a.length);
+  const key = ws[0] ? ws[0].slice(0, Math.max(4, ws[0].length - 2)) : srchSkel(team);
+  return (data.news || []).filter(n => srchSkel(n.title + ' ' + n.content).includes(key));
+}
+let teamMatches = [], teamNewsList = [];
+function openTeam(team) {
+  const T = (() => { try { return calculateStandings(); } catch (e) { return []; } })();
+  const i = T.findIndex(r => same(r.team, team)), row = T[i] || {};
+  const ms = []; allRounds().forEach(r => (r.matches || []).forEach(m => { if (same(m.home, team) || same(m.away, team)) ms.push({ r, m }); }));
+  const done = ms.filter(o => played(o.m) || o.m.isPostponed).reverse();
+  const next = ms.filter(o => !played(o.m) && !o.m.isPostponed);
+  teamMatches = [...done, ...next]; teamNewsList = teamNews(team);
+  const res = m => { const a = same(m.home, team) ? [m.homeScore, m.awayScore] : [m.awayScore, m.homeScore]; return a[0] > a[1] ? 'W' : a[0] < a[1] ? 'L' : 'D'; };
+  const line = (o, k) => { const m = o.m, b = x => same(x, team) ? `<span class="w">${esc(x)}</span>` : esc(x);
+    return `<button type="button" class="st-row${involvesUs(m) ? ' my' : ''}" data-tm="${k}">${played(m) ? `<span class="srch-dot ${res(m)}"></span>` : ''}<span class="st-r">${o.r.stage ? '🏆' : o.r.round + 'η'}</span><span class="st-m">${b(m.home)} – ${b(m.away)}</span>${offBadge(m) || (played(m) ? `<b>${m.homeScore} – ${m.awayScore}</b>` : '')}</button>`; };
+  const gd = row.gd != null ? row.gd : (row.gf || 0) - (row.ga || 0);
+  $('srchTeamBody').innerHTML = `
+   <div class="st-head">${crestImg(team).replace('<img', '<img').replace('class="srch-ic"', 'class="srch-ic" style="width:54px;height:54px;font-size:1.4rem"')}<div><h3>${esc(team)}</h3><div class="st-sub">${row.team ? `${i + 1}η θέση στη βαθμολογία${data.group ? ' · ' + esc(data.group) : ''}` : ''}</div></div><button type="button" class="st-x" aria-label="Κλείσιμο">✕</button></div>
+   <div class="st-stats"><div><b>${row.points ?? '–'}</b><small>Βαθμοί</small></div><div><b>${row.played ?? '–'}</b><small>Αγώνες</small></div><div><b>${row.won ?? 0}-${row.drawn ?? 0}-${row.lost ?? 0}</b><small>Ν-Ι-Η</small></div><div><b>${row.gf ?? 0}:${row.ga ?? 0}</b><small>Γκολ</small></div><div><b>${gd > 0 ? '+' : ''}${gd}</b><small>Διαφορά</small></div></div>
+   <div class="st-sec"><h4>Αποτελέσματα<span>${done.length}</span></h4>${done.map((o, k) => line(o, k)).join('') || '<div class="st-none">Δεν έχει παίξει ακόμα.</div>'}</div>
+   <div class="st-sec"><h4>Πρόγραμμα<span>${next.length}</span></h4>${next.map((o, k) => line(o, done.length + k)).join('') || '<div class="st-none">Δεν έχει άλλους αγώνες.</div>'}</div>
+   <div class="st-sec"><h4>Νέα<span>${teamNewsList.length}</span></h4>${teamNewsList.map((n, k) => `<button type="button" class="st-news" data-tn="${k}">${esc(n.title)}<small>${n.date ? esc(new Date(n.date).toLocaleDateString('el-GR', { day: 'numeric', month: 'long' })) : ''}</small></button>`).join('') || '<div class="st-none">Καμία είδηση δεν την αναφέρει.</div>'}</div>`;
+  const box = $('srchTeam');
+  if (!box.classList.contains('open')) { try { history.pushState({ srchTeam: 1 }, ''); } catch (e) {} }
+  box.classList.add('open');
+  box.querySelector('.st-sheet').scrollTop = 0;
+}
+function closeTeam(fromPop) {
+  const box = $('srchTeam'); if (!box.classList.contains('open')) return;
+  box.classList.remove('open');
+  if (!fromPop && history.state && history.state.srchTeam) { try { history.back(); } catch (e) {} }
+}
+window.addEventListener('popstate', () => closeTeam(true));   // «πίσω» στο Android κλείνει την καρτέλα
+
+// ---- Πού πηγαίνει κάθε αποτέλεσμα ----
+function goPage(page) { const a = document.querySelector(`.nav-link[href="#${page}"]`); if (a) a.click(); }
+function flash(el) { if (!el) return; el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.classList.remove('srch-flash'); void el.offsetWidth; el.classList.add('srch-flash'); setTimeout(() => el.classList.remove('srch-flash'), 2600); }
+function closeSearch() {
+  closeTeam();
+  $('srchOverlay').classList.remove('open');
+  const hb = document.querySelector('.hamburger'); if (hb && hb.classList.contains('active')) hb.click();
+  ['srchInputM', 'srchInputD'].forEach(id => { const i = $(id); if (i && i.value) { i.value = ''; i.dispatchEvent(new Event('input')); } });
+}
+function showMatch(r, m) {
+  closeSearch();
+  const page = (played(m) || m.isPostponed) ? 'results' : 'fixtures';
+  // Αγώνας άλλων ενώ ο διακόπτης είναι «Όλυμπος»: «Όλοι» χωρίς να το θυμάται (δεν αλλάζει την επιλογή του επισκέπτη)
+  if (!involvesUs(m) && matchView !== 'all') { matchView = 'all'; displayResults(); displayFixtures(); }
+  goPage(page);
+  setTimeout(() => {
+    const box = $(page === 'results' ? 'resultsContainer' : 'fixturesContainer');
+    const sec = [...box.querySelectorAll('.round-section')].find(s => { const hd = s.querySelector('.round-header'); return hd && hd.firstChild && hd.firstChild.textContent.trim() === roundLabel(r); });
+    if (!sec) return;
+    if (sec.tagName === 'DETAILS') sec.open = true;
+    const row = [...sec.querySelectorAll('.match-row')].find(d => d.textContent.includes(m.home) && d.textContent.includes(m.away));
+    flash(row || sec);
+  }, 350);
+}
+function showNews(n) {
+  closeSearch(); goPage('news');
+  setTimeout(() => { const el = document.getElementById('news-item-' + n.id); if (el) { el.classList.remove('collapsed'); flash(el); } }, 350);
+}
+function showPlayer(p) {
+  closeSearch(); goPage('roster');
+  const flat = x => String(x || '').replace(/\s+/g, '');   // το όνομα στην κάρτα σπάει σε γραμμές (splitName)
+  setTimeout(() => flash([...document.querySelectorAll('#rosterContainer .player-card')].find(c => { const n = c.querySelector('.player-name'); return n && flat(n.textContent) === flat(p.name); })), 350);
+}
+async function showHist(o) {
+  closeSearch(); goPage('history');
+  await initHistory();
+  const sel = $('historySeasonSelect'); sel.value = o.s.file; await loadHistorySeason();
+  const box = $('historyContent');
+  let el = null;
+  if (o.kind === 'news') { el = [...box.querySelectorAll('details.hist-news')].find(d => d.querySelector('summary').textContent.includes(o.n.title)); if (el) el.open = true; }
+  else if (o.kind === 'player') el = [...box.querySelectorAll('.hist-chip')].find(c => c.textContent.includes(o.p.name));
+  else el = [...box.querySelectorAll('.hist-table tr')].find(tr => [o.m.home, o.m.away].some(t => !isMyTeam(t) && tr.textContent.includes(t))) || box.querySelector('.hist-hero');
+  setTimeout(() => flash(el), 300);
+}
+function pick(btn, resEl) {
+  const r = resEl._r; if (!r) return; const i = +btn.dataset.i;
+  switch (btn.dataset.k) {
+    case 'team':   return openTeam(r.teams[i].t);
+    case 'player': return showPlayer(r.players[i]);
+    case 'match':  return showMatch(r.matches[i].r, r.matches[i].m);
+    case 'news':   return showNews(r.news[i]);
+    case 'hist':   return showHist(r.hist[i]);
+  }
+}
+
+// ---- Στήσιμο ----
+const menu = document.querySelector('.nav-menu');
+if (!menu) return;
+const liM = document.createElement('li'); liM.className = 'srch-li-mobile';
+liM.innerHTML = `<div class="srch-box" id="srchBoxM">${ICON}<input id="srchInputM" type="search" placeholder="Αναζήτηση…" autocomplete="off" enterkeyhint="search" aria-label="Αναζήτηση"><button type="button" class="srch-clear" aria-label="Καθαρισμός">✕</button></div><div class="srch-res" id="srchResM"></div>`;
+menu.prepend(liM);
+const liD = document.createElement('li'); liD.className = 'srch-li-desktop';
+liD.innerHTML = '<button type="button" class="srch-btn" aria-label="Αναζήτηση" title="Αναζήτηση ( / )">🔍</button>';
+const adm = menu.querySelector('.admin-link'); menu.insertBefore(liD, adm ? adm.parentNode : null);
+
+let active = null;   // ποιο πεδίο γράφει τώρα (για ξαναζωγράφισμα όταν έρθει το Ιστορικό)
+function rerender() { if (active) render(active.res, active.inp.value); }
+function wire(inp, res, box, onState) {
+  let t = 0;
+  inp.addEventListener('focus', () => { active = { inp, res }; loadHist(); });
+  inp.addEventListener('input', () => {
+    active = { inp, res };
+    box.classList.toggle('has-q', !!inp.value);
+    onState && onState(!!inp.value.trim());
+    clearTimeout(t); t = setTimeout(() => render(res, inp.value), 80);
+  });
+  box.querySelector('.srch-clear').addEventListener('click', () => { inp.value = ''; inp.dispatchEvent(new Event('input')); inp.focus(); });
+  res.addEventListener('click', e => { const b = e.target.closest('.srch-item[data-k]'); if (b) pick(b, res); });
+  inp.addEventListener('keydown', e => {
+    const items = [...res.querySelectorAll('.srch-item[data-k]')]; if (!items.length) return;
+    let k = items.findIndex(x => x.classList.contains('kb'));
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault(); if (k >= 0) items[k].classList.remove('kb');
+      k = e.key === 'ArrowDown' ? Math.min(items.length - 1, k + 1) : Math.max(0, k - 1);
+      items[k].classList.add('kb'); items[k].scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'Enter') { e.preventDefault(); clearTimeout(t); render(res, inp.value); const its = [...res.querySelectorAll('.srch-item[data-k]')]; const b = its[Math.max(0, k)]; if (b) { inp.blur(); pick(b, res); } }
+  });
+}
+wire($('srchInputM'), $('srchResM'), $('srchBoxM'), on => menu.classList.toggle('searching', on));
+wire($('srchInputD'), $('srchResD'), $('srchBoxD'));
+function openOverlay() { const o = $('srchOverlay'); o.classList.add('open'); $('srchInputD').focus(); render($('srchResD'), $('srchInputD').value); }
+liD.querySelector('button').addEventListener('click', openOverlay);
+$('srchOverlay').addEventListener('click', e => { if (e.target.id === 'srchOverlay') e.currentTarget.classList.remove('open'); });
+$('srchTeam').addEventListener('click', e => {
+  if (e.target.id === 'srchTeam' || e.target.closest('.st-x')) return closeTeam();
+  const m = e.target.closest('[data-tm]'); if (m) { const o = teamMatches[+m.dataset.tm]; return showMatch(o.r, o.m); }
+  const n = e.target.closest('[data-tn]'); if (n) return showNews(teamNewsList[+n.dataset.tn]);
+});
+document.addEventListener('keydown', e => {
+  const a = document.activeElement, typing = a && (/INPUT|TEXTAREA|SELECT/.test(a.tagName) || a.isContentEditable);
+  const adminOpen = $('adminModal') && $('adminModal').classList.contains('active');
+  if (e.key === '/' && !typing && !adminOpen && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); openOverlay(); }
+  if (e.key === 'Escape') { if ($('srchTeam').classList.contains('open')) closeTeam(); else $('srchOverlay').classList.remove('open'); }
+});
+// Το μενού κλείνει → καθαρίζει και η αναζήτηση, για να ξαναβρείς το μενού όπως ήταν
+const hb = document.querySelector('.hamburger');
+if (hb) hb.addEventListener('click', () => { if (!menu.classList.contains('active')) { const i = $('srchInputM'); if (i.value) { i.value = ''; i.dispatchEvent(new Event('input')); } i.blur(); } });
+})();
+</script>
 </body>
 </html>
