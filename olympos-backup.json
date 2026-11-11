@@ -745,6 +745,9 @@
             "Μιχάλης Τσοτουλίδης",
             "Παναγιώτης Παπαδόπουλος",
             "Γιώργος Βότσης"
+          ],
+          "cleanSheetHolders": [
+            "Σάββας Αβραμίδης"
           ]
         },
         {
@@ -4156,7 +4159,7 @@
       "birthYear": 2013,
       "position": "Τερματοφύλακας (GK)",
       "goals": 0,
-      "cleanSheets": 0,
+      "cleanSheets": 1,
       "nickname": "ΣΑΒΒΑΣ",
       "isCaptain": false
     },
