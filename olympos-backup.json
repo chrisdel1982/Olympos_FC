@@ -940,8 +940,8 @@
         {
           "home": "ΦΟΙΝΙΚΑΣ ΠΟΛΙΧΝΗΣ",
           "away": "ΑΚΡΙΤΕΣ ΣΥΚΕΩΝ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 7,
           "isPostponed": false
         },
         {
