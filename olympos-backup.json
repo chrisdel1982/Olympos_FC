@@ -828,15 +828,15 @@
         {
           "home": "ΕΛΠΙΔΑ ΤΟΥΜΠΑΣ",
           "away": "ΑΝΑΓΕΝΝΗΣΗ ΕΠΑΝΟΜΗΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 3,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
           "home": "ΜΑΡΑΘΩΝΑΣ",
           "away": "ΑΣΤΕΡΙΑ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 4,
+          "awayScore": 5,
           "isPostponed": false
         },
         {
@@ -912,8 +912,8 @@
         {
           "home": "ΟΔΥΣΣΕΑΣ ΚΟΡΔΕΛΙΟΥ",
           "away": "ΕΛΕΥΘΕΡΙΑΚΟΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 4,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
@@ -968,8 +968,8 @@
         {
           "home": "ΔΙΑΠΛΑΣΙΣ",
           "away": "ΠΑΝΑΘΗΝΑΪΚΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 4,
           "isPostponed": false
         },
         {
