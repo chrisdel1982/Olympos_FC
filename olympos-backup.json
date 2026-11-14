@@ -8,11 +8,11 @@
     "startTime": "12:30"
   },
   "announcement": "",
-  "matchDate": "Σάββατο 14/11",
-  "matchTime": "12:30",
-  "matchStadium": "Γήπεδο Ελπίδας Εύοσμου ",
-  "matchMapLink": "https://maps.app.goo.gl/8Vux9rjr5oer9xUa8?g_st=ic",
-  "countdownTarget": "2026-11-14T12:30",
+  "matchDate": "Σάββατο 21/11",
+  "matchTime": "14:15",
+  "matchStadium": "Δημοτικό Γήπεδο «Κωνσταντίνος Μιγκοτζίδης»",
+  "matchMapLink": "https://maps.app.goo.gl/dD8ESzNg78e8ztkW8?g_st=ic",
+  "countdownTarget": "2026-11-21T14:15",
   "specialMatch": {
     "type": "ΦΙΛΙΚΟΣ ΑΓΩΝΑΣ",
     "home": null,
@@ -842,8 +842,8 @@
         {
           "home": "ΜΕΝΤΕΚΑΣ",
           "away": "ΓΕΡΜΑΝΙΚΗ ΑΚΑΔΗΜΙΑ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
@@ -863,8 +863,8 @@
         {
           "home": "ΛΙΜΑΝΙ ΠΟΣΕΙΔΩΝΑ",
           "away": "ΑΓΙΟΣ ΓΕΩΡΓΙΟΣ Ν.ΚΡΗΝΗΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
@@ -877,8 +877,8 @@
         {
           "home": "ΧΑΝΘ",
           "away": "ΑΣ ΠΟΔ. ΤΟΥΜΠΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 9,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
@@ -891,15 +891,15 @@
         {
           "home": "ΑΕ ΠΥΛΑΙΑΣ",
           "away": "ΑΧΙΛΛΕΑΣ ΤΡΙΑΝΔΡΙΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 6,
           "isPostponed": false
         },
         {
           "home": "ΗΡΑΚΛΗΣ ΑΜΠΕΛΟΚΗΠΩΝ",
           "away": "ΝΙΚΗ ΕΥΚΑΡΠΙΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 6,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
@@ -956,7 +956,8 @@
           "away": "ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ",
           "homeScore": null,
           "awayScore": null,
-          "isPostponed": false
+          "isPostponed": true,
+          "isCancelled": true
         },
         {
           "home": "ΠΑΕ ΠΑΟΚ Κ14",
@@ -975,8 +976,8 @@
         {
           "home": "ΔΟΞΑ ΠΕΡΙΒΟΛΑΚΙΟΥ",
           "away": "ΣΚΙΟΥΡΟΙ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
@@ -1010,8 +1011,8 @@
         {
           "home": "ΠΑΝΣΕΡΡΑΪΚΟΣ",
           "away": "ΑΚΑΔ. ΠΟΔ. ΘΕΣΣΑΛΟΝΙΚΗΣ 2020",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
