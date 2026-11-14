@@ -182,6 +182,172 @@
   ],
   "fixtures": [
     {
+      "round": 0,
+      "matches": [
+        {
+          "home": "ΜΑΡΑΘΩΝΑΣ",
+          "away": "ΑΣΤΕΡΙΑ",
+          "homeScore": 4,
+          "awayScore": 5,
+          "isPostponed": false
+        },
+        {
+          "home": "ΜΕΝΤΕΚΑΣ",
+          "away": "ΓΕΡΜΑΝΙΚΗ ΑΚΑΔΗΜΙΑ",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        },
+        {
+          "home": "ΦΟΙΝΙΚΑΣ ΤΟΥΜΠΑΣ",
+          "away": "ΑΝΑΓΕΝΝΗΣΗ ΡΥΣΙΟΥ",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        },
+        {
+          "home": "Μ.ΑΛΕΞΑΝΔΡΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
+          "away": "ΠΟΣΕΙΔΩΝΑΣ ΜΗΧΑΝΙΩΝΑΣ",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        },
+        {
+          "home": "ΛΙΜΑΝΙ ΠΟΣΕΙΔΩΝΑ",
+          "away": "ΑΓΙΟΣ ΓΕΩΡΓΙΟΣ Ν.ΚΡΗΝΗΣ",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        },
+        {
+          "home": "ΑΝΑΓΕΝΝΗΣΗ ΝΕΩΝ ΕΠΙΒΑΤΩΝ 2021",
+          "away": "ΠΑΝΟΡΑΜΑ",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        },
+        {
+          "home": "ΧΑΝΘ",
+          "away": "ΑΣ ΠΟΔ. ΤΟΥΜΠΑΣ",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        },
+        {
+          "home": "ΑΕ ΠΥΛΑΙΑΣ",
+          "away": "ΑΧΙΛΛΕΑΣ ΤΡΙΑΝΔΡΙΑΣ",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        },
+        {
+          "home": "ΠΑΕ ΠΑΟΚ Κ14",
+          "away": "ΜΑΚΕΔΟΝΙΚΟΣ",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        },
+        {
+          "home": "ΔΙΑΠΛΑΣΙΣ",
+          "away": "ΠΑΝΑΘΗΝΑΪΚΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
+          "homeScore": 2,
+          "awayScore": 4,
+          "isPostponed": false
+        },
+        {
+          "home": "ΔΟΞΑ ΠΕΡΙΒΟΛΑΚΙΟΥ",
+          "away": "ΣΚΙΟΥΡΟΙ",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        },
+        {
+          "home": "ΑΚΑΔ. Γ. ΚΟΥΔΑΣ",
+          "away": "ΠΙΕΡΙΚΟΣ 1961",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        },
+        {
+          "home": "ΑΘΛΗΤΙΚΗ ΑΚΑΔΗΜΙΑ ΓΙΑΝΝΙΤΣΩΝ",
+          "away": "ΟΛΥΜΠΙΑΚΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        },
+        {
+          "home": "ΚΕΝΤΑΥΡΟΣ ΛΑΓΚΑΔΑ",
+          "away": "ΠΟΤ ΗΡΑΚΛΗΣ",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        },
+        {
+          "home": "ΠΑΝΣΕΡΡΑΪΚΟΣ",
+          "away": "ΑΚΑΔ. ΠΟΔ. ΘΕΣΣΑΛΟΝΙΚΗΣ 2020",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        },
+        {
+          "home": "ΑΛΕΞΑΝΔΡΟΣ ΚΙΛΚΙΣ",
+          "away": "ΠΡΩΤΑΘΛΗΤΕΣ ΠΕΥΚΩΝ",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        },
+        {
+          "home": "ΗΡΑΚΛΗΣ ΑΜΠΕΛΟΚΗΠΩΝ",
+          "away": "ΝΙΚΗ ΕΥΚΑΡΠΙΑΣ",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        },
+        {
+          "home": "ΑΙΑΣ ΕΥΟΣΜΟΥ",
+          "away": "ΑΕ ΦΙΛΥΡΟΥ",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        },
+        {
+          "home": "ΟΔΥΣΣΕΑΣ ΚΟΡΔΕΛΙΟΥ",
+          "away": "ΕΛΕΥΘΕΡΙΑΚΟΣ",
+          "homeScore": 4,
+          "awayScore": 1,
+          "isPostponed": false
+        },
+        {
+          "home": "ΜΠΕΜΠΗΔΕΣ ΙΩΝΙΑΣ",
+          "away": "ΑΟΚ ΑΓΙΟΥ ΑΘΑΝΑΣΙΟΥ",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        },
+        {
+          "home": "Μ.ΑΛΕΞΑΝΔΡΟΣ ΜΕΛΙΣΣΟΧΩΡΙΟΥ",
+          "away": "ΠΑΟ ΚΟΥΦΑΛΙΩΝ",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        },
+        {
+          "home": "ΦΟΙΝΙΚΑΣ ΠΟΛΙΧΝΗΣ",
+          "away": "ΑΚΡΙΤΕΣ ΣΥΚΕΩΝ",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        },
+        {
+          "home": "ΜΠΑΜ",
+          "away": "ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ",
+          "homeScore": null,
+          "awayScore": null,
+          "isPostponed": false
+        }
+      ]
+    },
+    {
       "round": 1,
       "matches": [
         {
@@ -830,8 +996,7 @@
           "away": "ΑΝΑΓΕΝΝΗΣΗ ΕΠΑΝΟΜΗΣ",
           "homeScore": null,
           "awayScore": null,
-          "isPostponed": true,
-          "isCancelled": true
+          "isPostponed": false
         },
         {
           "home": "ΜΑΡΑΘΩΝΑΣ",
