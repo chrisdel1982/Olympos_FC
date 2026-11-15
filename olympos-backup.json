@@ -610,10 +610,9 @@
         {
           "home": "ΑΝΑΓΕΝΝΗΣΗ ΕΠΑΝΟΜΗΣ",
           "away": "ΜΑΡΑΘΩΝΑΣ",
-          "homeScore": null,
-          "awayScore": null,
-          "isPostponed": true,
-          "isCancelled": true
+          "homeScore": 0,
+          "awayScore": 3,
+          "isPostponed": false
         },
         {
           "home": "ΕΛΠΙΔΑ ΤΟΥΜΠΑΣ",
@@ -802,8 +801,8 @@
         {
           "home": "ΑΠΟΛΛΩΝ ΚΑΛΑΜΑΡΙΑΣ",
           "away": "ΠΟ ΜΑΛΑΚΟΠΗΣ ΠΥΛΑΙΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 3,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
