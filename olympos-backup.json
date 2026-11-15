@@ -1017,8 +1017,8 @@
         {
           "home": "ΠΟ ΜΑΛΑΚΟΠΗΣ ΠΥΛΑΙΑΣ",
           "away": "ΠΡΩΤΕΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 3,
+          "awayScore": 2,
           "isPostponed": false
         },
         {
