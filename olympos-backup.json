@@ -849,15 +849,15 @@
         {
           "home": "ΦΟΙΝΙΚΑΣ ΤΟΥΜΠΑΣ",
           "away": "ΑΝΑΓΕΝΝΗΣΗ ΡΥΣΙΟΥ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 5,
           "isPostponed": false
         },
         {
           "home": "Μ.ΑΛΕΞΑΝΔΡΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
           "away": "ΠΟΣΕΙΔΩΝΑΣ ΜΗΧΑΝΙΩΝΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
@@ -905,8 +905,8 @@
         {
           "home": "ΑΙΑΣ ΕΥΟΣΜΟΥ",
           "away": "ΑΕ ΦΙΛΥΡΟΥ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 9,
+          "awayScore": 4,
           "isPostponed": false
         },
         {
@@ -962,8 +962,8 @@
         {
           "home": "ΠΑΕ ΠΑΟΚ Κ14",
           "away": "ΜΑΚΕΔΟΝΙΚΟΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 5,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
@@ -983,22 +983,22 @@
         {
           "home": "ΑΚΑΔ. Γ. ΚΟΥΔΑΣ",
           "away": "ΠΙΕΡΙΚΟΣ 1961",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 5,
           "isPostponed": false
         },
         {
           "home": "ΑΘΛΗΤΙΚΗ ΑΚΑΔΗΜΙΑ ΓΙΑΝΝΙΤΣΩΝ",
           "away": "ΟΛΥΜΠΙΑΚΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
           "home": "ΚΕΝΤΑΥΡΟΣ ΛΑΓΚΑΔΑ",
           "away": "ΠΟΤ ΗΡΑΚΛΗΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 10,
           "isPostponed": false
         },
         {
@@ -1025,8 +1025,8 @@
         {
           "home": "ΑΛΕΞΑΝΔΡΟΣ ΚΙΛΚΙΣ",
           "away": "ΠΡΩΤΑΘΛΗΤΕΣ ΠΕΥΚΩΝ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 1,
           "isPostponed": false
         }
       ]
