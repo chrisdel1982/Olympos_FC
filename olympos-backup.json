@@ -883,8 +883,8 @@
         {
           "home": "ΜΠΕΜΠΗΔΕΣ 2000",
           "away": "ΑΝΑΓΕΝΝΗΣΗ ΑΓ. ΙΩΑΝΝΗ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 3,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
@@ -1003,8 +1003,8 @@
         {
           "home": "ΖΗΤΑ ΕΠΤΑ",
           "away": "ΑΠΟΛΛΩΝ ΚΑΛΑΜΑΡΙΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
