@@ -4,12 +4,19 @@
 # Αν διαφέρουν μέρα, ώρα ή γήπεδο, ανοίγει Issue (έρχεται email). Όταν το site
 # διορθωθεί, το Issue κλείνει μόνο του. ΔΕΝ κάνει commit, ΔΕΝ αγγίζει το site.
 # Χειροκίνητα: Actions -> «Φύλακας ΕΠΣΜ» -> Run workflow.
+# Δοκιμή συναγερμού: Run workflow με «ψεύτικη ώρα site» (π.χ. 13:00).
+# Το site δεν αλλάζει· ανοίγει Issue «🧪 ΔΟΚΙΜΗ» που κλείνει μόνο του στο επόμενο κανονικό run.
 name: Φύλακας ΕΠΣΜ
 
 on:
   schedule:
     - cron: "23 5-21 * * *"   # UTC: 07:23-23:23 χειμώνα, 08:23-00:23 καλοκαίρι
   workflow_dispatch:
+    inputs:
+      test_time:
+        description: "ΔΟΚΙΜΗ: ψεύτικη ώρα site (π.χ. 13:00). Άφησέ το κενό για κανονικό έλεγχο."
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -24,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           sparse-checkout: olympos-backup.json
           sparse-checkout-cone-mode: false
@@ -34,6 +41,7 @@ jobs:
           NOTIFY_USER: chrisdel1982
           EPSM_TEAM: ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ
           EPSM_CATEGORY: Κ15 LEAGUE 1
+          TEST_SITE_TIME: ${{ inputs.test_time }}
         run: |
           python3 - <<'PY'
           # -*- coding: utf-8 -*-
@@ -253,6 +261,15 @@ jobs:
                   dt = datetime.strptime(ct[:16], "%Y-%m-%dT%H:%M")
               except ValueError:
                   pass
+              # ΔΟΚΙΜΗ: Run workflow με «ψεύτικη ώρα site» → κάνει πως το site γράφει άλλη ώρα
+              fake = (os.environ.get("TEST_SITE_TIME") or "").strip().replace(".", ":")
+              if re.fullmatch(r"\d{1,2}:\d{2}", fake):
+                  hh, mm = map(int, fake.split(":"))
+                  if dt:
+                      dt = dt.replace(hour=hh, minute=mm)
+                      ct = dt.strftime("%Y-%m-%dT%H:%M")
+                  d["matchTime"] = f"{hh:02d}:{mm:02d}"
+                  print(f"🧪 ΔΟΚΙΜΗ: κάνω πως το site γράφει ώρα {hh:02d}:{mm:02d}")
               md = re.search(r"(\d{1,2})\s*/\s*(\d{1,2})", d.get("matchDate") or "")
               return {"dt": dt, "countdownTarget": ct, "matchDate": d.get("matchDate") or "",
                       "matchTime": (d.get("matchTime") or "").strip(),
@@ -366,7 +383,8 @@ jobs:
                               gh("PATCH", f"/issues/{i['number']}", {"state": "closed", "state_reason": "completed"})
                   return
 
-              title = f"⚠️ ΕΠΣΜ: {m['home']} - {m['away']} · {fmt_date(m['date'])} {m['time']}".strip()
+              test = "🧪 ΔΟΚΙΜΗ · " if os.environ.get("TEST_SITE_TIME", "").strip() else ""
+              title = f"{test}⚠️ ΕΠΣΜ: {m['home']} - {m['away']} · {fmt_date(m['date'])} {m['time']}".strip()
               body = "\n".join([
                   MARK, fp_mark,
                   (f"@{NOTIFY} " if NOTIFY else "") + "η ΕΠΣΜ και το site δεν συμφωνούν για τον επόμενο αγώνα.",
