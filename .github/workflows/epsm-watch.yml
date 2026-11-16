@@ -1,0 +1,402 @@
+# ΦΥΛΑΚΑΣ ΠΡΟΓΡΑΜΜΑΤΟΣ ΕΠΣΜ (16/11/2026)
+# Κάθε ώρα, 07:00-23:00 ώρα Ελλάδας, συγκρίνει τον επόμενο αγώνα του Ολύμπου
+# (Κ15 LEAGUE 1) στην epsm.gr/program.asp με το olympos-backup.json.
+# Αν διαφέρουν μέρα, ώρα ή γήπεδο, ανοίγει Issue (έρχεται email). Όταν το site
+# διορθωθεί, το Issue κλείνει μόνο του. ΔΕΝ κάνει commit, ΔΕΝ αγγίζει το site.
+# Χειροκίνητα: Actions -> «Φύλακας ΕΠΣΜ» -> Run workflow.
+name: Φύλακας ΕΠΣΜ
+
+on:
+  schedule:
+    - cron: "23 5-21 * * *"   # UTC: 07:23-23:23 χειμώνα, 08:23-00:23 καλοκαίρι
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: epsm-watch
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: olympos-backup.json
+          sparse-checkout-cone-mode: false
+      - name: Σύγκριση ΕΠΣΜ με το site
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NOTIFY_USER: chrisdel1982
+          EPSM_TEAM: ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ
+          EPSM_CATEGORY: Κ15 LEAGUE 1
+        run: |
+          python3 - <<'PY'
+          # -*- coding: utf-8 -*-
+          """
+          ΦΥΛΑΚΑΣ ΠΡΟΓΡΑΜΜΑΤΟΣ ΕΠΣΜ — Όλυμπος Δενδροποτάμου (16/11/2026)
+
+          Κάθε ώρα διαβάζει τα άρθρα της https://www.epsm.gr/program.asp, βρίσκει τον
+          αγώνα του Ολύμπου στο μπλοκ «Κ15 LEAGUE 1» και τον συγκρίνει με ό,τι δείχνει
+          το site (olympos-backup.json: countdownTarget, matchDate, matchTime,
+          matchStadium). Αν διαφέρουν, ανοίγει Issue στο GitHub, που φέρνει email.
+          Όταν το site διορθωθεί, το Issue κλείνει μόνο του.
+
+          Δεν γράφει ΠΟΤΕ στο repo: ούτε commit, ούτε deploy. Μόνο Issues.
+          Αν κλείσεις ένα Issue με το χέρι (π.χ. ψεύτικος συναγερμός για το γήπεδο),
+          δεν ξανανοίγει για την ίδια ακριβώς διαφορά.
+          """
+          import hashlib
+          import html
+          import json
+          import os
+          import re
+          import sys
+          import time
+          import unicodedata
+          import urllib.request
+          from datetime import datetime, timedelta, timezone
+          from difflib import SequenceMatcher
+
+          # ---------------- ΡΥΘΜΙΣΕΙΣ ----------------
+          TEAM = os.environ.get("EPSM_TEAM", "ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ")
+          CATEGORY = os.environ.get("EPSM_CATEGORY", "Κ15 LEAGUE 1")
+          PROGRAM_URL = "https://www.epsm.gr/program.asp"
+          JSON_PATH = os.environ.get("SITE_JSON", "olympos-backup.json")
+          NOTIFY = os.environ.get("NOTIFY_USER", "")          # π.χ. chrisdel1982
+          MARK = "<!-- epsm-watch -->"
+          UA = "Mozilla/5.0 (OlymposFC schedule watcher; +https://www.olymposfc.gr)"
+
+          MONTHS = {"ΙΑΝΟΥΑΡΙΟΥ": 1, "ΦΕΒΡΟΥΑΡΙΟΥ": 2, "ΜΑΡΤΙΟΥ": 3, "ΑΠΡΙΛΙΟΥ": 4,
+                    "ΜΑΙΟΥ": 5, "ΙΟΥΝΙΟΥ": 6, "ΙΟΥΛΙΟΥ": 7, "ΑΥΓΟΥΣΤΟΥ": 8,
+                    "ΣΕΠΤΕΜΒΡΙΟΥ": 9, "ΟΚΤΩΒΡΙΟΥ": 10, "ΝΟΕΜΒΡΙΟΥ": 11, "ΔΕΚΕΜΒΡΙΟΥ": 12}
+          DAYS_RE = r"(ΔΕΥΤΕΡΑ|ΤΡΙΤΗ|ΤΕΤΑΡΤΗ|ΠΕΜΠΤΗ|ΠΑΡΑΣΚΕΥΗ|ΣΑΒΒΑΤ|ΚΥΡΙΑΚΗ)"
+          DAY_NAMES = ["Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο", "Κυριακή"]
+
+          # Λατινικά που μοιάζουν με ελληνικά (η ΕΠΣΜ τα ανακατεύει: «K15», «LEAGUE»)
+          LAT2GR = str.maketrans("ABEZHIKMNOPTYXabezhikmnoptyx", "ΑΒΕΖΗΙΚΜΝΟΡΤΥΧΑΒΕΖΗΙΚΜΝΟΡΤΥΧ")
+
+
+          def norm(s):
+              """Κεφαλαία, χωρίς τόνους, χωρίς διπλά κενά."""
+              s = unicodedata.normalize("NFD", s or "")
+              s = "".join(c for c in s if unicodedata.category(c) != "Mn")
+              return re.sub(r"\s+", " ", s.upper().replace("\xa0", " ")).strip()
+
+
+          def compact(s):
+              """Σκελετός για σύγκριση: χωρίς κενά/παύλες, λατινικά → ελληνικά."""
+              return re.sub(r"[^0-9Α-ΩA-Z]", "", norm(s)).translate(LAT2GR)
+
+
+          def athens_now():
+              # Ώρα Ελλάδας χωρίς zoneinfo (για να τρέχει παντού): EET/EEST
+              utc = datetime.now(timezone.utc).replace(tzinfo=None)
+              y = utc.year
+              last_sun = lambda m: max(datetime(y, m, d) for d in range(25, 32)
+                                       if datetime(y, m, d).weekday() == 6)
+              dst = last_sun(3).replace(hour=1) <= utc < last_sun(10).replace(hour=1)
+              return utc + timedelta(hours=3 if dst else 2)
+
+
+          # ---------------- ΔΙΚΤΥΟ ----------------
+          def fetch(url, tries=3):
+              last = None
+              for i in range(tries):
+                  try:
+                      req = urllib.request.Request(url, headers={"User-Agent": UA})
+                      with urllib.request.urlopen(req, timeout=30) as r:
+                          raw = r.read()
+                          cs = r.headers.get_content_charset()
+                      if not cs:
+                          m = re.search(rb'charset=["\']?([\w-]+)', raw[:4000], re.I)
+                          cs = m.group(1).decode() if m else None
+                      for enc in [cs, "utf-8", "windows-1253", "iso-8859-7"]:
+                          if not enc:
+                              continue
+                          try:
+                              return raw.decode(enc)
+                          except (UnicodeDecodeError, LookupError):
+                              pass
+                      return raw.decode("utf-8", "replace")
+                  except Exception as e:  # noqa
+                      last = e
+                      time.sleep(5 * (i + 1))
+              raise RuntimeError(f"Δεν απάντησε η {url}: {last}")
+
+
+          def html_to_lines(h):
+              h = re.sub(r"(?is)<(script|style)\b.*?</\1>", " ", h)
+              h = re.sub(r"(?i)<br\s*/?>|</(p|div|tr|li|h\d|table)>", "\n", h)
+              h = re.sub(r"(?s)<[^>]+>", " ", h)
+              h = html.unescape(h).replace("\xa0", " ")
+              return [re.sub(r"[ \t]+", " ", l).strip() for l in h.split("\n") if l.strip()]
+
+
+          # ---------------- ΑΝΑΓΝΩΣΗ ΠΡΟΓΡΑΜΜΑΤΟΣ ----------------
+          def parse_date_heading(n):
+              """«ΣΑΒΒΑΤΟΥ 21ΝΟΕΜΒΡΙΟΥ 2026» ή «ΚΥΡΙΑΚΗ 22-11-2026» → date"""
+              m = re.search(r"(\d{1,2})\s*(" + "|".join(MONTHS) + r")\s*(\d{4})", n)
+              if m:
+                  return datetime(int(m.group(3)), MONTHS[m.group(2)], int(m.group(1))).date()
+              m = re.search(r"(\d{1,2})\s*[-/.]\s*(\d{1,2})\s*[-/.]\s*(\d{4})", n)
+              if m:
+                  return datetime(int(m.group(3)), int(m.group(2)), int(m.group(1))).date()
+              return None
+
+
+          def parse_article(lines, source=""):
+              """Όλοι οι αγώνες του TEAM μέσα στο μπλοκ CATEGORY."""
+              want_cat, want_team = compact(CATEGORY), compact(TEAM)
+              found, cur_date, in_block = [], None, False
+              for i, line in enumerate(lines):
+                  n, c = norm(line), compact(line)
+                  is_match_line = bool(re.search(r"\s[-–]\s", n)) and "ΓΗΠΕΔΟ" not in n
+                  # Επικεφαλίδα ημέρας (όχι μέσα σε γραμμή αγώνα)
+                  if re.search(DAYS_RE, n) and "ΘΑ ΓΙΝΕΙ" not in n and "ΓΗΠΕΔΟ" not in n \
+                          and not is_match_line:
+                      d = parse_date_heading(n)
+                      if d:
+                          cur_date = d
+                          continue
+                  # Αρχή / τέλος μπλοκ κατηγορίας
+                  if want_cat in c and (c.startswith("ΚΑΤΗΓΟΡΙΑ") or re.match(r"^Κ\d{2}", c)):
+                      in_block = True
+                      continue
+                  if in_block and (c.startswith("ΚΑΤΗΓΟΡΙΑ") or re.match(r"^Κ\d{2}(LEAGUE|ΟΜΙΛ|\d)", c)):
+                      in_block = False
+                  if not in_block or want_team not in c or not is_match_line:
+                      continue
+                  # Γραμμή αγώνα: «ΓΗΠΕΔΟΥΧΟΣ - ΦΙΛΟΞΕΝΟΥΜΕΝΗ ---- σημείωση»
+                  parts = re.split(r"\s*-{2,}\s*|\s*–{2,}\s*", n, maxsplit=1)
+                  teams, note = parts[0], (parts[1] if len(parts) > 1 else "")
+                  ht = re.split(r"\s[-–]\s", teams, maxsplit=1)
+                  home, away = (ht[0].strip(), ht[1].strip()) if len(ht) == 2 else (teams, "")
+                  # Πιθανά σημάδια και χωρίς παύλες (π.χ. «... ΑΝΑΒΟΛΗ»)
+                  tail = note + " " + teams
+                  status = ""
+                  if re.search(r"ΜΑΤΑΙΩ", tail):
+                      status = "ΜΑΤΑΙΩΣΗ"
+                  elif re.search(r"ΑΝΑΒΟΛ|ΑΝΑΒΑΛΛΕΤΑΙ", tail):
+                      status = "ΑΝΑΒΟΛΗ"
+                  for w in ["ΜΑΤΑΙΩΝΕΤΑΙ", "ΜΑΤΑΙΩΘΗΚΕ", "ΜΑΤΑΙΩΣΗ", "ΑΝΑΒΟΛΗ", "ΑΝΑΒΑΛΛΕΤΑΙ"]:
+                      away = away.replace(w, "").strip(" ()-")
+                  date = cur_date
+                  if "ΘΑ ΓΙΝΕΙ" in note:
+                      date = parse_date_heading(note) or date
+                  # Γήπεδο / ώρα: ίδια γραμμή ή μία από τις 3 επόμενες
+                  stadium, ktime = "", ""
+                  for nxt in [n] + [norm(x) for x in lines[i + 1:i + 4]]:
+                      if nxt is not n and re.search(r"\s[-–]\s", nxt) and "ΓΗΠΕΔΟ" not in nxt \
+                              and want_team not in compact(nxt) and "ΓΙΑΤΡ" not in nxt:
+                          break  # ξεκίνησε επόμενος αγώνας
+                      m = re.search(r"ΓΗΠΕΔΟ\s*:?\s*(.*?)\s*(?:[-–]\s*)?ΩΡΑ\s*:?\s*(\d{1,2})?[.:]?(\d{2})?", nxt)
+                      if m:
+                          stadium = m.group(1).strip(" -–")
+                          if m.group(2) and m.group(3):
+                              ktime = f"{int(m.group(2)):02d}:{m.group(3)}"
+                          break
+                  found.append({"home": home, "away": away, "date": date, "time": ktime,
+                                "stadium": stadium, "status": status, "note": note.strip(),
+                                "source": source})
+              return found
+
+
+          def epsm_matches():
+              page = fetch(PROGRAM_URL)
+              codes = []
+              for m in re.finditer(r"article\.asp\?code=(\d+)", page):
+                  if m.group(1) not in codes:
+                      codes.append(m.group(1))
+              if not codes:
+                  raise RuntimeError("Η program.asp δεν έχει άρθρα — άλλαξε η σελίδα της ΕΠΣΜ;")
+              out = []
+              for code in codes[:12]:
+                  url = f"https://www.epsm.gr/article.asp?code={code}"
+                  lines = html_to_lines(fetch(url))
+                  title = next((l for l in lines if "ΠΡΟΓΡΑΜΜΑ" in norm(l)), url)
+                  for mt in parse_article(lines, source=url):
+                      mt["title"] = title
+                      mt["code"] = int(code)
+                      out.append(mt)
+              return out
+
+
+          # ---------------- ΣΥΓΚΡΙΣΗ ----------------
+          GENERIC = {"ΓΗΠΕΔΟ", "ΔΗΜΟΤΙΚΟ", "ΔΗΜΟΤΙΚΟΥ", "ΠΛΑΣΤΙΚΟ", "ΒΟΗΘΗΤΙΚΟ", "ΠΡΩΗΝ",
+                     "ΕΝΑΝΤΙ", "ΝΕΟ", "ΠΑΛΙΟ", "ΚΕΝΤΡΙΚΟ", "ΑΘΛΗΤΙΚΟ", "ΚΕΝΤΡΟ", "ΔΑΚ", "ΕΑΚ"}
+
+
+          def stadium_tokens(s):
+              toks = re.findall(r"[0-9Α-ΩA-Z]+", norm(s).translate(LAT2GR))
+              return [t for t in toks if len(t) >= 4 and t not in GENERIC]
+
+
+          def same_stadium(epsm, site):
+              if not epsm or not site:
+                  return True  # δεν έχουμε τι να συγκρίνουμε
+              a, b = stadium_tokens(epsm), stadium_tokens(site)
+              if not a or not b:
+                  return True
+              return any(SequenceMatcher(None, x, y).ratio() >= 0.75 for x in a for y in b)
+
+
+          def site_state(path):
+              d = json.load(open(path, encoding="utf-8"))
+              ct = d.get("countdownTarget") or ""
+              dt = None
+              try:
+                  dt = datetime.strptime(ct[:16], "%Y-%m-%dT%H:%M")
+              except ValueError:
+                  pass
+              md = re.search(r"(\d{1,2})\s*/\s*(\d{1,2})", d.get("matchDate") or "")
+              return {"dt": dt, "countdownTarget": ct, "matchDate": d.get("matchDate") or "",
+                      "matchTime": (d.get("matchTime") or "").strip(),
+                      "matchStadium": d.get("matchStadium") or "",
+                      "md": (int(md.group(1)), int(md.group(2))) if md else None}
+
+
+          def pick_next(matches, now):
+              """Ο πλησιέστερος αγώνας από τώρα (−3 ώρες) και μετά."""
+              def when(m):
+                  if not m["date"]:
+                      return None
+                  hh, mm = (map(int, m["time"].split(":")) if m["time"] else (23, 59))
+                  return datetime.combine(m["date"], datetime.min.time()).replace(hour=hh, minute=mm)
+              # Το νεότερο άρθρο κερδίζει για τον ίδιο αγώνα («ορθή επανάληψη»)
+              best = {}
+              for m in sorted(matches, key=lambda m: m["code"]):
+                  best[(m["home"], m["away"])] = m
+              cands = [(when(m), m) for m in best.values() if when(m)]
+              cands = [c for c in cands if c[0] >= now - timedelta(hours=3)]
+              return min(cands, key=lambda c: c[0])[1] if cands else None
+
+
+          def fmt_date(d):
+              return f"{DAY_NAMES[d.weekday()]} {d.day}/{d.month}/{d.year}" if d else "—"
+
+
+          def compare(m, s, now):
+              problems = []
+              if m["status"]:
+                  problems.append(f"Η ΕΠΣΜ γράφει **{m['status']}** για τον αγώνα.")
+              if m["date"]:
+                  if s["dt"] is None:
+                      problems.append("Το site δεν έχει αντίστροφη μέτρηση (countdownTarget).")
+                  elif s["dt"].date() != m["date"]:
+                      if s["dt"] < now and s["dt"].date() < m["date"]:
+                          problems.append("Το site δείχνει ακόμα τον **προηγούμενο** αγώνα.")
+                      else:
+                          problems.append(f"**Ημέρα**: ΕΠΣΜ {fmt_date(m['date'])}, site {fmt_date(s['dt'].date())}.")
+                  if s["md"] and s["md"] != (m["date"].day, m["date"].month) and not \
+                          (s["dt"] and s["dt"].date() != m["date"]):
+                      problems.append(f"**«Ημερομηνία»** στο site: «{s['matchDate']}», ενώ η ΕΠΣΜ λέει {fmt_date(m['date'])}.")
+              if m["time"]:
+                  site_t = s["dt"].strftime("%H:%M") if s["dt"] else ""
+                  if site_t and site_t != m["time"] and s["dt"].date() == m["date"]:
+                      problems.append(f"**Ώρα**: ΕΠΣΜ {m['time']}, αντίστροφη μέτρηση site {site_t}.")
+                  mt = s["matchTime"].replace(".", ":")
+                  if mt and mt != m["time"] and not (site_t and site_t != m["time"]):
+                      problems.append(f"**«Ώρα»** στο site: «{s['matchTime']}», ενώ η ΕΠΣΜ λέει {m['time']}.")
+              elif not m["status"]:
+                  problems.append("Η ΕΠΣΜ δεν έχει ορίσει ακόμα ώρα.")
+              if not same_stadium(m["stadium"], s["matchStadium"]):
+                  problems.append(f"**Γήπεδο** (ίσως): ΕΠΣΜ «{m['stadium']}», site «{s['matchStadium']}».")
+              return problems
+
+
+          # ---------------- GITHUB ISSUES ----------------
+          def gh(method, path, body=None):
+              repo, token = os.environ["GITHUB_REPOSITORY"], os.environ["GITHUB_TOKEN"]
+              req = urllib.request.Request(
+                  f"https://api.github.com/repos/{repo}{path}", method=method,
+                  data=json.dumps(body).encode() if body is not None else None,
+                  headers={"Authorization": f"Bearer {token}",
+                           "Accept": "application/vnd.github+json",
+                           "User-Agent": "epsm-watch"})
+              with urllib.request.urlopen(req, timeout=30) as r:
+                  return json.loads(r.read() or b"null")
+
+
+          def our_issues():
+              out = []
+              for page in range(1, 4):
+                  batch = gh("GET", f"/issues?state=all&per_page=100&page={page}&creator=github-actions%5Bbot%5D")
+                  out += [i for i in batch if MARK in (i.get("body") or "") and "pull_request" not in i]
+                  if len(batch) < 100:
+                      break
+              return out
+
+
+          def main():
+              dry = "--dry-run" in sys.argv or not os.environ.get("GITHUB_TOKEN")
+              now = athens_now()
+              s = site_state(JSON_PATH)
+              matches = epsm_matches() if "--html" not in sys.argv else \
+                  parse_article(html_to_lines(open(sys.argv[sys.argv.index("--html") + 1], encoding="utf-8").read()), "τοπικό")
+              for m in matches:
+                  m.setdefault("code", 0); m.setdefault("title", "τοπικό αρχείο")
+              m = pick_next(matches, now)
+              print(f"Ώρα Ελλάδας: {now:%d/%m %H:%M} · αγώνες {TEAM} στην ΕΠΣΜ: {len(matches)}")
+              print("Site:", s["countdownTarget"], "|", s["matchDate"], "|", s["matchTime"], "|", s["matchStadium"])
+              if not m:
+                  print("Η ΕΠΣΜ δεν έχει ανεβάσει επόμενο αγώνα του Ολύμπου. Τίποτα να ελεγχθεί.")
+                  return
+              print("ΕΠΣΜ:", m["home"], "-", m["away"], "|", fmt_date(m["date"]), "|", m["time"] or "χωρίς ώρα",
+                    "|", m["stadium"], "|", m["status"], "|", m["note"])
+              problems = compare(m, s, now)
+
+              fp_src = json.dumps([m["home"], m["away"], str(m["date"]), m["time"], m["stadium"], m["status"],
+                                   s["countdownTarget"], s["matchDate"], s["matchTime"], s["matchStadium"]],
+                                  ensure_ascii=False)
+              fp = hashlib.sha1(fp_src.encode()).hexdigest()[:12]
+              fp_mark = f"<!-- fp:{fp} -->"
+
+              if not problems:
+                  print("✅ Το site συμφωνεί με την ΕΠΣΜ.")
+                  if not dry:
+                      for i in our_issues():
+                          if i["state"] == "open":
+                              gh("POST", f"/issues/{i['number']}/comments",
+                                 {"body": f"✅ Το site συμφωνεί πλέον με την ΕΠΣΜ ({fmt_date(m['date'])}, {m['time']}). Κλείνει μόνο του."})
+                              gh("PATCH", f"/issues/{i['number']}", {"state": "closed", "state_reason": "completed"})
+                  return
+
+              title = f"⚠️ ΕΠΣΜ: {m['home']} - {m['away']} · {fmt_date(m['date'])} {m['time']}".strip()
+              body = "\n".join([
+                  MARK, fp_mark,
+                  (f"@{NOTIFY} " if NOTIFY else "") + "η ΕΠΣΜ και το site δεν συμφωνούν για τον επόμενο αγώνα.",
+                  "", "### Τι βρέθηκε", *[f"- {p}" for p in problems],
+                  "", "| | ΕΠΣΜ | Site |", "|---|---|---|",
+                  f"| Ημέρα | {fmt_date(m['date'])} | {s['matchDate'] or '—'} |",
+                  f"| Ώρα | {m['time'] or '—'} | {s['matchTime'] or '—'} (μέτρηση: {s['countdownTarget'] or '—'}) |",
+                  f"| Γήπεδο | {m['stadium'] or '—'} | {s['matchStadium'] or '—'} |",
+                  f"| Σημείωση ΕΠΣΜ | {m['note'] or '—'} | |",
+                  "", f"Πηγή: [{m['title']}]({m['source']})",
+                  "", "**Τι κάνεις:** admin → «Επόμενος αγώνας» → αντίστροφη μέτρηση/Ημερομηνία/Ώρα/Γήπεδο → Export → ανέβασμα του olympos-backup.json. "
+                      "Μόλις το site συμφωνήσει, αυτό το Issue κλείνει μόνο του (έλεγχος κάθε ώρα).",
+                  "", "_Αν είναι ψεύτικος συναγερμός (π.χ. το ίδιο γήπεδο με άλλο όνομα), κλείσ' το: για την ίδια διαφορά δεν ξαναγράφει._",
+              ])
+              print("⚠️ ΔΙΑΦΟΡΕΣ:\n  - " + "\n  - ".join(problems))
+              if dry:
+                  print("\n[δοκιμή — δεν ανοίγει Issue]\n" + title + "\n" + body)
+                  return
+              issues = our_issues()
+              if any(fp_mark in (i.get("body") or "") for i in issues):
+                  print("Υπάρχει ήδη Issue για αυτή τη διαφορά (ανοιχτό ή κλεισμένο από σένα). Τίποτα νέο.")
+                  return
+              new = gh("POST", "/issues", {"title": title, "body": body})
+              print("Άνοιξε Issue #", new["number"])
+              for i in issues:
+                  if i["state"] == "open":
+                      gh("POST", f"/issues/{i['number']}/comments", {"body": f"Αντικαταστάθηκε από το #{new['number']} (νεότερα στοιχεία)."})
+                      gh("PATCH", f"/issues/{i['number']}", {"state": "closed", "state_reason": "not_planned"})
+
+
+          if __name__ == "__main__":
+              main()
+          PY
