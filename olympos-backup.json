@@ -189,7 +189,8 @@
           "away": "ΦΟΙΝΙΚΑΣ ΤΟΥΜΠΑΣ",
           "homeScore": 0,
           "awayScore": 3,
-          "isPostponed": false
+          "isPostponed": false,
+          "isAwarded": true
         },
         {
           "home": "ΜΕΝΤΕΚΑΣ",
@@ -401,7 +402,8 @@
           "away": "ΑΝΑΓΕΝΝΗΣΗ ΕΠΑΝΟΜΗΣ",
           "homeScore": 3,
           "awayScore": 0,
-          "isPostponed": false
+          "isPostponed": false,
+          "isAwarded": true
         },
         {
           "home": "ΦΟΙΝΙΚΑΣ ΤΟΥΜΠΑΣ",
@@ -434,9 +436,10 @@
         {
           "home": "ΧΑΝΘ",
           "away": "ΑΝΑΓΕΝΝΗΣΗ ΡΥΣΙΟΥ",
-          "homeScore": 6,
-          "awayScore": 8,
-          "isPostponed": false
+          "homeScore": 3,
+          "awayScore": 0,
+          "isPostponed": false,
+          "isAwarded": true
         },
         {
           "home": "ΜΠΕΜΠΗΔΕΣ 2000",
@@ -471,7 +474,7 @@
           "away": "ΑΕ ΦΙΛΥΡΟΥ",
           "homeScore": null,
           "awayScore": null,
-          "isPostponed": false
+          "isPostponed": true
         },
         {
           "home": "Μ.ΑΛΕΞΑΝΔΡΟΣ ΜΕΛΙΣΣΟΧΩΡΙΟΥ",
@@ -593,7 +596,7 @@
           "away": "ΝΙΚΗ ΕΥΚΑΡΠΙΑΣ",
           "homeScore": null,
           "awayScore": null,
-          "isPostponed": false
+          "isPostponed": true
         },
         {
           "home": "ΜΠΕΜΠΗΔΕΣ ΙΩΝΙΑΣ",
@@ -612,7 +615,8 @@
           "away": "ΜΑΡΑΘΩΝΑΣ",
           "homeScore": 0,
           "awayScore": 3,
-          "isPostponed": false
+          "isPostponed": false,
+          "isAwarded": true
         },
         {
           "home": "ΕΛΠΙΔΑ ΤΟΥΜΠΑΣ",
@@ -829,7 +833,8 @@
           "away": "ΑΝΑΓΕΝΝΗΣΗ ΕΠΑΝΟΜΗΣ",
           "homeScore": 3,
           "awayScore": 0,
-          "isPostponed": false
+          "isPostponed": false,
+          "isAwarded": true
         },
         {
           "home": "ΜΑΡΑΘΩΝΑΣ",
@@ -871,7 +876,7 @@
           "away": "ΠΑΝΟΡΑΜΑ",
           "homeScore": null,
           "awayScore": null,
-          "isPostponed": false
+          "isPostponed": true
         },
         {
           "home": "ΧΑΝΘ",
@@ -948,7 +953,7 @@
           "away": "ΝΕΑ ΠΟΛΙΤΕΙΑ ΕΥΟΣΜΟΥ",
           "homeScore": null,
           "awayScore": null,
-          "isPostponed": false
+          "isPostponed": true
         },
         {
           "home": "ΜΠΑΜ",
