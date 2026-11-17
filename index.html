@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <!-- ΕΚΔΟΣΗ 9/11/2026 γ΄ — Αναζήτηση (γ΄: λευκός λεπτός φακός στον υπολογιστή αντί για 🔍· β΄: χωρίς οδηγίες κάτω από το πεδίο, πιο διακριτικός φακός): στο μενού (κινητό), 🔍 ή «/» (υπολογιστής). Ομάδες, παίκτες, αγώνες, νέα, Ιστορικό.
+    <!-- ΕΚΔΟΣΗ 17/11/2026 — «Άνευ αγώνα» (κατακύρωση): μωβ σήμα κάτω από το σκορ, τρίτο κουτάκι στο admin, μετράει στη βαθμολογία, χωρίς σκόρερ/clean sheet.
+         Προηγούμενη: 9/11/2026 γ΄ — Αναζήτηση (γ΄: λευκός λεπτός φακός στον υπολογιστή αντί για 🔍· β΄: χωρίς οδηγίες κάτω από το πεδίο, πιο διακριτικός φακός): στο μενού (κινητό), 🔍 ή «/» (υπολογιστής). Ομάδες, παίκτες, αγώνες, νέα, Ιστορικό.
          Από τις 2/11/2026: «Ματαίωση» δίπλα στην «Αναβολή» (admin, Αποτελέσματα, νοκ άουτ, επικόλληση ΕΠΣΜ).
          Από την 1/11 ε΄: πιο διακριτικό «Μοιράσου το live» (απαλό, με το εικονίδιο share της Κλήσης).
          Από τη δ΄: «ΤΕΛΙΚΟ ΣΚΟΡ» στο FT, «Πέτα τις αλλαγές» στο πρόχειρο.
@@ -1007,6 +1008,32 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
         color: #cfd8dc !important;
         border-color: #78909c !important;
     }
+}
+/* ΑΝΕΥ ΑΓΩΝΑ (17/11/2026): μικρό μωβ σήμα κάτω από το σκορ — το σκορ μένει, απλώς δεν βγήκε στο γήπεδο */
+.awarded-line { margin-top: 3px; text-align: center; line-height: 1; }
+.awarded-tag {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: .02em;
+    padding: 2px 5px;
+    border-radius: var(--r-sm);
+    background: #f3e5f5;
+    color: #6a1b9a;
+    border: 1px solid #ab47bc;
+    white-space: nowrap;
+}
+.ko-foot.is-award { color: #6a1b9a; font-weight: 700; }
+.postpone-label.is-award { color: #6a1b9a; }
+@media (prefers-color-scheme: dark) {
+    .awarded-tag {
+        background: #2a1630 !important;
+        color: #e1bee7 !important;
+        border-color: #8e24aa !important;
+    }
+    .ko-foot.is-award { color: #ce93d8; }
+    .postpone-label.is-award,
+    #adminModal .postpone-label.is-award { color: #ce93d8 !important; }
 }
 
 @media (max-width: 768px) {
@@ -5316,6 +5343,22 @@ function showToast(message, type = 'success') {
         //    γραμμένη (στο τέλος, σε παρένθεση ή στη θέση του σκορ). Αναβολή που γίνεται ματαίωση
         //    αλλάζει· σκορ που έρχεται αργότερα σβήνει και τα δύο σημάδια.
         //  - Αν ο αγώνας τελικά κατακυρωθεί (π.χ. 3-0 από την ΕΠΣΜ): ξετίκαρε και γράψε το σκορ.
+        //    Από τις 17/11/2026 τσεκάρεις και το «Άνευ αγώνα» (δες παρακάτω).
+        // =========================================================
+        // =========================================================
+        // ΑΛΛΑΓΗ 17/11/2026 — ΑΝΕΥ ΑΓΩΝΑ (κατακύρωση)
+        //  - Αγώνας που η ΕΠΣΜ έδωσε στα χαρτιά (π.χ. 3-0). ΣΤΟ JSON: σκορ ΚΑΙ "isAwarded": true.
+        //    Στους κανονικούς αγώνες το πεδίο δεν υπάρχει καθόλου.
+        //  - Μετράει ΚΑΝΟΝΙΚΑ στη βαθμολογία, βαθμοί και γκολ (όπως η ΕΠΣΜ). Δίπλα στο σκορ
+        //    φαίνεται μωβ σήμα «ΑΝΕΥ ΑΓΩΝΑ» (Αποτελέσματα, νοκ άουτ, αναζήτηση, καρτέλα ομάδας).
+        //  - ΧΩΡΙΣ σκόρερ και clean sheets: η αποθήκευση τους σβήνει, και τα στατιστικά
+        //    (recomputePlayerStats, getPlayerDetailedStats, Ιστορικό) τα αγνοούν ούτως ή άλλως.
+        //  - ADMIN → Αποτελέσματα: τρίτο κουτάκι «Άνευ αγώνα». Τα τρία ξετικάρουν το ένα το άλλο.
+        //    Χωρίς σκορ το «Άνευ αγώνα» δεν αποθηκεύεται (μήνυμα). Το isAwarded ελέγχεται πάντα
+        //    μέσω isAwardedMatch: σημάδι σε αναβολή ή σε αγώνα χωρίς σκορ αγνοείται και το
+        //    βγάζει ο «Έλεγχος δεδομένων».
+        //  - Η επικόλληση της ΕΠΣΜ δεν το βάζει μόνη της (η ΕΠΣΜ γράφει σκέτο «3 - 0»).
+        //    Ο Φύλακας αποτελεσμάτων στο GitHub συγκρίνει μόνο σκορ, άρα δεν επηρεάζεται.
         // =========================================================
         // =========================================================
         // ΑΛΛΑΓΗ 9/11/2026 — ΑΝΑΖΗΤΗΣΗ
@@ -5358,6 +5401,12 @@ function showToast(message, type = 'success') {
         // Ματαιωμένος = isPostponed ΚΑΙ isCancelled, ώστε η υπόλοιπη λογική να μένει ίδια.
         function isCancelledMatch(m) { return !!(m && m.isPostponed && m.isCancelled); }
         function matchOffLabel(m)    { return isCancelledMatch(m) ? 'ΜΑΤΑΙΩΣΗ' : 'ΑΝΑΒΟΛΗ'; }
+        // «ΑΝΕΥ ΑΓΩΝΑ» (17/11/2026): κατακυρωμένο σκορ. Ισχύει μόνο με σκορ και χωρίς αναβολή.
+        // Μετράει κανονικά στη βαθμολογία (βαθμοί ΚΑΙ γκολ)· χωρίς σκόρερ και clean sheets.
+        function isAwardedMatch(m) {
+            return !!(m && m.isAwarded && !m.isPostponed && m.homeScore != null && m.awayScore != null);
+        }
+        const AWARDED_LABEL = 'ΑΝΕΥ ΑΓΩΝΑ';
         // «1 αναβολή, 2 ματαιώσεις» — για τους μετρητές (site και admin)
         function offCountsText(post, canc) {
             const out = [];
@@ -5667,6 +5716,7 @@ function stampNewsSeasons() {
             // Δεν φιλτράρουμε με isPostponed: ένας πραγματικά αναβληθείς αγώνας
             // δεν έχει σκόρερ. Αν έχει, σημαίνει ότι παίχτηκε και ξέχασαν το τικ.
             (data.fixtures || []).forEach(r => (r.matches || []).forEach(m => {
+                if (isAwardedMatch(m)) return;   // άνευ αγώνα: κανείς δεν σκόραρε, κανείς δεν κράτησε μηδέν
                 (m.scorers || []).forEach(x => { const k = clean(x); if (k) goals[k] = (goals[k] || 0) + 1; });
                 (m.cleanSheetHolders || []).forEach(x => { const k = clean(x); if (k) cs[k] = (cs[k] || 0) + 1; });
             }));
@@ -6353,6 +6403,7 @@ function displayResults() {
                 let centerContent = match.isPostponed ?
                     `<span class="postponed-badge${isCancelledMatch(match) ? ' is-cancelled' : ''}">${matchOffLabel(match)}</span>` :
                     `<div class="match-score-box">${match.homeScore} - ${match.awayScore}</div>` +
+                    (isAwardedMatch(match) ? `<div class="awarded-line"><span class="awarded-tag">${AWARDED_LABEL}</span></div>` : '') +
                     (match.penHome != null && match.penAway != null
                         ? `<div class="pen-line">πέναλτι ${match.penHome}-${match.penAway}</div>` : '');
 
@@ -6368,7 +6419,7 @@ function displayResults() {
                 let hasStats = false;
                 let contentHTML = [];
 
-                if (match.scorers && match.scorers.length > 0 && !match.isPostponed) {
+                if (match.scorers && match.scorers.length > 0 && !match.isPostponed && !isAwardedMatch(match)) {
                     hasStats = true;
                     const counts = {};
                     match.scorers.forEach(name => { counts[name] = (counts[name] || 0) + 1; });
@@ -6382,7 +6433,7 @@ function displayResults() {
                     }
                 }
 
-                if (match.cleanSheetHolders && match.cleanSheetHolders.length > 0 && !match.isPostponed) {
+                if (match.cleanSheetHolders && match.cleanSheetHolders.length > 0 && !match.isPostponed && !isAwardedMatch(match)) {
                     hasStats = true;
                     match.cleanSheetHolders.forEach(name => {
                          let shortName = name;
@@ -6497,6 +6548,7 @@ function renderKnockout() {
         let foot = '';
         if (isCancelledMatch(m)) foot = '<div class="ko-foot is-off">Ματαίωση</div>';
         else if (m.isPostponed) foot = '<div class="ko-foot is-post">Αναβολή</div>';
+        else if (isAwardedMatch(m)) foot = '<div class="ko-foot is-award">Άνευ αγώνα</div>';
         else if (played && m.homeScore === m.awayScore)
             foot = (m.penHome != null && m.penAway != null)
                 ? `<div class="ko-foot">Πέναλτι ${m.penHome}-${m.penAway}</div>`
@@ -6545,6 +6597,7 @@ function getPlayerDetailedStats(playerName) {
         round.matches.forEach(match => {
             // Αν δεν έχει γίνει το ματς (δεν έχει σκορ), το αγνοούμε
             if (match.homeScore === null) return;
+            if (isAwardedMatch(match)) return;   // άνευ αγώνα (17/11/2026)
 
             const opponent = isMyTeam(match.home) ? match.away : match.home;
             const score = `${match.homeScore}-${match.awayScore}`;
@@ -8777,7 +8830,7 @@ function renderHistorySeason(d) {
 
     const goals = {};
     (d.fixtures || []).forEach(r => (r.matches || []).forEach(m =>
-        (m.scorers || []).forEach(x => {
+        (isAwardedMatch(m) ? [] : (m.scorers || [])).forEach(x => {
             const k = String(x).replace(/[⚽🧤]/g, '').trim();
             if (k) goals[k] = (goals[k] || 0) + 1;
         })));
@@ -8896,6 +8949,15 @@ function findDataIssues() {
             const conceded = m.home === MY_TEAM ? m.awayScore : (m.away === MY_TEAM ? m.homeScore : null);
             if (conceded > 0) issues.push({ type: 'cs', round: r.round, index: i, label,
                 text: `${label} — clean sheet ενώ δέχτηκε ${conceded} γκολ.` });
+        }
+        // 7. «Άνευ αγώνα» (17/11/2026): σημάδι που δεν ισχύει, ή σκόρερ/clean sheet που δεν μετράνε
+        if (m.isAwarded && !isAwardedMatch(m)) {
+            issues.push({ type: 'award', round: r.round, index: i, label,
+                text: `${label} — σημειωμένο ΑΝΕΥ ΑΓΩΝΑ αλλά ${m.isPostponed ? `είναι και ${matchOffLabel(m)}` : 'χωρίς σκορ'}. Το σήμα δεν φαίνεται.` });
+        }
+        if (isAwardedMatch(m) && ((m.scorers || []).length || (m.cleanSheetHolders || []).length)) {
+            issues.push({ type: 'award', round: r.round, index: i, label,
+                text: `${label} — ΑΝΕΥ ΑΓΩΝΑ με σκόρερ/clean sheet: δεν μετράνε στα στατιστικά.` });
         }
         // 6. Νοκ άουτ: ισοπαλία χωρίς πέναλτι (ή με ίσα) — δεν φαίνεται ποιος προκρίθηκε
         if (r.stage && !m.isPostponed && m.homeScore !== null && m.homeScore === m.awayScore && !koWinner(m)) {
@@ -9579,13 +9641,18 @@ function refreshAdminForms() {
         const awayTeam = match.away || '—';
         const isCancelled = isCancelledMatch(match) ? 'checked' : '';
         const isPostponed = match.isPostponed && !isCancelled ? 'checked' : '';
+        const isAwarded = isAwardedMatch(match) ? 'checked' : '';
         const bgStyle = match.isPostponed ? 'background: #eee;' : '';
 
         // Έλεγχος αν παίζει ο Όλυμπος
         const isMyTeamPlaying = homeTeam === MY_TEAM || awayTeam === MY_TEAM;
         let statsHTML = '';
 
-        if (isMyTeamPlaying) {
+        if (isMyTeamPlaying && isAwardedMatch(match)) {
+            // Άνευ αγώνα (17/11/2026): δεν έχει σκόρερ ούτε clean sheet
+            statsHTML = `<div style="width:100%; margin-top:5px; font-size:0.75rem; text-align:center; opacity:.75;">
+                Άνευ αγώνα: χωρίς σκόρερ και clean sheet.</div>`;
+        } else if (isMyTeamPlaying) {
             // --- SCORERS ---
             let existingScorersList = '';
             if (match.scorers && match.scorers.length > 0) {
@@ -9656,6 +9723,7 @@ function refreshAdminForms() {
                     <div class="match-status">
                         <label class="postpone-label"><input type="checkbox" id="postponed-${roundNum}-${index}" ${isPostponed} onchange="pickMatchStatus(this)"> Αναβλήθηκε</label>
                         <label class="postpone-label is-cancel"><input type="checkbox" id="cancelled-${roundNum}-${index}" ${isCancelled} onchange="pickMatchStatus(this)"> Ματαιώθηκε</label>
+                        <label class="postpone-label is-award" title="Κατακύρωση: το σκορ μετράει, χωρίς σκόρερ και clean sheet"><input type="checkbox" id="awarded-${roundNum}-${index}" ${isAwarded} onchange="pickMatchStatus(this)"> Άνευ αγώνα</label>
                     </div>
                     ${isKO ? `
                     <div class="pen-inputs">
@@ -9679,14 +9747,15 @@ function refreshAdminForms() {
     container.oninput = container.onchange = () => updateRoundCounter(roundNum);
 }
 
-// «Αναβλήθηκε» και «Ματαιώθηκε»: το ένα ξετικάρει το άλλο (2/11/2026)
+// «Αναβλήθηκε», «Ματαιώθηκε», «Άνευ αγώνα»: το ένα ξετικάρει τα άλλα (2/11 και 17/11/2026)
 function pickMatchStatus(box) {
     if (!box.checked) return;
-    const other = box.id.startsWith('postponed-')
-        ? box.id.replace('postponed-', 'cancelled-')
-        : box.id.replace('cancelled-', 'postponed-');
-    const o = document.getElementById(other);
-    if (o) o.checked = false;
+    const m = box.id.match(/^(postponed|cancelled|awarded)-(.+)$/);
+    if (!m) return;
+    ['postponed', 'cancelled', 'awarded'].filter(k => k !== m[1]).forEach(k => {
+        const o = document.getElementById(`${k}-${m[2]}`);
+        if (o) o.checked = false;
+    });
 }
 
 // Μετρητής «22/29 συμπληρωμένα» + χρώμα σε κάθε γραμμή:
@@ -9703,10 +9772,12 @@ function updateRoundCounter(roundNum) {
         const a = document.getElementById(`away-${roundNum}-${i}`);
         const pp = document.getElementById(`postponed-${roundNum}-${i}`);
         const cc = document.getElementById(`cancelled-${roundNum}-${i}`);
+        const aw = document.getElementById(`awarded-${roundNum}-${i}`);
         if (!h || !a) return;
         let state = 'empty';
         if (cc && cc.checked) { canc++; state = 'post'; }
         else if (pp && pp.checked) { post++; state = 'post'; }
+        else if (aw && aw.checked && (h.value === '' || a.value === '')) { half++; state = 'half'; }  // άνευ αγώνα θέλει σκορ
         else if (h.value !== '' && a.value !== '') {
             // Νοκ άουτ: ισοπαλία χωρίς πέναλτι = δεν κρίθηκε ακόμα
             const ph = document.getElementById(`penh-${roundNum}-${i}`);
@@ -9750,6 +9821,8 @@ function saveResults() {
 
     const round = data.fixtures.find(r => r.round === roundNum);
     if (!round) { showToast('Η αγωνιστική δεν βρέθηκε.', 'error'); return; }
+    let awardedCleared = 0;          // άνευ αγώνα που είχαν σκόρερ/clean sheet (σβήστηκαν)
+    const awardedNoScore = [];       // «Άνευ αγώνα» χωρίς σκορ: δεν αποθηκεύτηκε το σήμα
 
     round.matches.forEach((match, index) => {
         if (!match.home || !match.away) return;
@@ -9759,6 +9832,8 @@ function saveResults() {
         const postponedInput = document.getElementById(`postponed-${roundNum}-${index}`);
         const cancelledInput = document.getElementById(`cancelled-${roundNum}-${index}`);
 
+        const awardedInput = document.getElementById(`awarded-${roundNum}-${index}`);
+
         const isCancelled = !!(cancelledInput && cancelledInput.checked);
         const isPostponed = postponedInput.checked || isCancelled;
 
@@ -9767,6 +9842,7 @@ function saveResults() {
         if (isPostponed) {
             match.isPostponed = true;
             if (isCancelled) match.isCancelled = true; else delete match.isCancelled;
+            delete match.isAwarded;
             match.homeScore = null;
             match.awayScore = null;
             if (round.stage) { match.penHome = null; match.penAway = null; }
@@ -9782,6 +9858,21 @@ function saveResults() {
             
             match.homeScore = homeScore;
             match.awayScore = awayScore;
+
+            // Άνευ αγώνα (17/11/2026): μόνο με σκορ. Σκόρερ και clean sheets φεύγουν.
+            if (awardedInput && awardedInput.checked) {
+                if (homeScore !== null && awayScore !== null) {
+                    match.isAwarded = true;
+                    if ((match.scorers || []).length || (match.cleanSheetHolders || []).length) awardedCleared++;
+                    delete match.scorers;
+                    delete match.cleanSheetHolders;
+                } else {
+                    delete match.isAwarded;
+                    awardedNoScore.push(`${match.home} - ${match.away}`);
+                }
+            } else {
+                delete match.isAwarded;
+            }
 
             // Νοκ άουτ: πέναλτι μόνο όταν το σκορ είναι ισόπαλο
             if (round.stage) {
@@ -9804,8 +9895,12 @@ function saveResults() {
     displayRoster();
     displayNextMatch();
     renderKoAdmin();
+    if (awardedCleared) loadMatchesForRound();   // να φύγουν και από τη φόρμα οι σκόρερ που σβήστηκαν
 
-    showToast('Οι αλλαγές αποθηκεύτηκαν επιτυχώς!');
+    if (awardedNoScore.length)
+        showToast(`«Άνευ αγώνα» χωρίς σκορ: ${awardedNoScore.join(', ')}. Γράψε το σκορ (π.χ. 3-0) και ξαναπάτα Αποθήκευση.`, 'error');
+    else
+        showToast('Οι αλλαγές αποθηκεύτηκαν επιτυχώς!' + (awardedCleared ? ' (Στο «Άνευ αγώνα» σβήστηκαν σκόρερ/clean sheet.)' : ''));
 }
 
         function resetAllData() {
@@ -11685,6 +11780,7 @@ async function refreshLikeCounts() {
 .srch-hint{color:rgba(255,255,255,.6);font-size:.8rem}
 .srch-badge{font-size:.66rem;font-weight:700;padding:2px 6px;border-radius:5px;background:#d0453a;color:#fff;white-space:nowrap}
 .srch-badge.c{background:#6b7c93}
+.srch-badge.a{background:#8e24aa;margin-left:5px}  /* άνευ αγώνα (17/11/2026) */
 .srch-dot{width:9px;height:9px;border-radius:50%;flex:none}
 .srch-dot.W{background:#2e9e4f}.srch-dot.D{background:#b9a23a}.srch-dot.L{background:#d0453a}
 #srchOverlay{position:fixed;inset:0;background:rgba(10,25,15,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);z-index:3000;display:none;align-items:flex-start;justify-content:center;padding-top:9vh}
@@ -11772,6 +11868,7 @@ const crestImg = (n, cls) => { let s = ''; try { s = crestFor(n) || ''; } catch 
   return s ? `<img${cls ? ` class="${cls}"` : ''} src="${esc(s)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">` : '<span class="srch-ic">⚽</span>'; };
 const played = m => m.homeScore != null && m.awayScore != null && !m.isPostponed;
 const offBadge = m => m.isPostponed ? `<span class="srch-badge${isCancelledMatch(m) ? ' c' : ''}">${matchOffLabel(m)}</span>` : '';
+const awardNote = m => isAwardedMatch(m) ? ' · άνευ αγώνα' : '';   // 17/11/2026
 const same = (a, b) => normTeam(a) === normTeam(b);
 const allRounds = () => (data && data.fixtures) || [];
 
@@ -11807,7 +11904,7 @@ function search(raw) {
   out.teams.sort((a, b) => (isMyTeam(b.t) - isMyTeam(a.t)) || ((a.pos || 99) - (b.pos || 99)));
   (data.roster || []).forEach(p => { if (hit(p.name + ' ' + (p.nickname || ''), q) || String(p.number) === raw.trim()) out.players.push(p); });
   const rn = raw.match(/(\d+)\s*(η|h)?\s*(αγ|ag)/i);
-  const offWord = m => m.isPostponed ? (isCancelledMatch(m) ? ' ματαιωση' : ' αναβολη') : '';
+  const offWord = m => m.isPostponed ? (isCancelledMatch(m) ? ' ματαιωση' : ' αναβολη') : (isAwardedMatch(m) ? ' ανευ αγωνα' : '');
   allRounds().forEach(r => (r.matches || []).forEach(m => {
     const scorer = (m.scorers || []).find(s => hit(s, q));
     if ((rn && !r.stage && +rn[1] === r.round) || hit(m.home + ' ' + m.away + offWord(m) + ' ' + roundLabel(r), q) || scorer)
@@ -11845,14 +11942,14 @@ function render(el, raw) {
   h += g('Ομάδες', r.teams, 5, (o, i) => `<button type="button" class="srch-item" data-k="team" data-i="${i}">${crestImg(o.t)}<span class="srch-main"><div class="srch-t">${hl(o.t, raw)}</div><div class="srch-s">${o.row ? `${o.pos}η θέση · ${o.row.points} βαθμοί · ${o.row.played} αγώνες` : ''}</div></span>›</button>`);
   h += g('Παίκτες', r.players, 5, (p, i) => `<button type="button" class="srch-item" data-k="player" data-i="${i}"><span class="srch-ic">${esc(p.number || '–')}</span><span class="srch-main"><div class="srch-t">${hl(p.name, raw)}${p.isCaptain ? ' ©' : ''}</div><div class="srch-s">${esc(p.position || '')} · ⚽ ${p.goals || 0}${p.cleanSheets ? ' · 🧤 ' + p.cleanSheets : ''}</div></span>›</button>`);
   const oneTeam = r.teams.length === 1 ? 'όλοι στην καρτέλα της ομάδας' : '';
-  h += g('Αγώνες', r.matches, 6, (o, i) => { const m = o.m; return `<button type="button" class="srch-item is-match" data-k="match" data-i="${i}"><span class="srch-ic">${o.r.stage ? '🏆' : o.r.round + 'η'}</span><span class="srch-main"><div class="srch-t">${hl(m.home, raw)} – ${hl(m.away, raw)}</div><div class="srch-s">${esc(roundLabel(o.r))}${o.scorer ? ' · ⚽ ' + esc(o.scorer) : ''}</div></span>${offBadge(m) || `<span class="srch-sc">${played(m) ? m.homeScore + ' – ' + m.awayScore : '—'}</span>`}</button>`; }, oneTeam);
+  h += g('Αγώνες', r.matches, 6, (o, i) => { const m = o.m; return `<button type="button" class="srch-item is-match" data-k="match" data-i="${i}"><span class="srch-ic">${o.r.stage ? '🏆' : o.r.round + 'η'}</span><span class="srch-main"><div class="srch-t">${hl(m.home, raw)} – ${hl(m.away, raw)}</div><div class="srch-s">${esc(roundLabel(o.r))}${awardNote(m)}${o.scorer ? ' · ⚽ ' + esc(o.scorer) : ''}</div></span>${offBadge(m) || `<span class="srch-sc">${played(m) ? m.homeScore + ' – ' + m.awayScore : '—'}</span>`}</button>`; }, oneTeam);
   h += g('Νέα', r.news, 4, (n, i) => `<button type="button" class="srch-item" data-k="news" data-i="${i}"><span class="srch-ic">📰</span><span class="srch-main"><div class="srch-t">${hl(n.title, raw)}</div><div class="srch-s">${hl(snippet(n.content, raw), raw)}</div></span></button>`);
   if (histState === 'loading') h += '<div class="srch-group">Ιστορικό<span>φόρτωση…</span></div>';
   else h += g('Ιστορικό', r.hist, 6, (o, i) => {
     const sub = esc(o.s.label);
     if (o.kind === 'news')   return `<button type="button" class="srch-item" data-k="hist" data-i="${i}"><span class="srch-ic">📰</span><span class="srch-main"><div class="srch-t">${hl(o.n.title, raw)}</div><div class="srch-s">${sub} · ${hl(snippet(o.n.content, raw), raw)}</div></span></button>`;
     if (o.kind === 'player') return `<button type="button" class="srch-item" data-k="hist" data-i="${i}"><span class="srch-ic">${esc(o.p.number || '–')}</span><span class="srch-main"><div class="srch-t">${hl(o.p.name, raw)}</div><div class="srch-s">${sub} · ρόστερ</div></span>›</button>`;
-    const m = o.m; return `<button type="button" class="srch-item is-match" data-k="hist" data-i="${i}"><span class="srch-ic">🕰️</span><span class="srch-main"><div class="srch-t">${hl(m.home, raw)} – ${hl(m.away, raw)}</div><div class="srch-s">${sub} · ${esc(roundLabel(o.r))}${o.scorer ? ' · ⚽ ' + esc(o.scorer) : ''}</div></span>${offBadge(m) || `<span class="srch-sc">${played(m) ? m.homeScore + ' – ' + m.awayScore : '—'}</span>`}</button>`;
+    const m = o.m; return `<button type="button" class="srch-item is-match" data-k="hist" data-i="${i}"><span class="srch-ic">🕰️</span><span class="srch-main"><div class="srch-t">${hl(m.home, raw)} – ${hl(m.away, raw)}</div><div class="srch-s">${sub} · ${esc(roundLabel(o.r))}${awardNote(m)}${o.scorer ? ' · ⚽ ' + esc(o.scorer) : ''}</div></span>${offBadge(m) || `<span class="srch-sc">${played(m) ? m.homeScore + ' – ' + m.awayScore : '—'}</span>`}</button>`;
   });
   if (!r.teams.length && !r.players.length && !r.matches.length && !r.news.length && !r.hist.length && histState !== 'loading')
     h = `<div class="srch-empty">Τίποτα για «${esc(raw.trim())}».</div>`;
@@ -11877,7 +11974,7 @@ function openTeam(team) {
   teamMatches = [...done, ...next]; teamNewsList = teamNews(team);
   const res = m => { const a = same(m.home, team) ? [m.homeScore, m.awayScore] : [m.awayScore, m.homeScore]; return a[0] > a[1] ? 'W' : a[0] < a[1] ? 'L' : 'D'; };
   const line = (o, k) => { const m = o.m, b = x => same(x, team) ? `<span class="w">${esc(x)}</span>` : esc(x);
-    return `<button type="button" class="st-row${involvesUs(m) ? ' my' : ''}" data-tm="${k}">${played(m) ? `<span class="srch-dot ${res(m)}"></span>` : ''}<span class="st-r">${o.r.stage ? '🏆' : o.r.round + 'η'}</span><span class="st-m">${b(m.home)} – ${b(m.away)}</span>${offBadge(m) || (played(m) ? `<b>${m.homeScore} – ${m.awayScore}</b>` : '')}</button>`; };
+    return `<button type="button" class="st-row${involvesUs(m) ? ' my' : ''}" data-tm="${k}">${played(m) ? `<span class="srch-dot ${res(m)}"></span>` : ''}<span class="st-r">${o.r.stage ? '🏆' : o.r.round + 'η'}</span><span class="st-m">${b(m.home)} – ${b(m.away)}</span>${offBadge(m) || (played(m) ? `<b>${m.homeScore} – ${m.awayScore}</b>${isAwardedMatch(m) ? `<span class="srch-badge a">${AWARDED_LABEL}</span>` : ''}` : '')}</button>`; };
   const gd = row.gd != null ? row.gd : (row.gf || 0) - (row.ga || 0);
   $('srchTeamBody').innerHTML = `
    <div class="st-head">${crestImg(team).replace('<img', '<img').replace('class="srch-ic"', 'class="srch-ic" style="width:54px;height:54px;font-size:1.4rem"')}<div><h3>${esc(team)}</h3><div class="st-sub">${row.team ? `${i + 1}η θέση στη βαθμολογία${data.group ? ' · ' + esc(data.group) : ''}` : ''}</div></div><button type="button" class="st-x" aria-label="Κλείσιμο">✕</button></div>
