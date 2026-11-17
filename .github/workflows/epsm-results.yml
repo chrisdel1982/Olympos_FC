@@ -1,0 +1,385 @@
+# ΦΥΛΑΚΑΣ ΑΠΟΤΕΛΕΣΜΑΤΩΝ ΕΠΣΜ (17/11/2026)
+# 2 φορές τη μέρα (09:37 και 21:37 ώρα Ελλάδας) συγκρίνει ΟΛΑ τα σκορ της Κ15 LEAGUE 1
+# στην epsm.gr (table_ypodomon_analytika.asp) με τα fixtures του olympos-backup.json.
+# Ανοίγει Issue (έρχεται email) αν ένας αγώνας έχει άλλο σκορ, ή αν η ΕΠΣΜ έχει σκορ
+# και το site όχι. Όταν το site διορθωθεί, το Issue κλείνει μόνο του.
+# ΔΕΝ κάνει commit, ΔΕΝ αγγίζει το site.
+# Χειροκίνητα: Actions -> «Φύλακας αποτελεσμάτων ΕΠΣΜ» -> Run workflow.
+# Δοκιμή συναγερμού: Run workflow με τσεκαρισμένο «ΔΟΚΙΜΗ». Το site δεν αλλάζει·
+# ανοίγει Issue «🧪 ΔΟΚΙΜΗ» που κλείνει μόνο του στο επόμενο κανονικό run.
+name: Φύλακας αποτελεσμάτων ΕΠΣΜ
+
+on:
+  schedule:
+    - cron: "37 7,19 * * *"   # σε UTC = 09:37 και 21:37 Ελλάδα (χειμώνας) / 10:37 και 22:37 (καλοκαίρι)
+  workflow_dispatch:
+    inputs:
+      test_break:
+        description: "ΔΟΚΙΜΗ: κάνε πως το site έχει λάθος σκορ σε έναν αγώνα"
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: epsm-results
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          sparse-checkout: olympos-backup.json
+          sparse-checkout-cone-mode: false
+      - name: Σύγκριση αποτελεσμάτων ΕΠΣΜ με το site
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NOTIFY_USER: chrisdel1982
+          EPSM_CATEGORY: Κ15 LEAGUE 1
+          TEST_BREAK: ${{ inputs.test_break }}
+        run: |
+          python3 - <<'PY'
+          # -*- coding: utf-8 -*-
+          """
+          ΦΥΛΑΚΑΣ ΑΠΟΤΕΛΕΣΜΑΤΩΝ ΕΠΣΜ — Κ15 LEAGUE 1 (17/11/2026)
+
+          Δύο φορές τη μέρα διαβάζει το αναλυτικό πρόγραμμα της ΕΠΣΜ
+          (table_ypodomon_analytika.asp) και το συγκρίνει με τα fixtures του
+          olympos-backup.json. Ανοίγει Issue (άρα έρχεται email) όταν:
+            • ένας αγώνας έχει άλλο σκορ στην ΕΠΣΜ και άλλο στο site, ή
+            • η ΕΠΣΜ έχει σκορ και το site όχι.
+          Όταν διορθωθεί το site, το Issue κλείνει μόνο του.
+          Δεν γράφει ΠΟΤΕ στο repo: ούτε commit, ούτε deploy. Μόνο Issues.
+          """
+          import hashlib
+          import html
+          import json
+          import os
+          import re
+          import sys
+          import time
+          import unicodedata
+          import urllib.parse
+          import urllib.request
+          from difflib import SequenceMatcher
+
+          # ---------------- ΡΥΘΜΙΣΕΙΣ ----------------
+          CATEGORY = os.environ.get("EPSM_CATEGORY", "Κ15 LEAGUE 1")
+          TABLE_URL = ("https://www.epsm.gr/table_ypodomon_analytika.asp?diorganosi="
+                       + urllib.parse.quote(CATEGORY))
+          JSON_PATH = os.environ.get("SITE_JSON", "olympos-backup.json")
+          NOTIFY = os.environ.get("NOTIFY_USER", "")
+          MARK = "<!-- epsm-results -->"
+          UA = "Mozilla/5.0 (OlymposFC results watcher; +https://www.olymposfc.gr)"
+          LAT2GR = str.maketrans("ABEZHIKMNOPTYXabezhikmnoptyx", "ΑΒΕΖΗΙΚΜΝΟΡΤΥΧΑΒΕΖΗΙΚΜΝΟΡΤΥΧ")
+
+
+          def norm(s):
+              s = unicodedata.normalize("NFD", s or "")
+              s = "".join(c for c in s if unicodedata.category(c) != "Mn")
+              return re.sub(r"\s+", " ", s.upper().replace("\xa0", " ")).strip()
+
+
+          def compact(s):
+              """Σκελετός ονόματος: χωρίς «(1)», κενά, τελείες· λατινικά → ελληνικά."""
+              s = re.sub(r"\(\s*\d+\s*\)", " ", norm(s))
+              return re.sub(r"[^0-9Α-ΩA-Z]", "", s).translate(LAT2GR)
+
+
+          # ---------------- ΔΙΚΤΥΟ ----------------
+          def fetch(url, tries=3):
+              last = None
+              for i in range(tries):
+                  try:
+                      req = urllib.request.Request(url, headers={"User-Agent": UA})
+                      with urllib.request.urlopen(req, timeout=30) as r:
+                          raw = r.read()
+                          cs = r.headers.get_content_charset()
+                      if not cs:
+                          m = re.search(rb'charset=["\']?([\w-]+)', raw[:4000], re.I)
+                          cs = m.group(1).decode() if m else None
+                      for enc in [cs, "utf-8", "windows-1253", "iso-8859-7"]:
+                          if not enc:
+                              continue
+                          try:
+                              return raw.decode(enc)
+                          except (UnicodeDecodeError, LookupError):
+                              pass
+                      return raw.decode("utf-8", "replace")
+                  except Exception as e:  # noqa
+                      last = e
+                      time.sleep(5 * (i + 1))
+              raise RuntimeError(f"Δεν απάντησε η {url}: {last}")
+
+
+          def html_to_lines(h):
+              h = re.sub(r"(?is)<(script|style)\b.*?</\1>", " ", h)
+              h = re.sub(r"(?i)<br\s*/?>|</(p|div|tr|td|li|h\d|table|b|strong)>", "\n", h)
+              h = re.sub(r"(?s)<[^>]+>", " ", h)
+              h = html.unescape(h).replace("\xa0", " ")
+              return [re.sub(r"[ \t]+", " ", l).strip() for l in h.split("\n") if l.strip()]
+
+
+          # ---------------- ΟΜΑΔΕΣ ----------------
+          class Teams:
+              """Αντιστοιχεί τα ονόματα της ΕΠΣΜ στα ονόματα του site."""
+
+              def __init__(self, names):
+                  self.names = list(dict.fromkeys(n for n in names if n))
+                  self.by_c = {compact(n): n for n in self.names}
+                  self.cache = {}
+
+              def resolve(self, raw):
+                  """→ (όνομα site ή None, βαθμός ομοιότητας 0..1)"""
+                  c = compact(raw)
+                  if not c:
+                      return None, 0.0
+                  if c in self.cache:
+                      return self.cache[c]
+                  if c in self.by_c:
+                      res = (self.by_c[c], 1.0)
+                  else:
+                      best, score = None, 0.0
+                      for k, n in self.by_c.items():
+                          r = SequenceMatcher(None, c, k).ratio()
+                          if r > score:
+                              best, score = n, r
+                      res = (best, score) if score >= 0.88 else (None, score)
+                  self.cache[c] = res
+                  return res
+
+
+          # ---------------- ΑΝΑΓΝΩΣΗ ΕΠΣΜ ----------------
+          ROUND_RE = re.compile(r"^(\d{1,2})\s*Η\s*ΑΓΩΝΙΣΤΙΚΗ\b")
+          SCORE_RE = re.compile(r"^(.*?)(\d+)\s*-\s*(\d+)\s*$")
+          NOSCORE_RE = re.compile(r"^(.*?\S)\s+-\s*$")
+
+
+          def parse_table(lines, teams):
+              """Όλοι οι αγώνες της σελίδας: [{round, home, away, hs, as, raw}]"""
+              out, rnd, unknown = [], None, []
+              for line in lines:
+                  n = norm(line)
+                  m = ROUND_RE.match(n)
+                  if m:
+                      rnd = int(m.group(1))
+                      continue
+                  if rnd is None or " - " not in n:
+                      continue
+                  home_raw, rest = n.split(" - ", 1)
+                  home, hq = teams.resolve(home_raw)
+                  hs = as_ = None
+                  away = None
+                  m = SCORE_RE.match(rest)
+                  if m:
+                      # Το σκορ μπορεί να κολλάει στο όνομα («...Κ145 - 1»): δοκίμασε
+                      # πόσα από τα τελευταία ψηφία ανήκουν στο σκορ, κράτα το καλύτερο.
+                      text, digits, a = m.group(1), m.group(2), m.group(3)
+                      best = None
+                      for k in range(1, min(2, len(digits)) + 1):
+                          cand_name = (text + digits[:-k]).strip()
+                          if not cand_name:
+                              continue
+                          name, q = teams.resolve(cand_name)
+                          key = (q, -k)
+                          if best is None or key > best[0]:
+                              best = (key, name, int(digits[-k:]), cand_name)
+                      if best:
+                          away, aq = best[1], best[0][0]
+                          hs, as_ = best[2], int(a)
+                          away_raw = best[3]
+                      else:
+                          continue
+                  else:
+                      m = NOSCORE_RE.match(rest)
+                      if not m:
+                          continue
+                      away_raw = m.group(1)
+                      away, aq = teams.resolve(away_raw)
+                  if not home or not away:
+                      if hs is not None:
+                          unknown.append({"round": rnd, "raw": line.strip(), "home_raw": home_raw,
+                                          "away_raw": away_raw, "hs": hs, "as": as_})
+                      continue
+                  out.append({"round": rnd, "home": home, "away": away, "hs": hs, "as": as_,
+                              "raw": line.strip()})
+              return out, unknown
+
+
+          # ---------------- SITE ----------------
+          def site_matches(d):
+              res = {}
+              for r in d.get("fixtures") or []:
+                  for m in r.get("matches") or []:
+                      hs, as_ = m.get("homeScore"), m.get("awayScore")
+                      ok = isinstance(hs, int) and isinstance(as_, int)
+                      res[(m.get("home"), m.get("away"))] = {
+                          "round": r.get("round"), "hs": hs if ok else None, "as": as_ if ok else None,
+                          "postponed": bool(m.get("isPostponed")), "cancelled": bool(m.get("isCancelled"))}
+              return res
+
+
+          def site_teams(d):
+              names = list(d.get("teams") or [])
+              for r in d.get("fixtures") or []:
+                  for m in r.get("matches") or []:
+                      names += [m.get("home"), m.get("away")]
+              return names
+
+
+          def sc(h, a):
+              return f"{h}-{a}" if h is not None else "—"
+
+
+          # ---------------- ΣΥΓΚΡΙΣΗ ----------------
+          def compare(epsm, unknown, site):
+              problems, info = [], []
+              seen = set()
+              for e in epsm:
+                  key = (e["home"], e["away"])
+                  seen.add(key)
+                  s = site.get(key)
+                  if s is None:
+                      rev = site.get((e["away"], e["home"]))
+                      if e["hs"] is not None:
+                          why = " (στο site υπάρχει ανάποδα, ως " + f"{e['away']} - {e['home']})" if rev else ""
+                          problems.append({"kind": "missing", "round": e["round"], "home": e["home"],
+                                           "away": e["away"], "epsm": sc(e["hs"], e["as"]), "site": "δεν υπάρχει αγώνας",
+                                           "text": f"Ο αγώνας δεν βρέθηκε στο site{why}."})
+                      continue
+                  if e["hs"] is not None and s["hs"] is None:
+                      extra = " (στο site είναι σημειωμένος ως αναβολή/ματαίωση)" if (s["postponed"] or s["cancelled"]) else ""
+                      problems.append({"kind": "noscore", "round": e["round"], "home": e["home"], "away": e["away"],
+                                       "epsm": sc(e["hs"], e["as"]), "site": "χωρίς σκορ",
+                                       "text": f"Η ΕΠΣΜ έχει σκορ, το site όχι{extra}."})
+                  elif e["hs"] is not None and (e["hs"], e["as"]) != (s["hs"], s["as"]):
+                      problems.append({"kind": "diff", "round": e["round"], "home": e["home"], "away": e["away"],
+                                       "epsm": sc(e["hs"], e["as"]), "site": sc(s["hs"], s["as"]),
+                                       "text": "Διαφορετικό σκορ."})
+                  elif e["hs"] is None and s["hs"] is not None:
+                      info.append(f"{e['round']}η: {e['home']} - {e['away']} · site {sc(s['hs'], s['as'])}, ΕΠΣΜ χωρίς σκορ ακόμα")
+                  if s["round"] != e["round"]:
+                      info.append(f"{e['home']} - {e['away']}: αγωνιστική {e['round']} στην ΕΠΣΜ, {s['round']} στο site")
+              for u in unknown:
+                  problems.append({"kind": "unknown", "round": u["round"], "home": u["home_raw"], "away": u["away_raw"],
+                                   "epsm": sc(u["hs"], u["as"]), "site": "άγνωστη ομάδα",
+                                   "text": "Η ΕΠΣΜ γράφει ομάδα που δεν αναγνωρίζω στο site."})
+              problems.sort(key=lambda p: (p["round"] or 0, p["home"], p["away"]))
+              return problems, info
+
+
+          # ---------------- GITHUB ISSUES ----------------
+          def gh(method, path, body=None):
+              repo, token = os.environ["GITHUB_REPOSITORY"], os.environ["GITHUB_TOKEN"]
+              req = urllib.request.Request(
+                  f"https://api.github.com/repos/{repo}{path}", method=method,
+                  data=json.dumps(body).encode() if body is not None else None,
+                  headers={"Authorization": f"Bearer {token}",
+                           "Accept": "application/vnd.github+json",
+                           "User-Agent": "epsm-results"})
+              with urllib.request.urlopen(req, timeout=30) as r:
+                  return json.loads(r.read() or b"null")
+
+
+          def our_issues():
+              out = []
+              for page in range(1, 4):
+                  batch = gh("GET", f"/issues?state=all&per_page=100&page={page}&creator=github-actions%5Bbot%5D")
+                  out += [i for i in batch if MARK in (i.get("body") or "") and "pull_request" not in i]
+                  if len(batch) < 100:
+                      break
+              return out
+
+
+          def main():
+              dry = "--dry-run" in sys.argv or not os.environ.get("GITHUB_TOKEN")
+              d = json.load(open(JSON_PATH, encoding="utf-8"))
+              site = site_matches(d)
+              teams = Teams(site_teams(d))
+
+              test = (os.environ.get("TEST_BREAK") or "").strip().lower() in ("1", "true", "yes", "ναι")
+              if test:
+                  # ΔΟΚΙΜΗ: κάνε πως το site γράφει λάθος σκορ στον πρώτο παιγμένο αγώνα
+                  for k, s in site.items():
+                      if s["hs"] is not None:
+                          s["hs"] += 1
+                          print(f"🧪 ΔΟΚΙΜΗ: κάνω πως το site γράφει {k[0]} - {k[1]} {sc(s['hs'], s['as'])}")
+                          break
+
+              if "--html" in sys.argv:
+                  page = open(sys.argv[sys.argv.index("--html") + 1], encoding="utf-8").read()
+              else:
+                  page = fetch(TABLE_URL)
+              epsm, unknown = parse_table(html_to_lines(page), teams)
+              played = sum(1 for e in epsm if e["hs"] is not None)
+              rounds = sorted({e["round"] for e in epsm})
+              print(f"ΕΠΣΜ: {len(epsm)} αγώνες σε {len(rounds)} αγωνιστικές, {played} με σκορ · "
+                    f"site: {len(site)} αγώνες, {sum(1 for s in site.values() if s['hs'] is not None)} με σκορ")
+              if not epsm:
+                  raise RuntimeError("Δεν βρέθηκε κανένας αγώνας στη σελίδα της ΕΠΣΜ — άλλαξε μορφή;")
+
+              problems, info = compare(epsm, unknown, site)
+              for i in info:
+                  print("ℹ️ ", i)
+
+              if not problems:
+                  print("✅ Όλα τα σκορ του site συμφωνούν με την ΕΠΣΜ.")
+                  if not dry:
+                      for i in our_issues():
+                          if i["state"] == "open":
+                              gh("POST", f"/issues/{i['number']}/comments",
+                                 {"body": "✅ Τα αποτελέσματα του site συμφωνούν πλέον με την ΕΠΣΜ. Κλείνει μόνο του."})
+                              gh("PATCH", f"/issues/{i['number']}", {"state": "closed", "state_reason": "completed"})
+                  return
+
+              fp_src = json.dumps([[p["round"], p["home"], p["away"], p["epsm"], p["site"]] for p in problems],
+                                  ensure_ascii=False) + ("|test" if test else "")
+              fp_mark = f"<!-- fp:{hashlib.sha1(fp_src.encode()).hexdigest()[:12]} -->"
+              n_diff = sum(1 for p in problems if p["kind"] == "diff")
+              n_miss = len(problems) - n_diff
+              parts = []
+              if n_diff:
+                  parts.append(f"{n_diff} με άλλο σκορ")
+              if n_miss:
+                  parts.append(f"{n_miss} χωρίς σκορ στο site")
+              title = ("🧪 ΔΟΚΙΜΗ · " if test else "") + "⚽ Αποτελέσματα ΕΠΣΜ: " + ", ".join(parts)
+              rows = [f"| {p['round']}η | {p['home']} - {p['away']} | **{p['epsm']}** | {p['site']} | {p['text']} |"
+                      for p in problems]
+              body = "\n".join([
+                  MARK, fp_mark,
+                  (f"@{NOTIFY} " if NOTIFY else "") + "η ΕΠΣΜ και το site δεν συμφωνούν σε αποτελέσματα.",
+                  "", "| Αγων. | Αγώνας | ΕΠΣΜ | Site | Τι βρέθηκε |", "|---|---|---|---|---|", *rows,
+                  *(["", "<details><summary>Πληροφοριακά (δεν φταίνε για το Issue)</summary>", "",
+                     *[f"- {i}" for i in info], "</details>"] if info else []),
+                  "", f"Πηγή: [ΕΠΣΜ — αναλυτικό πρόγραμμα {CATEGORY}]({TABLE_URL})",
+                  "", "**Τι κάνεις:** admin → Αποτελέσματα → διόρθωσε/συμπλήρωσε τα σκορ → Export → ανέβασμα του olympos-backup.json. "
+                      "Μόλις το site συμφωνήσει, αυτό το Issue κλείνει μόνο του (έλεγχος 2 φορές τη μέρα).",
+                  "", "_Αν είναι ψεύτικος συναγερμός (π.χ. η ΕΠΣΜ έκανε λάθος), κλείσ' το: για την ίδια ακριβώς εικόνα δεν ξαναγράφει._",
+              ])
+              print("⚠️ ΔΙΑΦΟΡΕΣ:")
+              for p in problems:
+                  print(f"  - {p['round']}η {p['home']} - {p['away']}: ΕΠΣΜ {p['epsm']}, site {p['site']} · {p['text']}")
+              if dry:
+                  print("\n[δοκιμή — δεν ανοίγει Issue]\n" + title + "\n" + body)
+                  return
+              issues = our_issues()
+              if any(fp_mark in (i.get("body") or "") for i in issues):
+                  print("Υπάρχει ήδη Issue για αυτές ακριβώς τις διαφορές (ανοιχτό ή κλεισμένο από σένα). Τίποτα νέο.")
+                  return
+              new = gh("POST", "/issues", {"title": title, "body": body})
+              print("Άνοιξε Issue #", new["number"])
+              for i in issues:
+                  if i["state"] == "open":
+                      gh("POST", f"/issues/{i['number']}/comments", {"body": f"Αντικαταστάθηκε από το #{new['number']} (νεότερα στοιχεία)."})
+                      gh("PATCH", f"/issues/{i['number']}", {"state": "closed", "state_reason": "not_planned"})
+
+
+          if __name__ == "__main__":
+              main()
+          PY
