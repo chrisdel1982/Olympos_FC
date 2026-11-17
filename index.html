@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <!-- ΕΚΔΟΣΗ 17/11/2026 — «Άνευ αγώνα» (κατακύρωση): μωβ σήμα κάτω από το σκορ, τρίτο κουτάκι στο admin, μετράει στη βαθμολογία, χωρίς σκόρερ/clean sheet.
+    <!-- ΕΚΔΟΣΗ 17/11/2026 β΄ — Στο κινητό σκορ, ΑΝΑΒΟΛΗ, ΜΑΤΑΙΩΣΗ και ΑΝΕΥ ΑΓΩΝΑ στο ίδιο πλάτος (πρόταση «Α: ίδιο κουτί», --mid-w).
+         α΄: «Άνευ αγώνα» (κατακύρωση): μωβ σήμα κάτω από το σκορ, τρίτο κουτάκι στο admin, μετράει στη βαθμολογία, χωρίς σκόρερ/clean sheet.
          Προηγούμενη: 9/11/2026 γ΄ — Αναζήτηση (γ΄: λευκός λεπτός φακός στον υπολογιστή αντί για 🔍· β΄: χωρίς οδηγίες κάτω από το πεδίο, πιο διακριτικός φακός): στο μενού (κινητό), 🔍 ή «/» (υπολογιστής). Ομάδες, παίκτες, αγώνες, νέα, Ιστορικό.
          Από τις 2/11/2026: «Ματαίωση» δίπλα στην «Αναβολή» (admin, Αποτελέσματα, νοκ άουτ, επικόλληση ΕΠΣΜ).
          Από την 1/11 ε΄: πιο διακριτικό «Μοιράσου το live» (απαλό, με το εικονίδιο share της Κλήσης).
@@ -1022,6 +1023,30 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
     color: #6a1b9a;
     border: 1px solid #ab47bc;
     white-space: nowrap;
+}
+/* ΚΙΝΗΤΟ (17/11/2026, πρόταση «Α: ίδιο κουτί»): σκορ, ΑΝΑΒΟΛΗ, ΜΑΤΑΙΩΣΗ στο ίδιο πλάτος και ύψος,
+   και το ΑΝΕΥ ΑΓΩΝΑ από κάτω στο ίδιο πλάτος — η στήλη του κέντρου δεν «χορεύει» πια από γραμμή σε γραμμή.
+   Το πλάτος σε ένα σημείο: --mid-w. Στον υπολογιστή δεν αλλάζει τίποτα. */
+@media (max-width: 768px) {
+    #resultsContainer { --mid-w: 64px; }
+    #resultsContainer .match-score-box {
+        min-width: var(--mid-w) !important;
+        box-sizing: border-box;
+    }
+    #resultsContainer .postponed-badge {
+        width: var(--mid-w);
+        box-sizing: border-box;
+        font-size: 0.56rem !important;
+        padding: 0 2px !important;
+        letter-spacing: 0;
+    }
+    #resultsContainer .awarded-tag {
+        width: var(--mid-w);
+        box-sizing: border-box;
+        font-size: 0.5rem;
+        padding: 2px 0;
+        text-align: center;
+    }
 }
 .ko-foot.is-award { color: #6a1b9a; font-weight: 700; }
 .postpone-label.is-award { color: #6a1b9a; }
