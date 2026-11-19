@@ -874,9 +874,10 @@
         {
           "home": "ΑΝΑΓΕΝΝΗΣΗ ΝΕΩΝ ΕΠΙΒΑΤΩΝ 2021",
           "away": "ΠΑΝΟΡΑΜΑ",
-          "homeScore": null,
-          "awayScore": null,
-          "isPostponed": true
+          "homeScore": 0,
+          "awayScore": 3,
+          "isPostponed": false,
+          "isAwarded": true
         },
         {
           "home": "ΧΑΝΘ",
@@ -1041,9 +1042,10 @@
         {
           "home": "ΑΝΑΓΕΝΝΗΣΗ ΕΠΑΝΟΜΗΣ",
           "away": "ΑΣΤΕΡΙΑ",
-          "homeScore": null,
-          "awayScore": null,
-          "isPostponed": false
+          "homeScore": 0,
+          "awayScore": 3,
+          "isPostponed": false,
+          "isAwarded": true
         },
         {
           "home": "ΓΕΡΜΑΝΙΚΗ ΑΚΑΔΗΜΙΑ",
