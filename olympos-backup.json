@@ -952,9 +952,9 @@
         {
           "home": "ΝΤΙΝΟΣ ΚΟΥΗΣ",
           "away": "ΝΕΑ ΠΟΛΙΤΕΙΑ ΕΥΟΣΜΟΥ",
-          "homeScore": null,
-          "awayScore": null,
-          "isPostponed": true
+          "homeScore": 1,
+          "awayScore": 1,
+          "isPostponed": false
         },
         {
           "home": "ΜΠΑΜ",
