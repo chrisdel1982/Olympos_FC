@@ -1071,22 +1071,22 @@
         {
           "home": "ΑΓΙΟΣ ΓΕΩΡΓΙΟΣ Ν.ΚΡΗΝΗΣ",
           "away": "ΦΟΙΝΙΚΑΣ ΤΟΥΜΠΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 4,
+          "awayScore": 2,
           "isPostponed": false
         },
         {
           "home": "ΠΑΝΟΡΑΜΑ",
           "away": "Μ.ΑΛΕΞΑΝΔΡΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 4,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
           "home": "ΑΣ ΠΟΔ. ΤΟΥΜΠΑΣ",
           "away": "ΛΙΜΑΝΙ ΠΟΣΕΙΔΩΝΑ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 4,
           "isPostponed": false
         },
         {
@@ -1175,8 +1175,8 @@
         {
           "home": "ΜΠΑΜ",
           "away": "ΝΤΙΝΟΣ ΚΟΥΗΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 2,
           "isPostponed": false
         },
         {
@@ -1217,8 +1217,8 @@
         {
           "home": "ΑΠΟΛΛΩΝ ΚΑΛΑΜΑΡΙΑΣ",
           "away": "ΑΘΛΗΤΙΚΗ ΑΚΑΔΗΜΙΑ ΓΙΑΝΝΙΤΣΩΝ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
