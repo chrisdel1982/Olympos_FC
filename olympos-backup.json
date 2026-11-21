@@ -1,10 +1,10 @@
 {
   "liveScore": {
-    "active": true,
+    "active": false,
     "home": "4",
     "away": "2",
     "half": "4",
-    "duration": "FT",
+    "duration": 40,
     "startTime": "15:43"
   },
   "announcement": "",
@@ -1050,22 +1050,22 @@
         {
           "home": "ΓΕΡΜΑΝΙΚΗ ΑΚΑΔΗΜΙΑ",
           "away": "ΕΛΠΙΔΑ ΤΟΥΜΠΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
           "home": "ΑΝΑΓΕΝΝΗΣΗ ΡΥΣΙΟΥ",
           "away": "ΜΑΡΑΘΩΝΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 7,
           "isPostponed": false
         },
         {
           "home": "ΠΟΣΕΙΔΩΝΑΣ ΜΗΧΑΝΙΩΝΑΣ",
           "away": "ΜΕΝΤΕΚΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 6,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
@@ -1120,15 +1120,15 @@
         {
           "home": "ΕΛΕΥΘΕΡΙΑΚΟΣ",
           "away": "ΗΡΑΚΛΗΣ ΑΜΠΕΛΟΚΗΠΩΝ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 10,
           "isPostponed": false
         },
         {
           "home": "ΑΟΚ ΑΓΙΟΥ ΑΘΑΝΑΣΙΟΥ",
           "away": "ΑΙΑΣ ΕΥΟΣΜΟΥ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 4,
           "isPostponed": false
         },
         {
@@ -1162,9 +1162,15 @@
         {
           "home": "ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ",
           "away": "ΦΟΙΝΙΚΑΣ ΠΟΛΙΧΝΗΣ",
-          "homeScore": null,
-          "awayScore": null,
-          "isPostponed": false
+          "homeScore": 4,
+          "awayScore": 2,
+          "isPostponed": false,
+          "scorers": [
+            "Παναγιώτης Παπαδόπουλος",
+            "Νίκος Κυρτζαλιώτης",
+            "Λεωνίδας Τσιότσικας",
+            "Άγγελος Κλαδάς"
+          ]
         },
         {
           "home": "ΜΠΑΜ",
@@ -1183,29 +1189,29 @@
         {
           "home": "ΣΚΙΟΥΡΟΙ",
           "away": "ΠΑΕ ΠΑΟΚ Κ14",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 5,
           "isPostponed": false
         },
         {
           "home": "ΠΙΕΡΙΚΟΣ 1961",
           "away": "ΔΙΑΠΛΑΣΙΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 3,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
           "home": "ΟΛΥΜΠΙΑΚΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
           "away": "ΔΟΞΑ ΠΕΡΙΒΟΛΑΚΙΟΥ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 4,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
           "home": "ΠΟΤ ΗΡΑΚΛΗΣ",
           "away": "ΑΚΑΔ. Γ. ΚΟΥΔΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 4,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
@@ -1232,8 +1238,8 @@
         {
           "home": "ΠΡΩΤΑΘΛΗΤΕΣ ΠΕΥΚΩΝ",
           "away": "ΠΑΝΣΕΡΡΑΪΚΟΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 2,
           "isPostponed": false
         },
         {
@@ -4174,7 +4180,7 @@
       "name": "Άγγελος Κλαδάς",
       "birthYear": 2013,
       "position": "Πλάγιος Αμυντικός - Αριστερός (LB)",
-      "goals": 0,
+      "goals": 1,
       "cleanSheets": 0,
       "isCaptain": false
     },
@@ -4221,7 +4227,7 @@
       "name": "Παναγιώτης Παπαδόπουλος",
       "birthYear": 2013,
       "position": "Πλάγιος Επιθετικός - Δεξιός (RW) / Επιθετικός Μέσος (AM)",
-      "goals": 1,
+      "goals": 2,
       "cleanSheets": 0,
       "nickname": "ΠΑΝΟΣ",
       "isCaptain": false
@@ -4270,7 +4276,7 @@
       "name": "Λεωνίδας Τσιότσικας",
       "birthYear": 2014,
       "position": "Πλάγιος Επιθετικός - Αριστερός (LW) / Πλάγιος Επιθετικός - Δεξιός (RW)",
-      "goals": 0,
+      "goals": 1,
       "cleanSheets": 0,
       "nickname": "LEO",
       "isCaptain": false
@@ -4291,7 +4297,7 @@
       "birthYear": 2012,
       "position": "Επιθετικός Μέσος (AM) / Αμυντικός Μέσος (DM) / Κεντρικός Μέσος (CM)",
       "isCaptain": true,
-      "goals": 2,
+      "goals": 3,
       "cleanSheets": 0,
       "nickname": "ΚΥΡΤΖΑ"
     },
