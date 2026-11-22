@@ -1,5 +1,5 @@
 {
-    "liveScore": {
+  "liveScore": {
     "active": false,
     "home": "0",
     "away": "0",
@@ -1150,8 +1150,8 @@
         {
           "home": "ΑΚΡΙΤΕΣ ΣΥΚΕΩΝ",
           "away": "ΑΟ ΜΕΣΗΜΒΡΙΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 5,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
