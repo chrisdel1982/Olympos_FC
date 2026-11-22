@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <!-- ΕΚΔΟΣΗ 17/11/2026 β΄ — Στο κινητό σκορ, ΑΝΑΒΟΛΗ, ΜΑΤΑΙΩΣΗ και ΑΝΕΥ ΑΓΩΝΑ στο ίδιο πλάτος (πρόταση «Α: ίδιο κουτί», --mid-w).
+    <!-- ΕΚΔΟΣΗ 22/11/2026 — Σκόρερ και λεπτά στο live: γραμμή "goals" στο liveScore, σκορ που βγαίνει μόνο του,
+         admin σε δύο ενότητες («🔴 Live» με κουμπιά και «📅 Επόμενος αγώνας»), 2×40' / 2×45' / 4×20',
+         «Πέρασε στα Αποτελέσματα» στο τέλος, λεπτά στα Αποτελέσματα, σκόρερ και στην εικόνα του share.
+         Προηγούμενη: 17/11/2026 β΄ — Στο κινητό σκορ, ΑΝΑΒΟΛΗ, ΜΑΤΑΙΩΣΗ και ΑΝΕΥ ΑΓΩΝΑ στο ίδιο πλάτος (πρόταση «Α: ίδιο κουτί», --mid-w).
          α΄: «Άνευ αγώνα» (κατακύρωση): μωβ σήμα κάτω από το σκορ, τρίτο κουτάκι στο admin, μετράει στη βαθμολογία, χωρίς σκόρερ/clean sheet.
          Προηγούμενη: 9/11/2026 γ΄ — Αναζήτηση (γ΄: λευκός λεπτός φακός στον υπολογιστή αντί για 🔍· β΄: χωρίς οδηγίες κάτω από το πεδίο, πιο διακριτικός φακός): στο μενού (κινητό), 🔍 ή «/» (υπολογιστής). Ομάδες, παίκτες, αγώνες, νέα, Ιστορικό.
          Από τις 2/11/2026: «Ματαίωση» δίπλα στην «Αναβολή» (admin, Αποτελέσματα, νοκ άουτ, επικόλληση ΕΠΣΜ).
@@ -4182,6 +4185,83 @@ a.nx-place:hover{border-color:var(--ink-muted)}
   .nx-place{margin-left:-12px;margin-right:-12px}
 }
 
+/* ---- Σκόρερ στο live (22/11/2026): κάτω από τα σήματα, πιάνει όλο το πλάτος της αφίσας ---- */
+.nx-goals{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;
+  margin-top:2px;padding-top:9px;border-top:1px solid rgba(255,255,255,.14)}
+.nx-gside{text-align:center;font-size:.76rem;line-height:1.3;color:var(--nx-on);min-width:0}
+.nx-gside div+div{margin-top:3px}
+.nx-gside b{font-weight:600;white-space:nowrap}
+.nx-gside i{font-style:normal;color:var(--nx-on-muted);font-weight:700;white-space:nowrap}
+.nx-gside i+i{margin-left:.14em}
+.nx-gside .og{color:var(--nx-on-muted)}
+@media (min-width:900px){ .nx-gside{font-size:.82rem} }
+
+/* ---- Admin → 🔴 Live (22/11/2026) ---- */
+.lv-fmt{display:flex;gap:6px;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:10px;font-size:.82rem;color:var(--ink-muted)}
+.lv-chip{-webkit-appearance:none;appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  border-radius:999px;padding:6px 12px;font:inherit;font-size:.82rem;font-weight:700;cursor:pointer}
+.lv-chip.on{background:var(--primary-color);border-color:var(--primary-color);color:#fff}
+.lv-chip.red.on{background:var(--live);border-color:var(--live)}
+.lv-phase{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.lv-ph{-webkit-appearance:none;appearance:none;border:1px solid var(--line);background:var(--surface-alt);color:var(--ink);
+  border-radius:10px;padding:10px 1px;font:inherit;font-weight:700;font-size:.76rem;line-height:1.15;cursor:pointer;min-width:0;letter-spacing:-.2px}
+.lv-ph .s{display:none}
+@media (max-width:400px){ .lv-phase.q4 .lv-ph .l{display:none} .lv-phase.q4 .lv-ph .s{display:inline} }
+.lv-ph.cur{background:var(--primary-color);border-color:var(--primary-color);color:#fff}
+.lv-ph:disabled{opacity:.35;cursor:default}
+.lv-score{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0 4px;font-family:'Roboto Condensed',sans-serif}
+.lv-score .t{flex:1;min-width:0;font-size:.74rem;font-weight:700;text-transform:uppercase;text-align:center;line-height:1.15;color:var(--ink);overflow-wrap:anywhere}
+.lv-score .s{font-size:2.3rem;font-weight:700;white-space:nowrap;color:var(--ink);text-align:center}
+.lv-score .m{font-size:.8rem;color:var(--live-ink);font-weight:700;text-align:center}
+.lv-note{text-align:center;font-size:.74rem;color:var(--ink-muted);margin-bottom:8px}
+.lv-minrow{display:flex;align-items:center;justify-content:center;gap:8px;margin:10px 0;font-size:.82rem;color:var(--ink-muted)}
+.lv-minrow input{width:86px !important;text-align:center;padding:9px !important;font-size:1.15rem !important;font-weight:700;margin:0 !important}
+.lv-two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lv-big{-webkit-appearance:none;appearance:none;border-radius:12px;padding:14px 6px;font:inherit;font-weight:800;font-size:.98rem;cursor:pointer;line-height:1.2}
+.lv-us{background:#e8f5e9;border:1px solid #a5d6a7;color:#1b5e20}
+.lv-them{background:#fdecea;border:1px solid #f5b7b1;color:#a12a20}
+.lv-big.cur{outline:3px solid var(--primary-color);outline-offset:1px}
+.lv-panel{margin-top:10px;padding:10px;border-radius:10px;background:var(--surface-alt);border:1px dashed var(--line)}
+.lv-cap{font-size:.8rem;font-weight:700;margin-bottom:8px;color:var(--ink)}
+.lv-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.lv-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.lv-p{-webkit-appearance:none;appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:9px;
+  padding:7px 2px;font:inherit;cursor:pointer;text-align:center;min-width:0}
+.lv-p b{display:block;font-family:'Roboto Condensed',sans-serif;font-size:1.15rem;line-height:1}
+.lv-p span{display:block;font-size:.62rem;font-weight:700;color:var(--ink-muted);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lv-list{margin-top:12px;border-top:1px solid var(--line)}
+.lv-row{display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px solid var(--line);font-size:.9rem;color:var(--ink)}
+.lv-row .gm{width:48px;font-weight:800;font-family:'Roboto Condensed',sans-serif}
+.lv-row .gt{flex:1;min-width:0}
+.lv-row{border-left:4px solid transparent;padding-left:8px}
+.lv-row.us{border-left-color:#43a047}
+.lv-row.them{border-left-color:#e53935}
+.lv-row .gt{overflow-wrap:anywhere}
+.lv-row button{-webkit-appearance:none;appearance:none;border:0;background:transparent;color:var(--ink-muted);font-size:1.05rem;cursor:pointer;padding:2px 6px}
+.lv-empty{padding:8px 2px;font-size:.85rem;color:var(--ink-muted)}
+.lv-lbl{display:block;font-size:.78rem;font-weight:700;margin:12px 0 4px;color:var(--ink)}
+.lv-line{width:100%;box-sizing:border-box;padding:9px !important;font-size:.95rem !important;font-family:ui-monospace,Menlo,Consolas,monospace !important}
+.lv-warn{font-size:.8rem;color:#c62828;margin-top:4px}
+.lv-adv{margin-top:12px;font-size:.85rem}
+.lv-adv summary{cursor:pointer;color:var(--ink-muted);font-weight:700}
+.lv-adv-g{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px}
+.lv-adv-g small{display:block;font-size:.7rem;color:var(--ink-muted)}
+.lv-adv-g input,.lv-adv-g select{width:100%;padding:6px !important;margin:0 !important}
+.lv-ft{margin-top:12px;padding:12px;border-radius:10px;border:2px solid var(--accent-dark);background:rgba(255,215,0,.08);color:var(--ink);font-size:.88rem}
+.lv-ft .lv-big{width:100%;margin-top:10px;background:var(--primary-color);border:0;color:#fff}
+.lv-close{-webkit-appearance:none;appearance:none;display:block;margin:14px auto 0;border:0;background:transparent;color:var(--ink-muted);
+  font:inherit;font-size:.8rem;text-decoration:underline;cursor:pointer}
+.lv-off{text-align:center;font-size:.86rem;color:var(--ink-muted);margin:12px 0 4px}
+.lv-export{margin-top:12px;font-size:.8rem;color:var(--ink-muted);background:var(--surface-alt);border-radius:8px;padding:8px 10px;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lv-export .btn{padding:6px 12px;font-size:.82rem;margin:0}
+@media (prefers-color-scheme: dark){
+  .lv-us{background:#1b3a24;border-color:#2e6b3e;color:#c8e6c9}
+  .lv-them{background:#3a1f1f;border-color:#6b2e2e;color:#ffcdd2}
+  .lv-warn{color:#ff8a80}
+  .lv-big.cur{outline-color:var(--accent-color)}
+}
+
 /* Share ως εικόνα: μικρό παράθυρο προεπισκόπησης.
    Το id + !important χρειάζεται για να ξεφύγει από το γενικό .modal-content του admin (95%, 90vh). */
 #shareImgModal .modal-content{max-width:440px !important;width:92% !important;height:auto !important;
@@ -4659,9 +4739,51 @@ function showToast(message, type = 'success') {
                 </div>
                 </div>
 
+                <!-- 22/11/2026: το Live έγινε χωριστή ενότητα, με κουμπιά για το κινητό (renderLiveAdmin) -->
+                <details class="adm-sec" data-sec="live">
+                    <summary><span class="adm-sec-title">🔴 Live</span>
+                             <span class="adm-sec-sub">σκορ, σκόρερ, ημίχρονα</span></summary>
+                    <div class="adm-sec-body" id="lvAdmin">
+                        <div class="lv-fmt" id="lvFmt"></div>
+                        <div class="lv-phase" id="lvPhase"></div>
+                        <div id="lvOff" class="lv-off">Το live είναι κλειστό. Διάλεξε μορφή και πάτα «▶ Σέντρα».</div>
+                        <div id="lvBody" style="display:none">
+                            <div class="lv-score" id="lvScore"></div>
+                            <div class="lv-note" id="lvNote">Το σκορ βγαίνει μόνο του από τα γκολ</div>
+                            <div class="lv-minrow"><span>Λεπτό γκολ</span>
+                                <input id="lvMin" type="text" inputmode="tel" autocomplete="off" aria-label="Λεπτό γκολ">
+                                <span>από το ρολόι· αλλάζει</span></div>
+                            <div class="lv-two">
+                                <button type="button" class="lv-big lv-us" id="lvBtnUs" onclick="lvMode('us')">⚽ Γκολ Ολύμπου</button>
+                                <button type="button" class="lv-big lv-them" id="lvBtnThem" onclick="lvMode('them')">🥅 Γκολ αντιπάλου</button>
+                            </div>
+                            <div id="lvPanel"></div>
+                            <div class="lv-list" id="lvList"></div>
+                            <label class="lv-lbl" for="lvLine">✏️ Η γραμμή (ίδια με το "goals" του JSON)</label>
+                            <input id="lvLine" class="lv-line" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" oninput="lvLineInput()">
+                            <div class="lv-warn" id="lvWarn"></div>
+                            <details class="lv-adv"><summary>⏱️ Χρονόμετρο με το χέρι</summary>
+                                <div class="lv-adv-g">
+                                    <div><small>Ημίχρονο</small>
+                                        <select id="lvHalf" onchange="lvAdvChange()">
+                                            <option value="1">1ο</option><option value="BR">Διάλειμμα</option><option value="2">2ο</option><option value="HT">HT</option>
+                                            <option value="3">3ο</option><option value="4">4ο</option><option value="FT">FT</option>
+                                        </select></div>
+                                    <div><small>Διάρκεια (λ)</small><input id="lvDur" type="number" onchange="lvAdvChange()" title="Λεπτά ανά ημίχρονο ή τέταρτο"></div>
+                                    <div><small>Έναρξη</small><input id="lvStart" type="time" onchange="lvAdvChange()"></div>
+                                </div>
+                            </details>
+                            <div id="lvFt"></div>
+                            <button type="button" class="lv-close" onclick="lvClose()">⏹ Κλείσιμο live χωρίς πέρασμα στα Αποτελέσματα</button>
+                        </div>
+                        <div class="lv-export">💾 Για να το δουν όλοι:
+                            <button type="button" class="btn btn-success" onclick="exportData()">Export</button> και ανέβασμα στο GitHub.</div>
+                    </div>
+                </details>
+
                 <details class="adm-sec" data-sec="general">
-                    <summary><span class="adm-sec-title">⚙️ Επόμενος αγώνας &amp; Live</span>
-                             <span class="adm-sec-sub">ανακοίνωση, ημερομηνία, σκορ</span></summary>
+                    <summary><span class="adm-sec-title">📅 Επόμενος αγώνας</span>
+                             <span class="adm-sec-sub">ανακοίνωση, ημερομηνία, γήπεδο</span></summary>
                     <div class="adm-sec-body">
 <div class="form-group">
     <label>Κυλιόμενη Ανακοίνωση (Ticker):</label>
@@ -4726,51 +4848,10 @@ function showToast(message, type = 'success') {
     <label>Link Χάρτη (Google Maps):</label>
     <input type="text" id="matchMapLinkInput" placeholder="Επικόλληση link...">
 </div>
-        <div class="form-group" class="tint-live" style="padding: 15px; border-radius: var(--r-md); margin-bottom: 20px;">
-    <label class="tint-live-text" style="font-weight: bold; display: block; margin-bottom: 10px;">🔴 ΖΩΝΤΑΝΟ ΣΚΟΡ (LIVE)</label>
-    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-        <input type="checkbox" id="liveModeCheckbox" style="width: 20px; height: 20px;" onchange="document.getElementById('liveInputs').style.display = this.checked ? 'block' : 'none'">
-        <label for="liveModeCheckbox">Ενεργοποίηση Live Mode</label>
-    </div>
-   <div id="liveInputs" style="display: none;">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-        <input type="number" id="liveHomeScore" value="0" style="text-align: center;">
-        <input type="number" id="liveAwayScore" value="0" style="text-align: center;">
-    </div>
-    
-    <div style="background: var(--surface); padding: 10px; border-radius: var(--r-sm); border: 1px solid var(--line); color: var(--ink); margin-bottom:10px;">
-        <label style="font-size: 0.8rem; font-weight: bold; display: block; margin-bottom: 5px;">⏱️ Ρυθμίσεις Χρονομέτρου:</label>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px;">
-            <div>
-                <small style="display:block; font-size:0.7rem;">Ημίχρονο:</small>
-                <!-- 2ο/3ο/4ο: η «Έναρξη» γίνεται αυτόματα η τωρινή ώρα (διορθώνεται με το χέρι).
-                     Αλλιώς έμενε η ώρα του 1ου ημιχρόνου και το λεπτό έβγαινε «70+30'». -->
-                <select id="liveHalf" style="padding:5px;"
-                        onchange="if (/^[234]$/.test(this.value)) { const d = new Date(); document.getElementById('liveStartTime').value = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'); }">
-                    <option value="1">1ο</option>
-                    <option value="2">2ο</option>
-                    <option value="HT">HT (Ημίχρονο)</option>
-                    <option value="3">3ο</option>
-                    <option value="4">4ο</option>
-                    <option value="FT">FT (Τέλος)</option>
-                </select>
-                 </div>
-                 <div>
-                <small style="display:block; font-size:0.7rem;">Διάρκεια (λ):</small>
-                <input type="number" id="liveHalfDuration" value="40" style="text-align: center; padding:5px;" title="Λεπτά ΑΝΑ ΗΜΙΧΡΟΝΟ (Κ15 2026-27: 40, ή 45 όπου ισχύει)">
-                 </div>
-                     <div>
-                <small style="display:block; font-size:0.7rem;">Έναρξη:</small>
-                <input type="time" id="liveStartTime" style="text-align: center; padding:5px;">
-                     </div>
-                     </div>
-                    </div>
-                </div>
-                <div class="modal-buttons" style="margin-bottom: 1.5rem;">
-                 <button class="btn btn-success" onclick="saveGeneralSettings()">💾 Αποθήκευση</button>
-                </div>
-                    </div>
+        <!-- 22/11/2026: το «ΖΩΝΤΑΝΟ ΣΚΟΡ» μετακόμισε στην ενότητα «🔴 Live» -->
+        <div class="modal-buttons" style="margin-bottom: 1.5rem;">
+            <button class="btn btn-success" onclick="saveGeneralSettings()">💾 Αποθήκευση</button>
+        </div>
 
                     </div>
                 </details>
@@ -5274,6 +5355,7 @@ function showToast(message, type = 'success') {
         // =========================================================
         // LIVE & ΚΛΗΣΗ — αλλαγές 15/10/2026
         // LIVE: το σκορ γράφεται ΑΠΕΥΘΕΙΑΣ στο olympos-backup.json στο GitHub (όχι από admin).
+        //  (Από 22/11/2026 και από το admin → «🔴 Live», με σκόρερ: δες «ΑΛΛΑΓΗ 22/11/2026».)
         //  - Το λεπτό τρέχει μόνο του κάθε 10" (tickLiveMinute). Πριν πάγωνε ως το επόμενο γκολ.
         //  - Χαμένο σήμα: η ανανέωση κρατά ό,τι δείχνει (fetchServerData). Πριν η κάρτα
         //    γινόταν «Η νέα σεζόν έρχεται».
@@ -5384,6 +5466,34 @@ function showToast(message, type = 'success') {
         //    βγάζει ο «Έλεγχος δεδομένων».
         //  - Η επικόλληση της ΕΠΣΜ δεν το βάζει μόνη της (η ΕΠΣΜ γράφει σκέτο «3 - 0»).
         //    Ο Φύλακας αποτελεσμάτων στο GitHub συγκρίνει μόνο σκορ, άρα δεν επηρεάζεται.
+        // =========================================================
+        // =========================================================
+        // ΑΛΛΑΓΗ 22/11/2026 — ΣΚΟΡΕΡ ΣΤΟ LIVE
+        //  - ΣΤΟ JSON, μέσα στο liveScore: "goals": "12 21, 25 x, 38 8p, 40+2 o, 61 2o, 70 xp"
+        //    λεπτό, κενό, ποιος, κόμμα. Ποιος:  21 = νούμερο φανέλας (από το ρόστερ)
+        //      8p = πέναλτι του #8 · o = αυτογκόλ αντιπάλου (για εμάς) · x = γκολ αντιπάλου
+        //      xp = πέναλτι αντιπάλου · 2o = αυτογκόλ του δικού μας #2 (για τον αντίπαλο)
+        //    Ανεκτικό: κενά, κεφαλαία, «'», ελληνικά π/ο/χ. Ό,τι δεν καταλαβαίνει το αγνοεί
+        //    (και το λέει στο admin). Νούμερο που λείπει από το ρόστερ γράφεται «#23».
+        //  - ΣΚΟΡ: όταν υπάρχει το πεδίο "goals" (ΑΚΟΜΑ ΚΑΙ "") βγαίνει μόνο από αυτό και τα
+        //    "home"/"away" αγνοούνται (το admin τα κρατά ενημερωμένα, για ιστορικούς λόγους).
+        //    Χωρίς πεδίο "goals": όπως πριν. ΣΤΗ ΣΕΝΤΡΑ: "goals": "" (αλλιώς μένουν τα παλιά γκολ).
+        //  - "periods": "4" = αγώνας σε τέταρτα (π.χ. 4×20' με "duration": "20"). Χωρίς αυτό: 2 ημίχρονα.
+        //    Σειρά: 1 → "BR" (διάλειμμα) → 2 → "HT" (ημίχρονο) → 3 → "BR" → 4 → "FT".
+        //    "BR" γράφεται «Διάλειμμα». Το λεπτό συνεχίζει (3ο τέταρτο: 41').
+        //  - ΚΑΡΤΑ: σκόρερ κάτω από τα σήματα, «8'  52' Κυρτζαλιώτης Ν.» (ίδιος παίκτης σε μία γραμμή,
+        //    όνομα όπως στα Αποτελέσματα). Αντίπαλος: μόνο λεπτά. Με πολλά γκολ η κάρτα μακραίνει.
+        //    Εικόνα share: τα σήματα μικραίνουν όταν υπάρχουν γκολ· μετά τις ~5 γραμμές «…».
+        //  - ADMIN → «🔴 Live» (χωριστά από το «📅 Επόμενος αγώνας»): μορφή 2×40'/2×45'/4×20',
+        //    Σέντρα/Ημίχρονο/2ο/Τέλος (4×20': Σέντρα/Διάλειμμα/2ο/Ημίχρονο/3ο/Διάλειμμα/4ο/Τέλος) (βάζουν μόνα τους την ώρα· η Σέντρα αδειάζει τα γκολ),
+        //    «⚽ Γκολ Ολύμπου» → νούμερο, «🥅 Γκολ αντιπάλου», λίστα με ✕, η γραμμή για χέρι.
+        //    Κάθε κουμπί αποθηκεύει αμέσως στο πρόχειρο· για να το δουν όλοι: Export και ανέβασμα.
+        //  - ΤΕΛΟΣ → «📋 Πέρασε στα Αποτελέσματα»: σκορ, scorers, clean sheet (στον τερματοφύλακα
+        //    του ρόστερ, αν είναι ένας και δεν φάγαμε γκολ) και "goalLog" στον αγώνα· το live κλείνει,
+        //    η γραμμή αδειάζει. Μόνο για αγώνα του προγράμματος, όχι για εμβόλιμο.
+        //  - "goalLog" στον αγώνα: [{ "min": "52'", "side": "us"|"them", "name", "pen", "og" }].
+        //    Τα Αποτελέσματα δείχνουν λεπτά μόνο όσο τα ονόματά του ταιριάζουν με τα "scorers"·
+        //    αν αλλάξεις σκόρερ με το χέρι, γυρίζουν στο παλιό «Κυρτζαλιώτης Ν. (2)».
         // =========================================================
         // =========================================================
         // ΑΛΛΑΓΗ 9/11/2026 — ΑΝΑΖΗΤΗΣΗ
@@ -6444,7 +6554,11 @@ function displayResults() {
                 let hasStats = false;
                 let contentHTML = [];
 
-                if (match.scorers && match.scorers.length > 0 && !match.isPostponed && !isAwardedMatch(match)) {
+                // 22/11/2026: αγώνας που πέρασε από το live → με λεπτά (goalLogEntries)
+                const logged = (match.scorers && match.scorers.length > 0 && !match.isPostponed && !isAwardedMatch(match))
+                    ? goalLogEntries(match) : null;
+                if (logged) { hasStats = true; contentHTML.push(...logged); }
+                else if (match.scorers && match.scorers.length > 0 && !match.isPostponed && !isAwardedMatch(match)) {
                     hasStats = true;
                     const counts = {};
                     match.scorers.forEach(name => { counts[name] = (counts[name] || 0) + 1; });
@@ -6988,6 +7102,7 @@ function addPlayer() {
             (data.fixtures || []).forEach(r => (r.matches || []).forEach(m => {
                 if (m.scorers) m.scorers = m.scorers.map(x => x === p.name ? name : x);
                 if (m.cleanSheetHolders) m.cleanSheetHolders = m.cleanSheetHolders.map(x => x === p.name ? name : x);
+                if (Array.isArray(m.goalLog)) m.goalLog.forEach(g => { if (g && g.name === p.name) g.name = name; });
             }));
         }
         // Αν έγινε αρχηγός, κανείς άλλος δεν είναι
@@ -7601,21 +7716,7 @@ function saveGeneralSettings() {
     if (countdownInput) data.countdownTarget = countdownInput.value;
     if (announcementInput) data.announcement = announcementInput.value;
 
-    // Live Score Settings
-    const liveCheck = document.getElementById('liveModeCheckbox');
-    const liveHome = document.getElementById('liveHomeScore');
-    const liveAway = document.getElementById('liveAwayScore');
-    const liveHalf = document.getElementById('liveHalf');
-    const liveDur = document.getElementById('liveHalfDuration');
-    const liveStart = document.getElementById('liveStartTime');
-
-    if (!data.liveScore) data.liveScore = {};
-    if (liveCheck) data.liveScore.active = liveCheck.checked;
-    if (liveHome) data.liveScore.home = liveHome.value || 0;
-    if (liveAway) data.liveScore.away = liveAway.value || 0;
-    if (liveHalf) data.liveScore.half = liveHalf.value;
-    if (liveDur) data.liveScore.duration = liveDur.value || 40;   // λεπτά ανά ημίχρονο (ήταν 20)
-    if (liveStart) data.liveScore.startTime = liveStart.value;
+    // Live: από τις 22/11/2026 στην ενότητα «🔴 Live», που αποθηκεύει μόνη της σε κάθε κουμπί.
 
     // Special Match
     const specialCheck = document.getElementById('useSpecialMatchCheckbox');
@@ -7801,6 +7902,421 @@ function normCrest(img) {
     img.style.transform = r.k < 0.999 ? `scale(${r.k.toFixed(3)})` : '';
 }
 
+// ============ ΣΚΟΡΕΡ ΣΤΟ LIVE (22/11/2026) ============
+// Η γραμμή "goals" του liveScore: «12 21, 25 x, 38 8p, 40+2 o, 61 2o, 70 xp».
+// Όλη η περιγραφή στο σχόλιο «ΑΛΛΑΓΗ 22/11/2026 — ΣΚΟΡΕΡ ΣΤΟ LIVE» (κάτω από το SEASON_DEFAULTS).
+function liveGoalsOn(ls) { return !!ls && typeof ls.goals === 'string'; }
+
+function parseLiveGoals(str) {
+    const items = [], errors = [];
+    String(str || '').split(/[,;\n]+/).forEach((raw, idx) => {
+        let t = raw.trim().toLowerCase();
+        if (!t) return;
+        // ελληνικό πληκτρολόγιο κατά λάθος: χ→x, π→p, ο→o· και χωρίς «'»
+        t = t.replace(/χ/g, 'x').replace(/π/g, 'p').replace(/[οό]/g, 'o').replace(/[΄'’`]/g, '');
+        const m = t.match(/^(\d{1,3})(?:\s*\+\s*(\d{1,2}))?\s*(.*)$/);
+        if (!m || +m[1] > 130) { errors.push(raw.trim()); return; }
+        const min = +m[1], extra = m[2] ? +m[2] : 0, rest = m[3].replace(/\s+/g, '');
+        const g = { idx, min, extra, label: extra ? `${min}+${extra}'` : `${min}'`, key: min + extra / 100 };
+        let mm;
+        if (rest === 'x') g.side = 'them';
+        else if (rest === 'xp' || rest === 'px') { g.side = 'them'; g.pen = true; }
+        else if (rest === 'o') { g.side = 'us'; g.og = true; }
+        else if ((mm = rest.match(/^(\d{1,3})(p|o)?$/))) {
+            g.num = +mm[1];
+            const p = ((data && data.roster) || []).find(r => r && r.number !== null && r.number !== undefined
+                                                              && r.number !== '' && Number(r.number) === g.num);
+            g.player = p ? p.name : null;
+            g.side = mm[2] === 'o' ? 'them' : 'us';
+            g.pen = mm[2] === 'p';
+            g.ogUs = mm[2] === 'o';
+        } else { errors.push(raw.trim()); return; }
+        items.push(g);
+    });
+    items.sort((a, b) => (a.key - b.key) || (a.idx - b.idx));
+    const us = items.filter(g => g.side === 'us').length;
+    return { items, errors, us, them: items.length - us };
+}
+
+// true = ο Όλυμπος γηπεδούχος (ή αγώνας χωρίς τον Όλυμπο, π.χ. γραμμένος εμβόλιμος)
+function liveMatchSides(match) {
+    return !(match && isMyTeam(match.away) && !isMyTeam(match.home));
+}
+
+// [γηπεδούχος, φιλοξενούμενη]. Με πεδίο "goals" (και άδειο): από τα γκολ. Χωρίς: τα παλιά home/away.
+function liveScoreHA(ls, match) {
+    ls = ls || {};
+    if (!liveGoalsOn(ls)) return [ls.home ?? 0, ls.away ?? 0];
+    const P = parseLiveGoals(ls.goals);
+    return liveMatchSides(match || currentNextMatch) ? [P.us, P.them] : [P.them, P.us];
+}
+
+// «Νίκος Κυρτζαλιώτης» → «Κυρτζαλιώτης Ν.» (όπως τα Αποτελέσματα· το αρχικό δεν φεύγει ποτέ μόνο του)
+function liveShort(name) {
+    const p = String(name || '').split(' ');
+    return p.length > 1 ? p.slice(1).join(' ') + ' ' + p[0].charAt(0) + '.' : String(name || '');
+}
+
+// "BR" = διάλειμμα ανάμεσα στα τέταρτα (μετά το 1ο και το 3ο)· αλλιώς ό,τι έδινε πάντα η calculateLiveMinute
+function liveMinuteText(ls) {
+    ls = ls || {};
+    if (ls.half === 'BR') return 'Διάλειμμα';
+    return calculateLiveMinute(ls.startTime, ls.half, ls.duration);
+}
+
+// Γραμμές μιας πλευράς: { html, text }. Εμείς: ίδιος παίκτης σε μία γραμμή, μετά τα αυτογκόλ του αντιπάλου.
+// Αντίπαλος: όλα τα λεπτά σε μία γραμμή, μετά τα δικά μας αυτογκόλ με όνομα.
+function liveGoalLines(P, side) {
+    const lbl = g => g.label + (g.pen ? '(πεν)' : '');
+    const mins = g => `<i>${esc(lbl(g))}</i>`;
+    const who = g => g.player ? liveShort(g.player) : '#' + g.num;
+    const lines = [];
+    if (side === 'us') {
+        const order = [], by = new Map();
+        P.items.filter(g => g.side === 'us' && !g.og).forEach(g => {
+            if (!by.has(g.num)) { by.set(g.num, []); order.push(g.num); }
+            by.get(g.num).push(g);
+        });
+        order.forEach(k => {
+            const gs = by.get(k), nm = who(gs[0]);
+            lines.push({ html: gs.map(mins).join(' ') + ' <b>' + esc(nm) + '</b>',
+                         text: gs.map(lbl).join(' ') + ' ' + nm });
+        });
+        const ogs = P.items.filter(g => g.side === 'us' && g.og);
+        if (ogs.length) lines.push({ html: ogs.map(mins).join(' ') + ' <span class="og">(αυτ.)</span>',
+                                     text: ogs.map(lbl).join(' ') + ' (αυτ.)' });
+        return lines;
+    }
+    const plain = P.items.filter(g => g.side === 'them' && !g.ogUs);
+    if (plain.length) lines.push({ html: plain.map(mins).join(' '), text: plain.map(lbl).join(' ') });
+    P.items.filter(g => g.ogUs).forEach(g => lines.push({
+        html: mins(g) + ' <span class="og">(αυτ.)</span> <b>' + esc(who(g)) + '</b>',
+        text: lbl(g) + ' (αυτ.) ' + who(g) }));
+    return lines;
+}
+
+// Το μπλοκ κάτω από τα σήματα στην κάρτα
+function liveGoalsHTML(ls, match) {
+    if (!liveGoalsOn(ls)) return '';
+    const P = parseLiveGoals(ls.goals);
+    if (!P.items.length) return '';
+    const L = { us: liveGoalLines(P, 'us'), them: liveGoalLines(P, 'them') };
+    const home = liveMatchSides(match) ? L.us : L.them, away = liveMatchSides(match) ? L.them : L.us;
+    const col = ls2 => `<div class="nx-gside">${ls2.map(l => `<div>${l.html}</div>`).join('')}</div>`;
+    return `<div class="nx-goals">${col(home)}${col(away)}</div>`;
+}
+
+// Εικόνα share: λεπτά σε πρασινωπό, ονόματα σε λευκό, ως 5-6 γραμμές ανά μεριά (μετά «…»)
+function drawLiveGoals(ctx, cols, xs, W) {
+    const top = 640, bottom = 818;
+    const wrap = (text, maxW) => {   // σπάει μόνο σε απλό κενό: «Κυρτζαλιώτης Ν.» και «8' 52'» μένουν μαζί
+        const out = []; let cur = '';
+        text.split(' ').forEach(w => {
+            const t = cur ? cur + ' ' + w : w;
+            if (ctx.measureText(t).width > maxW && cur) { out.push(cur); cur = w; } else cur = t;
+        });
+        if (cur) out.push(cur);
+        return out;
+    };
+    let fs = 32, rows;
+    for (;;) {
+        ctx.font = `600 ${fs}px ${SI_IN}`;
+        rows = cols.map(ls => ls.flatMap(l => wrap(l.text, 440)));
+        if (Math.max(rows[0].length, rows[1].length) * fs * 1.3 <= bottom - top || fs <= 24) break;
+        fs -= 2;
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(90, top - 26); ctx.lineTo(W - 90, top - 26); ctx.stroke();
+    const max = Math.max(1, Math.floor((bottom - top) / (fs * 1.3)));
+    rows.forEach((ls, i) => {
+        let y = top + fs * 0.6;
+        ls.slice(0, max).forEach((l, k) => {
+            const t = (k === max - 1 && ls.length > max) ? l + ' …' : l;
+            const mPart = (t.match(/^((?:\d+(?:\+\d+)?'(?:\(πεν\))?\s*)+)/) || ['', ''])[1];
+            const rest = t.slice(mPart.length);
+            ctx.font = `700 ${fs}px ${SI_RC}`; const w1 = ctx.measureText(mPart).width;
+            ctx.font = `600 ${fs}px ${SI_IN}`; const w2 = ctx.measureText(rest).width;
+            const x0 = xs[i] - (w1 + w2) / 2;
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#c0dd97'; ctx.font = `700 ${fs}px ${SI_RC}`; ctx.fillText(mPart, x0, y);
+            ctx.fillStyle = '#ffffff'; ctx.font = `600 ${fs}px ${SI_IN}`; ctx.fillText(rest, x0 + w1, y);
+            y += fs * 1.3;
+        });
+    });
+}
+
+// Αποτελέσματα: «⚽ 8'  52' Κυρτζαλιώτης Ν.». null = δεν υπάρχει goalLog ή δεν ταιριάζει πια με τα scorers.
+function goalLogEntries(match) {
+    const log = Array.isArray(match && match.goalLog) ? match.goalLog.filter(Boolean) : null;
+    if (!log || !log.length) return null;
+    const names = log.filter(g => g.side === 'us' && !g.og && g.name).map(g => g.name).sort();
+    const sc = (match.scorers || []).slice().sort();
+    if (names.length !== sc.length || names.some((n, i) => n !== sc[i])) return null;
+    const lbl = g => esc(g.min || '') + (g.pen ? '(πεν)' : '');
+    const order = [], by = new Map();
+    log.filter(g => g.side === 'us' && !g.og && g.name).forEach(g => {
+        if (!by.has(g.name)) { by.set(g.name, []); order.push(g.name); }
+        by.get(g.name).push(g);
+    });
+    const out = order.map(n => `<span class="match-scorer-entry">⚽ ${by.get(n).map(lbl).join(' ')} ${esc(liveShort(n))}</span>`);
+    const ogs = log.filter(g => g.side === 'us' && g.og);
+    if (ogs.length) out.push(`<span class="match-scorer-entry">⚽ ${ogs.map(lbl).join(' ')} (αυτ.)</span>`);
+    return out;
+}
+
+// ---------- ADMIN → 🔴 Live ----------
+const lvState = { mode: null, pen: false, og: false };
+let lvLineT = null;
+
+function lvLs() {
+    if (!data.liveScore) data.liveScore = { active: false, home: '0', away: '0', half: '1', duration: '40', startTime: '' };
+    return data.liveScore;
+}
+function lvNow() {
+    const t = Math.floor(athensMinutesNow());
+    return String(Math.floor(t / 60) % 24).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0');
+}
+function lvSuggestMin(ls) {
+    const m = String(liveMinuteText(ls)).match(/^(\d+(?:\+\d+)?)'$/);
+    return m ? m[1] : '';
+}
+// Ο επόμενος αγώνας του Ολύμπου στο πρόγραμμα (ίδια λογική με την κάρτα)
+function liveTarget() {
+    if (data.specialMatch && data.specialMatch.home) return { special: true };
+    for (const round of (data.fixtures || [])) {
+        const m = (round.matches || []).find(x => (isMyTeam(x.home) || isMyTeam(x.away)) && x.homeScore === null && !x.isPostponed);
+        if (m) return { match: m, round };
+    }
+    return null;
+}
+function lvCommit(opts) {
+    const ls = lvLs();
+    if (liveGoalsOn(ls)) { const [h, a] = liveScoreHA(ls); ls.home = String(h); ls.away = String(a); }
+    saveData(data);
+    displayNextMatch();
+    renderLiveAdmin(opts || {});
+}
+
+function renderLiveAdmin(opts) {
+    opts = opts || {};
+    const root = document.getElementById('lvAdmin');
+    if (!root || !data) return;
+    const $ = id => document.getElementById(id);
+    const ls = lvLs(), on = !!ls.active, q4 = String(ls.periods) === '4', dur = String(ls.duration || 40);
+
+    $('lvFmt').innerHTML = '<span>Αγώνας:</span>' + [[2, 40], [2, 45], [4, 20]].map(([p, d]) =>
+        `<button type="button" class="lv-chip ${(q4 ? 4 : 2) === p && dur === String(d) ? 'on' : ''}" onclick="lvFormat(${p},${d})">${p}×${d}'</button>`).join('');
+    // 4×20': Σέντρα, Διάλειμμα, 2ο, Ημίχρονο / 3ο, Διάλειμμα, 4ο, Τέλος (τα δύο «Διάλειμμα» = "BR")
+    // 4×20' σε στενή οθόνη (≤400px): «Διάλ.» / «Ημίχρ.», για να χωράνε 4 κουμπιά στη σειρά
+    const BRK = '⏸ <span class="l">Διάλειμμα</span><span class="s">Διάλ.</span>';
+    const HTK = '⏸ <span class="l">Ημίχρονο</span><span class="s">Ημίχρ.</span>';
+    const ph = q4
+        ? [['1', '▶ Σέντρα'], ['BR', BRK], ['2', '▶ 2ο'], ['HT', HTK],
+           ['3', '▶ 3ο'], ['BR', BRK], ['4', '▶ 4ο'], ['FT', '🏁 Τέλος']]
+        : [['1', '▶ Σέντρα'], ['HT', HTK], ['2', '▶ 2ο'], ['FT', '🏁 Τέλος']];
+    $('lvPhase').className = 'lv-phase' + (q4 ? ' q4' : '');   // q4: σύντομα ονόματα σε στενή οθόνη
+    $('lvPhase').innerHTML = ph.map(([v, t]) =>
+        `<button type="button" class="lv-ph ${on && ls.half === v ? 'cur' : ''}" ${!on && v !== '1' ? 'disabled' : ''} onclick="lvPhase('${v}')">${t}</button>`).join('');
+    $('lvOff').style.display = on ? 'none' : '';
+    $('lvBody').style.display = on ? '' : 'none';
+    if (!on) return;
+
+    const match = currentNextMatch;
+    const P = parseLiveGoals(ls.goals);
+    const [h, a] = liveScoreHA(ls, match);
+    const tn = n => isMyTeam(n) ? 'ΟΛΥΜΠΟΣ' : (n || '');   // στενό admin: σκέτο «ΟΛΥΜΠΟΣ»
+    $('lvScore').innerHTML = `<div class="t">${esc(tn(match && match.home))}</div>
+        <div><div class="s">${esc(h)} – ${esc(a)}</div><div class="m">${esc(ls.half === 'FT' ? 'ΤΕΛΙΚΟ' : liveMinuteText(ls))}</div></div>
+        <div class="t">${esc(tn(match && match.away))}</div>`;
+    $('lvNote').textContent = liveGoalsOn(ls) || (String(ls.home || 0) === '0' && String(ls.away || 0) === '0')
+        ? 'Το σκορ βγαίνει μόνο του από τα γκολ'
+        : `Τώρα το σκορ είναι από τα home/away (${ls.home}-${ls.away}). Με το πρώτο γκολ εδώ μετράνε μόνο τα γκολ της γραμμής.`;
+
+    const mi = $('lvMin');
+    if (opts.min || document.activeElement !== mi) mi.value = lvSuggestMin(ls);
+    $('lvBtnUs').classList.toggle('cur', lvState.mode === 'us');
+    $('lvBtnThem').classList.toggle('cur', lvState.mode === 'them');
+
+    const players = (data.roster || []).filter(p => p && p.number !== null && p.number !== undefined && p.number !== '')
+        .slice().sort((x, y) => Number(x.number) - Number(y.number));
+    const label = p => String(p.nickname || String(p.name).split(' ').slice(-1)[0])
+        .normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase();
+    const grid = suffix => `<div class="lv-grid">${players.map(p =>
+        `<button type="button" class="lv-p" onclick="lvAdd('${Number(p.number)}${suffix}')"><b>${esc(p.number)}</b><span>${esc(label(p))}</span></button>`).join('')}</div>`;
+    let pan = '';
+    if (lvState.mode === 'us') pan = `<div class="lv-panel"><div class="lv-cap">Ποιος σκόραρε; Ένα πάτημα και μπαίνει.</div>
+        <div class="lv-chips"><button type="button" class="lv-chip red ${lvState.pen ? 'on' : ''}" onclick="lvState.pen=!lvState.pen;renderLiveAdmin()">Πέναλτι</button>
+        <button type="button" class="lv-chip" onclick="lvAdd('o')">Αυτογκόλ αντιπάλου</button></div>${grid(lvState.pen ? 'p' : '')}</div>`;
+    if (lvState.mode === 'them') pan = `<div class="lv-panel"><div class="lv-cap">Γκολ αντιπάλου</div>
+        <div class="lv-chips"><button type="button" class="lv-chip" onclick="lvAdd('x')">Κανονικό</button>
+        <button type="button" class="lv-chip" onclick="lvAdd('xp')">Πέναλτι</button>
+        <button type="button" class="lv-chip red ${lvState.og ? 'on' : ''}" onclick="lvState.og=!lvState.og;renderLiveAdmin()">Αυτογκόλ δικού μας…</button></div>
+        ${lvState.og ? '<div class="lv-cap">Ποιος από τους δικούς μας;</div>' + grid('o') : ''}</div>`;
+    $('lvPanel').innerHTML = pan;
+
+    const who = g => g.player ? liveShort(g.player) : '#' + g.num;
+    $('lvList').innerHTML = P.items.slice().reverse().map(g => {
+        const t = g.side === 'us'
+            ? (g.og ? 'Αυτογκόλ αντιπάλου' : who(g) + (g.pen ? ' (πεν)' : ''))
+            : (g.ogUs ? 'Αυτογκόλ ' + who(g) : 'Αντίπαλος' + (g.pen ? ' (πεν)' : ''));
+        return `<div class="lv-row ${g.side}"><span class="gm">${esc(g.label)}</span><span class="gt">${esc(t)}</span>
+            <button type="button" title="Σβήσιμο" aria-label="Σβήσιμο" onclick="lvDel(${g.idx})">✕</button></div>`;
+    }).join('') || '<div class="lv-empty">Κανένα γκολ ακόμα.</div>';
+
+    const li = $('lvLine');
+    if (document.activeElement !== li) li.value = ls.goals || '';
+    const unk = [...new Set(P.items.filter(g => g.num != null && !g.player).map(g => '#' + g.num))];
+    $('lvWarn').innerHTML = [
+        unk.length ? `⚠️ Δεν υπάρχει στο ρόστερ: ${esc(unk.join(', '))}. Θα γράφει το νούμερο και δεν θα μετρήσει σε κανέναν.` : '',
+        P.errors.length ? `⚠️ Δεν το καταλαβαίνω: «${P.errors.map(esc).join('», «')}». Αγνοείται.` : ''
+    ].filter(Boolean).join('<br>');
+
+    if (document.activeElement !== $('lvHalf')) $('lvHalf').value = ls.half || '1';
+    if (document.activeElement !== $('lvDur')) $('lvDur').value = dur;
+    if (document.activeElement !== $('lvStart')) $('lvStart').value = ls.startTime || '';
+
+    // Τέλος → πέρασμα στα Αποτελέσματα
+    let ft = '';
+    if (ls.half === 'FT') {
+        const T = liveTarget();
+        if (T && T.special) {
+            ft = `<div class="lv-ft"><b>🏁 Τέλος (εμβόλιμος αγώνας).</b> Δεν μπαίνει στα Αποτελέσματα.
+                  <button type="button" class="lv-big" onclick="lvFinish()">⏹ Κλείσε το live</button></div>`;
+        } else if (!T) {
+            ft = `<div class="lv-ft"><b>🏁 Τέλος.</b> Δεν βρέθηκε αγώνας του Ολύμπου χωρίς σκορ στο πρόγραμμα.
+                  <button type="button" class="lv-big" onclick="lvFinish()">⏹ Κλείσε το live</button></div>`;
+        } else {
+            const ours = P.items.filter(g => g.side === 'us' && !g.og && g.player).length;
+            const gk = lvGoalkeepers();
+            const csTxt = P.them === 0 ? (gk.length === 1 ? `, clean sheet: ${esc(liveShort(gk[0].name))}` : ', clean sheet: διάλεξέ το στα Αποτελέσματα') : '';
+            const [th, ta] = liveScoreHA(ls, T.match);
+            const koDraw = koStage(T.round) && th === ta;
+            ft = `<div class="lv-ft"><b>🏁 Ο αγώνας τελείωσε ${th}-${ta}.</b><br>
+                  Θα γραφτούν στην ${esc(roundLabel(T.round))} (${esc(T.match.home)} – ${esc(T.match.away)}):
+                  σκορ, ${ours} ${ours === 1 ? 'γκολ παιδιού' : 'γκολ παιδιών'} με λεπτά${csTxt}.
+                  ${koDraw ? '<br>Ισοπαλία στο νοκ άουτ: τα πέναλτι τα γράφεις μετά στα Αποτελέσματα.' : ''}
+                  <button type="button" class="lv-big" onclick="lvTransfer()">📋 Πέρασε στα Αποτελέσματα</button></div>`;
+        }
+    }
+    $('lvFt').innerHTML = ft;
+}
+
+function lvGoalkeepers() {
+    return (data.roster || []).filter(p => p && /Τερματοφύλακ|\(GK\)/i.test(p.position || ''));
+}
+function lvMode(m) {
+    lvState.mode = lvState.mode === m ? null : m;
+    lvState.pen = false; lvState.og = false;
+    renderLiveAdmin({ min: true });   // φρέσκο λεπτό από το ρολόι τη στιγμή που πατάς «Γκολ»
+}
+function lvAdd(token) {
+    const mi = document.getElementById('lvMin');
+    const min = String(mi.value || '').trim().replace(/[΄'’\s]/g, '');
+    if (!/^\d{1,3}(\+\d{1,2})?$/.test(min)) {
+        showToast('Γράψε πρώτα το λεπτό του γκολ (π.χ. 34 ή 40+2).', 'error');
+        mi.focus();
+        return;
+    }
+    const ls = lvLs();
+    const cur = String(ls.goals || '').trim().replace(/,\s*$/, '');
+    ls.goals = (cur ? cur + ', ' : '') + min + ' ' + token;
+    lvState.mode = null; lvState.pen = false; lvState.og = false;
+    lvCommit({ min: true });
+    const g = parseLiveGoals(min + ' ' + token).items[0];
+    if (g) showToast(`⚽ ${g.label} ${g.side === 'us' ? (g.og ? 'αυτογκόλ αντιπάλου' : (g.player ? liveShort(g.player) : '#' + g.num)) : (g.ogUs ? 'αυτογκόλ ' + (g.player ? liveShort(g.player) : '#' + g.num) : 'αντίπαλος')}${g.pen ? ' (πεν)' : ''}`);
+}
+function lvDel(idx) {
+    const ls = lvLs();
+    const parts = String(ls.goals || '').split(/[,;\n]+/);
+    if (idx < 0 || idx >= parts.length) return;
+    if (!confirm(`Σβήσιμο του «${parts[idx].trim()}»;`)) return;
+    parts.splice(idx, 1);
+    ls.goals = parts.map(x => x.trim()).filter(Boolean).join(', ');
+    lvCommit();
+}
+function lvLineInput() {
+    clearTimeout(lvLineT);
+    lvLineT = setTimeout(() => {
+        lvLs().goals = document.getElementById('lvLine').value;
+        lvCommit();
+    }, 500);
+}
+function lvFormat(p, d) {
+    const ls = lvLs();
+    ls.duration = String(d);
+    if (p === 4) ls.periods = '4'; else delete ls.periods;
+    if (p !== 4 && /^[34]$/.test(String(ls.half))) ls.half = '2';
+    if (p !== 4 && ls.half === 'BR') ls.half = 'HT';
+    lvCommit();
+}
+function lvPhase(v) {
+    const ls = lvLs();
+    if (v === '1') {
+        const old = String(ls.goals || '').trim();
+        if (old && !confirm(`Νέα σέντρα: σβήνω τα γκολ που υπάρχουν («${old}»);`)) return;
+        ls.active = true;
+        ls.goals = '';
+        ls.home = '0'; ls.away = '0';
+        if (!ls.duration) ls.duration = '40';
+    }
+    if (/^[1234]$/.test(v)) ls.startTime = lvNow();
+    ls.half = v;
+    lvState.mode = null;
+    lvCommit({ min: true });
+}
+function lvAdvChange() {
+    const ls = lvLs();
+    ls.half = document.getElementById('lvHalf').value;
+    ls.duration = String(document.getElementById('lvDur').value || 40);
+    ls.startTime = document.getElementById('lvStart').value || '';
+    lvCommit({ min: true });
+}
+function lvFinish() {
+    const ls = lvLs();
+    ls.active = false;
+    ls.goals = '';
+    ls.home = '0'; ls.away = '0';
+    ls.half = '1';
+    lvCommit();
+}
+function lvClose() {
+    if (!confirm('Κλείνει το live χωρίς να περάσει τίποτα στα Αποτελέσματα. Σίγουρα;')) return;
+    lvLs().active = false;
+    lvCommit();
+}
+function lvTransfer() {
+    const T = liveTarget();
+    if (!T || !T.match) return;
+    const ls = lvLs(), m = T.match;
+    const P = parseLiveGoals(ls.goals);
+    const [h, a] = liveScoreHA(ls, m);
+    if (!confirm(`Πέρασμα στην ${roundLabel(T.round)}:\n${m.home} ${h}-${a} ${m.away};`)) return;
+    m.homeScore = h;
+    m.awayScore = a;
+    m.scorers = P.items.filter(g => g.side === 'us' && !g.og && g.player).map(g => g.player);
+    const gk = lvGoalkeepers();
+    m.cleanSheetHolders = (P.them === 0 && gk.length === 1) ? [gk[0].name] : [];
+    m.goalLog = P.items.map(g => {
+        const o = { min: g.label, side: g.side };
+        if (g.player) o.name = g.player;
+        if (g.pen) o.pen = true;
+        if (g.og || g.ogUs) o.og = true;
+        return o;
+    });
+    if (!m.goalLog.length) delete m.goalLog;
+    delete m.isPostponed; delete m.isCancelled; delete m.isAwarded;
+    const koDraw = koStage(T.round) && h === a;
+    lvFinish();   // κλείνει το live, αδειάζει τη γραμμή, αποθηκεύει
+    recomputePlayerStats();
+    saveData(data);
+    displayStandings(); displayResults(); displayFixtures(); displayTopScorers(); displayRoster(); displayNextMatch();
+    renderKoAdmin();
+    loadRoundSelector();   // αν η φόρμα των Αποτελεσμάτων ήταν ανοιχτή, να μη μείνει παλιά
+    showToast(koDraw
+        ? `Πέρασε στην ${roundLabel(T.round)}. Ισοπαλία: γράψε τα πέναλτι στα Αποτελέσματα, μετά Export.`
+        : `✅ Πέρασε στην ${roundLabel(T.round)}. Τώρα Export και ανέβασμα.`);
+}
+
 function teamSide(name) {
     const mine = isMyTeam(name);
     // Χωρίς κύκλο το σήμα θέλει διάφανο αρχείο: για τον Όλυμπο δοκιμάζουμε πρώτα
@@ -7871,11 +8387,7 @@ if (!nextMatch) {
     const isFT = !!(isLive && data.liveScore.half === 'FT');
     let liveMinuteDisplay = "";
     if (isLive) {
-        liveMinuteDisplay = calculateLiveMinute(
-            data.liveScore.startTime, 
-            data.liveScore.half, 
-            data.liveScore.duration
-        );
+        liveMinuteDisplay = liveMinuteText(data.liveScore);   // 22/11/2026: «Διάλειμμα» στα τέταρτα
     }
     
     const isHome = isMyTeam(nextMatch.home);
@@ -7918,11 +8430,12 @@ if (!nextMatch) {
                 ${teamSide(nextMatch.home)}
                 <div class="nx-mid">
                     ${isLive ? `
-                        <div class="nx-score">${esc(data.liveScore.home || 0)}<em>–</em>${esc(data.liveScore.away || 0)}</div>
+                        <div class="nx-score">${esc(liveScoreHA(data.liveScore, nextMatch)[0])}<em>–</em>${esc(liveScoreHA(data.liveScore, nextMatch)[1])}</div>
                         ${isFT ? '' : `<div class="nx-min">${esc(liveMinuteDisplay)}</div>`}
                     ` : `<div class="nx-vs">VS</div>`}
                 </div>
                 ${teamSide(nextMatch.away)}
+                ${isLive ? liveGoalsHTML(data.liveScore, nextMatch) : ''}
             </div>
 
             <div class="nx-sheet">
@@ -9560,12 +10073,18 @@ function koAfterChange() {
 
 // Βοηθητική συνάρτηση για να γεμίσουν τα κουτάκια
 function refreshAdminForms() {
+    renderLiveAdmin({ min: true });
     loadRoundSelector();
     renderKoAdmin();
     updateRosterList();
     updateNewsList();
     updateTrainingAdmin();
     initAdminAccordion();
+    // 22/11/2026: live σε εξέλιξη και καμία ενότητα ανοιχτή → ανοίγει μόνο του το «🔴 Live»
+    if (data.liveScore && data.liveScore.active && !document.querySelector('.adm-sec[open]')) {
+        const lv = document.querySelector('.adm-sec[data-sec="live"]');
+        if (lv) lv.open = true;
+    }
     updateStorageMeter((JSON.stringify(data).length * 2) / 1048576);
 
     document.getElementById('seasonInput').value       = data.season       || SEASON.season;
@@ -9586,16 +10105,8 @@ function refreshAdminForms() {
         document.getElementById('matchMapLinkInput').value = data.matchMapLink || '';
         document.getElementById('countdownTargetInput').value = data.countdownTarget || '';
 
-        // Live Score
-        if (data.liveScore) {
-            document.getElementById('liveModeCheckbox').checked = data.liveScore.active || false;
-            document.getElementById('liveHomeScore').value = data.liveScore.home ?? 0;
-            document.getElementById('liveAwayScore').value = data.liveScore.away ?? 0;
-            document.getElementById('liveHalf').value = data.liveScore.half || "1";
-            document.getElementById('liveHalfDuration').value = data.liveScore.duration || 40;
-            document.getElementById('liveStartTime').value = data.liveScore.startTime || "";
-            document.getElementById('liveInputs').style.display = data.liveScore.active ? 'block' : 'none';
-        }
+        // Live (22/11/2026: δική του ενότητα)
+        renderLiveAdmin({ min: true });
         
         // Special Match
         if (data.specialMatch) {
@@ -10055,7 +10566,7 @@ function tickLiveMinute() {
     if (!ls || !ls.active) return;
     const el = document.querySelector('#nextMatchContainer .nx-min');
     if (!el) return;
-    const t = calculateLiveMinute(ls.startTime, ls.half, ls.duration);
+    const t = liveMinuteText(ls);
     if (el.textContent !== t) el.textContent = t;
 }
 setInterval(() => {
@@ -11416,6 +11927,7 @@ async function drawMatchImage() {
 function liveStatus() {
     const ls = (data && data.liveScore) || {};
     if (ls.half === 'FT') return { ft: true, badge: 'ΤΕΛΙΚΟ', text: 'Τελικό' };
+    if (ls.half === 'BR') return { ft: false, badge: 'ΔΙΑΛΕΙΜΜΑ', text: 'Διάλειμμα' };   // 22/11/2026: τέταρτα
     if (ls.half === 'HT') return { ft: false, badge: 'ΗΜΙΧΡΟΝΟ', text: 'Ημίχρονο' };
     const m = calculateLiveMinute(ls.startTime, ls.half, ls.duration);
     return { ft: false, badge: m === 'LIVE' ? '' : m, text: m === 'LIVE' ? '' : m };
@@ -11427,6 +11939,13 @@ async function drawLiveImage() {
     const st = liveStatus();
     const ls = data.liveScore || {};
     const [hc, ac] = await Promise.all([siCrest(M.home), siCrest(M.away)]);
+    // 22/11/2026: σκορ από τη γραμμή "goals" και σκόρερ κάτω από τα σήματα
+    const [lsH, lsA] = liveScoreHA(ls, { home: M.home, away: M.away });
+    const LP = liveGoalsOn(ls) ? parseLiveGoals(ls.goals) : null;
+    const gCols = !LP ? [[], []] : liveMatchSides({ home: M.home, away: M.away })
+        ? [liveGoalLines(LP, 'us'), liveGoalLines(LP, 'them')]
+        : [liveGoalLines(LP, 'them'), liveGoalLines(LP, 'us')];
+    const hasG = gCols[0].length > 0 || gCols[1].length > 0;
 
     const W = 1080, H = 1080;
     const cv = document.createElement('canvas');
@@ -11450,7 +11969,7 @@ async function drawLiveImage() {
     const minTxt = st.ft ? '' : st.badge;
     ctx.font = `700 54px ${SI_RC}`;
     const minW = minTxt ? Math.round(ctx.measureText(minTxt).width) + 26 : 0;
-    const px0 = Math.round((W - pillW - minW) / 2), py = 96, ph = 76;
+    const px0 = Math.round((W - pillW - minW) / 2), py = hasG ? 70 : 96, ph = 76;
     ctx.fillStyle = st.ft ? '#ffd700' : '#e53935';
     siRoundRect(ctx, px0, py, pillW, ph, ph / 2);
     ctx.fill();
@@ -11470,24 +11989,24 @@ async function drawLiveImage() {
 
     // Διοργάνωση | αγωνιστική
     ctx.fillStyle = '#c0dd97';
-    siText(ctx, siUpper([M.title, M.sub].filter(Boolean).join('  |  ')), W / 2, 258, W - 120, 700, 36, 24, SI_RC, 'center');
+    siText(ctx, siUpper([M.title, M.sub].filter(Boolean).join('  |  ')), W / 2, hasG ? 218 : 258, W - 120, 700, 36, 24, SI_RC, 'center');
 
     // Σήματα, ονόματα και σκορ
-    const size = 236, cy = 462, xs = [255, W - 255];
+    const size = hasG ? 180 : 236, cy = hasG ? 380 : 462, xs = [255, W - 255];
     xs.forEach(x => siGlow(ctx, x, cy, size * 1.45, size * 1.3, 0.38));
     [[M.home, hc, xs[0]], [M.away, ac, xs[1]]].forEach(([name, c, x]) => {
         const mine = isMyTeam(name);
         siDrawCrest(ctx, c, name, x, cy, size, mine ? '#ffd700' : '#6f927a', mine ? '#ffffff' : '#c0dd97');
         ctx.fillStyle = '#ffffff';
         ctx.textAlign = 'center';
-        let nfs = 44, lines;
+        let nfs = hasG ? 38 : 44, lines;
         for (;;) {
             ctx.font = `700 ${nfs}px ${SI_RC}`;
             lines = siWrap(ctx, siUpper(name), 400, 2);
             if (!lines[lines.length - 1].endsWith('…') || nfs <= 32) break;
             nfs -= 2;
         }
-        let y = cy + size / 2 + 72;
+        let y = cy + size / 2 + (hasG ? 56 : 72);
         lines.forEach(l => { ctx.fillText(l, x, y); y += Math.round(nfs * 1.17); });
         if (mine) {
             ctx.fillStyle = '#ffd700';
@@ -11495,14 +12014,22 @@ async function drawLiveImage() {
             ctx.fill();
         }
     });
-    const sh = String(ls.home ?? 0), sa = String(ls.away ?? 0);
+    const sh = String(lsH), sa = String(lsA);
     ctx.fillStyle = '#ffffff';
-    ctx.font = `700 176px ${SI_RC}`;
+    // Διψήφιο σκορ: μικραίνει ώστε να μην πατάει πάνω στα σήματα (22/11/2026)
+    let sfs = hasG ? 150 : 176;
+    for (;;) {
+        ctx.font = `700 ${sfs}px ${SI_RC}`;
+        if (Math.max(ctx.measureText(sh).width, ctx.measureText(sa).width) <= (hasG ? 128 : 112) || sfs <= 90) break;
+        sfs -= 6;
+    }
     ctx.textAlign = 'right';  ctx.fillText(sh, W / 2 - 36, cy + 62);
     ctx.textAlign = 'left';   ctx.fillText(sa, W / 2 + 36, cy + 62);
     ctx.fillStyle = '#c0dd97';
     ctx.font = `700 100px ${SI_RC}`;
     ctx.textAlign = 'center'; ctx.fillText('–', W / 2, cy + 42);
+
+    if (hasG) drawLiveGoals(ctx, gCols, xs, W);
 
     // Φύλλο: πού το βλέπεις ζωντανά
     const sy = 846, R = 54;
@@ -11533,8 +12060,9 @@ function liveShareTexts() {
     const ls = (data && data.liveScore) || {};
     const M = siMatchBits();
     const st = liveStatus();
-    const head = st.ft ? '🏁 Τελικό' : ls.half === 'HT' ? '⏸️ Ημίχρονο' : ('🔴 LIVE' + (st.text ? ' ' + st.text : ''));
-    const line = `${head} | ${M.home} ${ls.home ?? 0}–${ls.away ?? 0} ${M.away}`;
+    const head = st.ft ? '🏁 Τελικό' : (ls.half === 'HT' || ls.half === 'BR') ? '⏸️ ' + st.text : ('🔴 LIVE' + (st.text ? ' ' + st.text : ''));
+    const [sH, sA] = liveScoreHA(ls, { home: M.home, away: M.away });
+    const line = `${head} | ${M.home} ${sH}–${sA} ${M.away}`;
     const url = liveShareUrl();
     return { line, url, text: `${line}\n${st.ft ? 'Βαθμολογία και αποτελέσματα' : 'Δες το ζωντανά'} 👉 ${url}` };
 }
@@ -11582,7 +12110,7 @@ async function openShareImage(opts) {
             cv.toBlob(b => (b ? res(b) : rej(new Error('toBlob'))), type, 0.9));
         const d = (currentMatchShareData.date || '').match(/(\d{1,2})\/(\d{1,2})/);
         const ls = (data && data.liveScore) || {};
-        const name = opts.live ? `olympos-live-${ls.home ?? 0}-${ls.away ?? 0}.jpg`
+        const name = opts.live ? `olympos-live-${liveScoreHA(ls).join('-')}.jpg`
                    : `olympos-${opts.withSquad ? 'squad' : 'agonas'}${d ? '-' + d[1] + '-' + d[2] : ''}.png`;
         shareImg.blob = blob;
         shareImg.file = new File([blob], name, { type });
