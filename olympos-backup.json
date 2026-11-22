@@ -1115,8 +1115,8 @@
         {
           "home": "ΝΙΚΗ ΕΥΚΑΡΠΙΑΣ",
           "away": "ΑΕ ΦΙΛΥΡΟΥ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 5,
+          "awayScore": 2,
           "isPostponed": false
         },
         {
@@ -1233,8 +1233,8 @@
         {
           "home": "ΠΡΩΤΕΑΣ",
           "away": "ΖΗΤΑ ΕΠΤΑ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
