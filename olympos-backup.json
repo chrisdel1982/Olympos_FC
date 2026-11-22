@@ -1134,15 +1134,15 @@
         {
           "home": "ΑΕ ΝΕΩΝ ΣΙΝΔΟΥ",
           "away": "ΟΔΥΣΣΕΑΣ ΚΟΡΔΕΛΙΟΥ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 4,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
           "home": "ΑΜΣ ΝΙΚΟΠΟΛΗ",
           "away": "ΜΠΕΜΠΗΔΕΣ ΙΩΝΙΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 3,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
@@ -1155,8 +1155,8 @@
         {
           "home": "ΝΕΑ ΠΟΛΙΤΕΙΑ ΕΥΟΣΜΟΥ",
           "away": "Μ.ΑΛΕΞΑΝΔΡΟΣ ΜΕΛΙΣΣΟΧΩΡΙΟΥ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
