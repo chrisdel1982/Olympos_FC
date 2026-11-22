@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <!-- ΕΚΔΟΣΗ 22/11/2026 — Σκόρερ και λεπτά στο live: γραμμή "goals" στο liveScore, σκορ που βγαίνει μόνο του,
+    <!-- ΕΚΔΟΣΗ 22/11/2026 β΄ — Σκόρερ στο live με νέα διάταξη, λεπτά με κόμμα («8', 52'»),
+         σε πλήρη καθρέφτη όπως το Gazzetta: αριστερά «Κυρτζαλιώτης Ν. 8', 52' ⚽», δεξιά «⚽ 8', 52' Κυρτζαλιώτης Ν.»,
+         λεπτά και μπάλα στη μέση, ονόματα προς τα έξω, χρονολογικά, μπάλα περίγραμμα (κάρτα και εικόνα share).
+         Η ίδια γραφή και στα Αποτελέσματα: «⚽ Κυρτζαλιώτης Ν. 8', 52'».
+         α΄: Σκόρερ και λεπτά στο live: γραμμή "goals" στο liveScore, σκορ που βγαίνει μόνο του,
          admin σε δύο ενότητες («🔴 Live» με κουμπιά και «📅 Επόμενος αγώνας»), 2×40' / 2×45' / 4×20',
          «Πέρασε στα Αποτελέσματα» στο τέλος, λεπτά στα Αποτελέσματα, σκόρερ και στην εικόνα του share.
          Admin → Αποτελέσματα: η Αποθήκευση μένει πάντα ορατή στο κάτω μέρος της οθόνης.
@@ -4189,12 +4193,21 @@ a.nx-place:hover{border-color:var(--ink-muted)}
 /* ---- Σκόρερ στο live (22/11/2026): κάτω από τα σήματα, πιάνει όλο το πλάτος της αφίσας ---- */
 .nx-goals{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;
   margin-top:2px;padding-top:9px;border-top:1px solid rgba(255,255,255,.14)}
-.nx-gside{text-align:center;font-size:.76rem;line-height:1.3;color:var(--nx-on);min-width:0}
-.nx-gside div+div{margin-top:3px}
+/* 22/11/2026 β΄: πλήρης καθρέφτης (όπως το Gazzetta). Τα λεπτά κάθονται δίπλα στη μπάλα, στη μέση·
+   τα ονόματα προς τα έξω. Αριστερή στήλη στοιχισμένη δεξιά «Κυρτζαλιώτης Ν. 8', 52' ⚽»,
+   δεξιά στήλη στοιχισμένη αριστερά «⚽ 8', 52' Κυρτζαλιώτης Ν.». Κάθε όνομα κολλάει στα δικά του λεπτά. */
+.nx-gside{font-size:.76rem;line-height:1.3;color:var(--nx-on);min-width:0}
+.nx-gl{text-align:right}
+.nx-gr{text-align:left}
+.nx-gside div+div{margin-top:4px}
 .nx-gside b{font-weight:600;white-space:nowrap}
 .nx-gside i{font-style:normal;color:var(--nx-on-muted);font-weight:700;white-space:nowrap}
-.nx-gside i+i{margin-left:.14em}
-.nx-gside .og{color:var(--nx-on-muted)}
+.nx-gside .og{color:var(--nx-on-muted);white-space:nowrap}
+.nx-glue{white-space:nowrap}
+.nx-ball{display:inline-block;width:1.2em;height:1.2em;vertical-align:-.27em;opacity:.9;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.6' stroke-linejoin='round' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='10.2'/%3E%3Cpath d='M12 7.4l4.37 3.18-1.67 5.14H9.3l-1.67-5.14z'/%3E%3Cpath d='M12 7.4V1.8M16.37 10.58l5.33-1.73M14.7 15.72l3.3 4.53M9.3 15.72L6 20.25M7.63 10.58L2.3 8.85'/%3E%3C/svg%3E") center/contain no-repeat}
+.nx-ball:first-child{margin-right:.4em}
+.nx-ball:last-child{margin-left:.4em}
 @media (min-width:900px){ .nx-gside{font-size:.82rem} }
 
 /* ---- Admin → Αποτελέσματα: η Αποθήκευση κολλάει στο κάτω μέρος (22/11/2026) ----
@@ -5493,8 +5506,10 @@ function showToast(message, type = 'success') {
         //  - "periods": "4" = αγώνας σε τέταρτα (π.χ. 4×20' με "duration": "20"). Χωρίς αυτό: 2 ημίχρονα.
         //    Σειρά: 1 → "BR" (διάλειμμα) → 2 → "HT" (ημίχρονο) → 3 → "BR" → 4 → "FT".
         //    "BR" γράφεται «Διάλειμμα». Το λεπτό συνεχίζει (3ο τέταρτο: 41').
-        //  - ΚΑΡΤΑ: σκόρερ κάτω από τα σήματα, «8'  52' Κυρτζαλιώτης Ν.» (ίδιος παίκτης σε μία γραμμή,
+        //  - ΚΑΡΤΑ: σκόρερ κάτω από τα σήματα, «Κυρτζαλιώτης Ν. 8', 52'» (ίδιος παίκτης σε μία γραμμή,
         //    όνομα όπως στα Αποτελέσματα). Αντίπαλος: μόνο λεπτά. Με πολλά γκολ η κάρτα μακραίνει.
+        //    (β΄, 22/11 βράδυ: πλήρης καθρέφτης — αριστερά «Κυρτζαλιώτης Ν. 8', 52' ⚽», δεξιά «⚽ 8', 52' Κυρτζαλιώτης Ν.»,
+        //    λεπτά με κόμμα και μπάλα στη μέση, γραμμές χρονολογικά, μπάλα περίγραμμα. Αυτογκόλ: «(αυτ.) 61'» και «Παπαδόπουλος Δ. (αυτ.) 15'». Ίδια γραφή και στα Αποτελέσματα.)
         //    Εικόνα share: τα σήματα μικραίνουν όταν υπάρχουν γκολ· μετά τις ~5 γραμμές «…».
         //  - ADMIN → «🔴 Live» (χωριστά από το «📅 Επόμενος αγώνας»): μορφή 2×40'/2×45'/4×20',
         //    Σέντρα/Ημίχρονο/2ο/Τέλος (4×20': Σέντρα/Διάλειμμα/2ο/Ημίχρονο/3ο/Διάλειμμα/4ο/Τέλος) (βάζουν μόνα τους την ώρα· η Σέντρα αδειάζει τα γκολ),
@@ -5506,6 +5521,7 @@ function showToast(message, type = 'success') {
         //  - "goalLog" στον αγώνα: [{ "min": "52'", "side": "us"|"them", "name", "pen", "og" }].
         //    Τα Αποτελέσματα δείχνουν λεπτά μόνο όσο τα ονόματά του ταιριάζουν με τα "scorers"·
         //    αν αλλάξεις σκόρερ με το χέρι, γυρίζουν στο παλιό «Κυρτζαλιώτης Ν. (2)».
+        //    Από τη β΄: «⚽ Κυρτζαλιώτης Ν. 8', 52'» (όνομα πρώτα, λεπτά με κόμμα).
         //  - ADMIN → Αποτελέσματα: η «💾 Αποθήκευση Αποτελεσμάτων» κολλάει στο κάτω μέρος της οθόνης
         //    (.res-save-bar, sticky), για να μη χρειάζεται σκρολ ως το τέλος για έναν αγώνα.
         // =========================================================
@@ -7978,35 +7994,72 @@ function liveMinuteText(ls) {
     return calculateLiveMinute(ls.startTime, ls.half, ls.duration);
 }
 
-// Γραμμές μιας πλευράς: { html, text }. Εμείς: ίδιος παίκτης σε μία γραμμή, μετά τα αυτογκόλ του αντιπάλου.
-// Αντίπαλος: όλα τα λεπτά σε μία γραμμή, μετά τα δικά μας αυτογκόλ με όνομα.
+// Γραμμές μιας πλευράς, σε χρονολογική σειρά (με βάση το πρώτο γκολ της γραμμής):
+//   { name: [κομμάτια], mins: [κομμάτια], key }   κομμάτι = { s, k }, k = 'name' | 'og' | 'min'
+// 22/11/2026 β΄: πλήρης καθρέφτης — αριστερά «Κυρτζαλιώτης Ν. 8', 52' ⚽», δεξιά «⚽ 8', 52' Κυρτζαλιώτης Ν.».
+// Εμείς: ίδιος παίκτης σε μία γραμμή· τα αυτογκόλ του αντιπάλου μαζί σε μία «(αυτ.) | 61'».
+// Αντίπαλος: τα κανονικά του γκολ μαζί σε μία (μόνο λεπτά)· κάθε δικό μας αυτογκόλ χωριστά
+// «Παπαδόπουλος Δ. (αυτ.) | 15'».
 function liveGoalLines(P, side) {
     const lbl = g => g.label + (g.pen ? '(πεν)' : '');
-    const mins = g => `<i>${esc(lbl(g))}</i>`;
+    const mins = gs => gs.map((g, i) => ({ s: lbl(g) + (i < gs.length - 1 ? ',' : ''), k: 'min' }));
     const who = g => g.player ? liveShort(g.player) : '#' + g.num;
+    const name = s => ({ s, k: 'name' }), og = () => ({ s: '(αυτ.)', k: 'og' });
     const lines = [];
+    const add = (nm, gs) => lines.push({ name: nm, mins: mins(gs), key: gs[0].key, idx: gs[0].idx });
     if (side === 'us') {
         const order = [], by = new Map();
         P.items.filter(g => g.side === 'us' && !g.og).forEach(g => {
             if (!by.has(g.num)) { by.set(g.num, []); order.push(g.num); }
             by.get(g.num).push(g);
         });
-        order.forEach(k => {
-            const gs = by.get(k), nm = who(gs[0]);
-            lines.push({ html: gs.map(mins).join(' ') + ' <b>' + esc(nm) + '</b>',
-                         text: gs.map(lbl).join(' ') + ' ' + nm });
-        });
+        order.forEach(k => { const gs = by.get(k); add([name(who(gs[0]))], gs); });
         const ogs = P.items.filter(g => g.side === 'us' && g.og);
-        if (ogs.length) lines.push({ html: ogs.map(mins).join(' ') + ' <span class="og">(αυτ.)</span>',
-                                     text: ogs.map(lbl).join(' ') + ' (αυτ.)' });
-        return lines;
+        if (ogs.length) add([og()], ogs);
+    } else {
+        const plain = P.items.filter(g => g.side === 'them' && !g.ogUs);
+        if (plain.length) add([], plain);
+        P.items.filter(g => g.ogUs).forEach(g => add([name(who(g)), og()], [g]));
     }
-    const plain = P.items.filter(g => g.side === 'them' && !g.ogUs);
-    if (plain.length) lines.push({ html: plain.map(mins).join(' '), text: plain.map(lbl).join(' ') });
-    P.items.filter(g => g.ogUs).forEach(g => lines.push({
-        html: mins(g) + ' <span class="og">(αυτ.)</span> <b>' + esc(who(g)) + '</b>',
-        text: lbl(g) + ' (αυτ.) ' + who(g) }));
-    return lines;
+    return lines.sort((a, b) => (a.key - b.key) || (a.idx - b.idx));
+}
+
+// Τα λεπτά μιας γραμμής μένουν μαζί («8', 52'» δεν σπάει στη μέση)· με 5+ γκολ σπάνε ανά τέσσερα.
+function liveGoalGroup(atoms) {
+    const out = [];
+    atoms.forEach(a => {
+        const last = out[out.length - 1];
+        if (a.k === 'min' && last && last.k === 'min' && last.n < 4) { last.s += ' ' + a.s; last.n++; }
+        else out.push(a.k === 'min' ? { s: a.s, k: 'min', n: 1 } : a);
+    });
+    return out;
+}
+
+// Τα κομμάτια μιας γραμμής στη σειρά του καθρέφτη (και η μπάλα, { k: 'ball' }):
+//   αριστερή στήλη  όνομα, λεπτά, μπάλα     δεξιά στήλη  μπάλα, λεπτά, όνομα
+// Τα λεπτά ομαδοποιημένα (liveGoalGroup), για να μη σπάνε στη μέση.
+function liveGoalSeq(l, left) {
+    const m = liveGoalGroup(l.mins), ball = { k: 'ball' };
+    return left ? [...l.name, ...m, ball] : [ball, ...m, ...l.name];
+}
+
+// Μία γραμμή σε HTML. Η μπάλα κολλάει στα λεπτά και το «(αυτ.)» στο όνομα, για να μη μείνουν ποτέ μόνα σε σειρά.
+function liveGoalLineHTML(l, left) {
+    const parts = [];
+    liveGoalSeq(l, left).forEach(a => {
+        const h = a.k === 'ball' ? '<span class="nx-ball" aria-hidden="true"></span>'
+            : a.k === 'name' ? `<b>${esc(a.s)}</b>`
+            : a.k === 'og' ? `<span class="og">${esc(a.s)}</span>` : `<i>${esc(a.s)}</i>`;
+        const last = parts[parts.length - 1];
+        if (a.k === 'og' && last && last.k === 'name') last.h = `<span class="nx-glue">${last.h} ${h}</span>`;
+        else parts.push({ k: a.k, h });
+    });
+    const b = parts.findIndex(p => p.k === 'ball'), n = left ? b - 1 : b + 1;
+    if (parts[n]) {
+        const lo = Math.min(b, n);
+        parts.splice(lo, 2, { k: 'glue', h: `<span class="nx-glue">${parts[lo].h}${parts[lo + 1].h}</span>` });
+    }
+    return parts.map(p => p.h).join(' ');
 }
 
 // Το μπλοκ κάτω από τα σήματα στην κάρτα
@@ -8016,50 +8069,87 @@ function liveGoalsHTML(ls, match) {
     if (!P.items.length) return '';
     const L = { us: liveGoalLines(P, 'us'), them: liveGoalLines(P, 'them') };
     const home = liveMatchSides(match) ? L.us : L.them, away = liveMatchSides(match) ? L.them : L.us;
-    const col = ls2 => `<div class="nx-gside">${ls2.map(l => `<div>${l.html}</div>`).join('')}</div>`;
-    return `<div class="nx-goals">${col(home)}${col(away)}</div>`;
+    const col = (ls2, left) => `<div class="nx-gside ${left ? 'nx-gl' : 'nx-gr'}">`
+        + ls2.map(l => `<div>${liveGoalLineHTML(l, left)}</div>`).join('') + '</div>';
+    return `<div class="nx-goals">${col(home, true)}${col(away, false)}</div>`;
 }
 
-// Εικόνα share: λεπτά σε πρασινωπό, ονόματα σε λευκό, ως 5-6 γραμμές ανά μεριά (μετά «…»)
+// Εικόνα share: ίδιος καθρέφτης με την κάρτα. Ονόματα λευκά, λεπτά πρασινωπά, μπάλα περίγραμμα.
+// Αριστερή στήλη στοιχισμένη στη μέση (W/2 - 48) από δεξιά, δεξιά στήλη από αριστερά (W/2 + 48).
+// Σπάει μόνο ανάμεσα σε κομμάτια (όνομα, ομάδα λεπτών)· η μπάλα πάει πάντα με τα λεπτά, το «(αυτ.)» με το όνομα.
+// Τα γράμματα μικραίνουν ως 24px· αν πάλι δεν χωράνε, «…» στην τελευταία σειρά.
 function drawLiveGoals(ctx, cols, xs, W) {
-    const top = 640, bottom = 818;
-    const wrap = (text, maxW) => {   // σπάει μόνο σε απλό κενό: «Κυρτζαλιώτης Ν.» και «8' 52'» μένουν μαζί
-        const out = []; let cur = '';
-        text.split(' ').forEach(w => {
-            const t = cur ? cur + ' ' + w : w;
-            if (ctx.measureText(t).width > maxW && cur) { out.push(cur); cur = w; } else cur = t;
+    const top = 640, bottom = 818, maxW = 440, inner = [W / 2 - 48, W / 2 + 48];
+    const FONT = { name: f => `600 ${f}px ${SI_IN}`, og: f => `600 ${f}px ${SI_IN}`,
+                   more: f => `600 ${f}px ${SI_IN}`, min: f => `700 ${f}px ${SI_RC}` };
+    const COLOR = { name: '#ffffff', og: '#c0dd97', more: '#ffffff', min: '#c0dd97' };
+    const wid = (a, f) => {
+        if (a.k === 'ball') return f * 1.05;
+        ctx.font = FONT[a.k](f); return ctx.measureText(a.s).width;
+    };
+    // μία γραμμή → σειρές [{ items: [{ a, x }], w }]· i = 0 αριστερή στήλη, 1 δεξιά
+    const wrap = (l, i, f) => {
+        const seq = liveGoalSeq(l, i === 0);
+        const bi = i === 0 ? seq.length - 1 : 0;
+        const glued = j => (i === 0 && j === bi) || (i === 1 && j === bi + 1)   // δεν σπάει πριν από αυτό
+            || (seq[j].k === 'og' && j > 0 && seq[j - 1].k === 'name');      // «Παπαδόπουλος Δ. (αυτ.)» μαζί
+        ctx.font = FONT.name(f); const sp = ctx.measureText(' ').width;
+        const rows = []; let cur = [], w = 0;
+        seq.forEach((a, j) => {
+            const aw = wid(a, f);
+            const prev = cur.length ? cur[cur.length - 1].a : null;
+            let g = !prev ? 0 : (a.k === 'ball' || prev.k === 'ball') ? f * 0.4 : sp;
+            if (cur.length && w + g + aw > maxW && !glued(j)) { rows.push({ items: cur, w }); cur = []; w = 0; g = 0; }
+            cur.push({ a, x: w + g }); w += g + aw;
         });
-        if (cur) out.push(cur);
-        return out;
+        if (cur.length) rows.push({ items: cur, w });
+        return rows;
     };
     let fs = 32, rows;
     for (;;) {
-        ctx.font = `600 ${fs}px ${SI_IN}`;
-        rows = cols.map(ls => ls.flatMap(l => wrap(l.text, 440)));
+        rows = cols.map((ls, i) => ls.flatMap(l => wrap(l, i, fs)));
         if (Math.max(rows[0].length, rows[1].length) * fs * 1.3 <= bottom - top || fs <= 24) break;
         fs -= 2;
     }
     ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(90, top - 26); ctx.lineTo(W - 90, top - 26); ctx.stroke();
     const max = Math.max(1, Math.floor((bottom - top) / (fs * 1.3)));
-    rows.forEach((ls, i) => {
+    ctx.textAlign = 'left';
+    rows.forEach((rs, i) => {
         let y = top + fs * 0.6;
-        ls.slice(0, max).forEach((l, k) => {
-            const t = (k === max - 1 && ls.length > max) ? l + ' …' : l;
-            const mPart = (t.match(/^((?:\d+(?:\+\d+)?'(?:\(πεν\))?\s*)+)/) || ['', ''])[1];
-            const rest = t.slice(mPart.length);
-            ctx.font = `700 ${fs}px ${SI_RC}`; const w1 = ctx.measureText(mPart).width;
-            ctx.font = `600 ${fs}px ${SI_IN}`; const w2 = ctx.measureText(rest).width;
-            const x0 = xs[i] - (w1 + w2) / 2;
-            ctx.textAlign = 'left';
-            ctx.fillStyle = '#c0dd97'; ctx.font = `700 ${fs}px ${SI_RC}`; ctx.fillText(mPart, x0, y);
-            ctx.fillStyle = '#ffffff'; ctx.font = `600 ${fs}px ${SI_IN}`; ctx.fillText(rest, x0 + w1, y);
+        rs.slice(0, max).forEach((r, k) => {
+            let items = r.items, w = r.w;
+            if (k === max - 1 && rs.length > max) {      // «…» προς τα έξω
+                const dots = { s: '…', k: 'more' }, dw = wid(dots, fs);
+                ctx.font = FONT.more(fs); const sp = ctx.measureText(' ').width;
+                if (i === 0) { items = [{ a: dots, x: 0 }, ...items.map(t => ({ a: t.a, x: t.x + dw + sp }))]; }
+                else items = items.concat({ a: dots, x: w + sp });
+                w += dw + sp;
+            }
+            const x0 = i === 0 ? inner[0] - w : inner[1];
+            items.forEach(({ a, x }) => {
+                if (a.k === 'ball') { drawShareBall(ctx, x0 + x + fs * 0.525, y - fs * 0.36, fs * 0.5); return; }
+                ctx.font = FONT[a.k](fs); ctx.fillStyle = COLOR[a.k]; ctx.fillText(a.s, x0 + x, y);
+            });
             y += fs * 1.3;
         });
     });
 }
 
-// Αποτελέσματα: «⚽ 8'  52' Κυρτζαλιώτης Ν.». null = δεν υπάρχει goalLog ή δεν ταιριάζει πια με τα scorers.
+// Η μπάλα της εικόνας share: περίγραμμα, ίδια με το .nx-ball της κάρτας
+function drawShareBall(ctx, cx, cy, r) {
+    ctx.save();
+    ctx.translate(cx, cy); ctx.scale(r / 10.2, r / 10.2);
+    ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 1.6; ctx.lineJoin = ctx.lineCap = 'round';
+    const pt = (rad, k) => { const t = (-90 + k * 72) * Math.PI / 180; return [rad * Math.cos(t), rad * Math.sin(t)]; };
+    ctx.beginPath(); ctx.arc(0, 0, 10.2, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); for (let k = 0; k < 5; k++) ctx[k ? 'lineTo' : 'moveTo'](...pt(4.6, k)); ctx.closePath(); ctx.stroke();
+    ctx.beginPath(); for (let k = 0; k < 5; k++) { ctx.moveTo(...pt(4.6, k)); ctx.lineTo(...pt(10.2, k)); } ctx.stroke();
+    ctx.restore();
+}
+
+// Αποτελέσματα: «⚽ Κυρτζαλιώτης Ν. 8', 52'» (από 22/11/2026 β΄ όπως η κάρτα του live: όνομα, μετά λεπτά με κόμμα).
+// null = δεν υπάρχει goalLog ή δεν ταιριάζει πια με τα scorers.
 function goalLogEntries(match) {
     const log = Array.isArray(match && match.goalLog) ? match.goalLog.filter(Boolean) : null;
     if (!log || !log.length) return null;
@@ -8072,9 +8162,9 @@ function goalLogEntries(match) {
         if (!by.has(g.name)) { by.set(g.name, []); order.push(g.name); }
         by.get(g.name).push(g);
     });
-    const out = order.map(n => `<span class="match-scorer-entry">⚽ ${by.get(n).map(lbl).join(' ')} ${esc(liveShort(n))}</span>`);
+    const out = order.map(n => `<span class="match-scorer-entry">⚽ ${esc(liveShort(n))} ${by.get(n).map(lbl).join(', ')}</span>`);
     const ogs = log.filter(g => g.side === 'us' && g.og);
-    if (ogs.length) out.push(`<span class="match-scorer-entry">⚽ ${ogs.map(lbl).join(' ')} (αυτ.)</span>`);
+    if (ogs.length) out.push(`<span class="match-scorer-entry">⚽ (αυτ.) ${ogs.map(lbl).join(', ')}</span>`);
     return out;
 }
 
