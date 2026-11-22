@@ -4,6 +4,7 @@
     <!-- ΕΚΔΟΣΗ 22/11/2026 — Σκόρερ και λεπτά στο live: γραμμή "goals" στο liveScore, σκορ που βγαίνει μόνο του,
          admin σε δύο ενότητες («🔴 Live» με κουμπιά και «📅 Επόμενος αγώνας»), 2×40' / 2×45' / 4×20',
          «Πέρασε στα Αποτελέσματα» στο τέλος, λεπτά στα Αποτελέσματα, σκόρερ και στην εικόνα του share.
+         Admin → Αποτελέσματα: η Αποθήκευση μένει πάντα ορατή στο κάτω μέρος της οθόνης.
          Προηγούμενη: 17/11/2026 β΄ — Στο κινητό σκορ, ΑΝΑΒΟΛΗ, ΜΑΤΑΙΩΣΗ και ΑΝΕΥ ΑΓΩΝΑ στο ίδιο πλάτος (πρόταση «Α: ίδιο κουτί», --mid-w).
          α΄: «Άνευ αγώνα» (κατακύρωση): μωβ σήμα κάτω από το σκορ, τρίτο κουτάκι στο admin, μετράει στη βαθμολογία, χωρίς σκόρερ/clean sheet.
          Προηγούμενη: 9/11/2026 γ΄ — Αναζήτηση (γ΄: λευκός λεπτός φακός στον υπολογιστή αντί για 🔍· β΄: χωρίς οδηγίες κάτω από το πεδίο, πιο διακριτικός φακός): στο μενού (κινητό), 🔍 ή «/» (υπολογιστής). Ομάδες, παίκτες, αγώνες, νέα, Ιστορικό.
@@ -4196,6 +4197,15 @@ a.nx-place:hover{border-color:var(--ink-muted)}
 .nx-gside .og{color:var(--nx-on-muted)}
 @media (min-width:900px){ .nx-gside{font-size:.82rem} }
 
+/* ---- Admin → Αποτελέσματα: η Αποθήκευση κολλάει στο κάτω μέρος (22/11/2026) ----
+   Το .adm-sec έχει overflow:hidden, που χαλάει το sticky· το clip κρατά τις στρογγυλές γωνίες χωρίς να το χαλάει.
+   Σε browser που δεν ξέρει το clip μένει το hidden και το κουμπί είναι απλώς στο τέλος, όπως πριν. */
+.adm-sec[data-sec="results"]{overflow:clip}
+.res-save-bar{position:sticky;bottom:-2rem;z-index:5;margin:12px -14px -14px !important;padding:10px 14px calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+  background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -6px 14px rgba(0,0,0,.08)}
+.res-save-bar .btn{width:100%;margin:0}
+@media (prefers-color-scheme: dark){ .res-save-bar{background:#1e1e1e !important;box-shadow:0 -6px 14px rgba(0,0,0,.5)} }
+
 /* ---- Admin → 🔴 Live (22/11/2026) ---- */
 .lv-fmt{display:flex;gap:6px;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:10px;font-size:.82rem;color:var(--ink-muted)}
 .lv-chip{-webkit-appearance:none;appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);
@@ -4871,7 +4881,9 @@ function showToast(message, type = 'success') {
 
                 <div id="matchInputs"></div>
 
-                <div class="modal-buttons">
+                <!-- 22/11/2026: κολλάει στο κάτω μέρος της οθόνης όσο είναι ανοιχτά τα Αποτελέσματα,
+                     για να μη χρειάζεται σκρολ ως το τέλος της αγωνιστικής για έναν αγώνα -->
+                <div class="modal-buttons res-save-bar">
                     <button class="btn" onclick="saveResults()">💾 Αποθήκευση Αποτελεσμάτων</button>
                 </div>
 
@@ -5494,6 +5506,8 @@ function showToast(message, type = 'success') {
         //  - "goalLog" στον αγώνα: [{ "min": "52'", "side": "us"|"them", "name", "pen", "og" }].
         //    Τα Αποτελέσματα δείχνουν λεπτά μόνο όσο τα ονόματά του ταιριάζουν με τα "scorers"·
         //    αν αλλάξεις σκόρερ με το χέρι, γυρίζουν στο παλιό «Κυρτζαλιώτης Ν. (2)».
+        //  - ADMIN → Αποτελέσματα: η «💾 Αποθήκευση Αποτελεσμάτων» κολλάει στο κάτω μέρος της οθόνης
+        //    (.res-save-bar, sticky), για να μη χρειάζεται σκρολ ως το τέλος για έναν αγώνα.
         // =========================================================
         // =========================================================
         // ΑΛΛΑΓΗ 9/11/2026 — ΑΝΑΖΗΤΗΣΗ
