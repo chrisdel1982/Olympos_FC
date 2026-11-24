@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <!-- ΕΚΔΟΣΗ 24/11/2026 — Πάτημα σε σήμα ή όνομα ομάδας (Βαθμολογία, Αποτελέσματα, Πρόγραμμα, νοκ άουτ)
+    <!-- ΕΚΔΟΣΗ 24/11/2026 β΄ — «Νέα» στην καρτέλα ομάδας: ο Όλυμπος δείχνει όλα τα νέα· οι άλλες ομάδες μόνο όσα
+         γράφουν ολόκληρο το όνομά τους (όχι πια «Σίνδου» = «συνδυασμό»). Στον υπολογιστή μόνο χεράκι, χωρίς υπογράμμιση.
+         α΄: Πάτημα σε σήμα ή όνομα ομάδας (Βαθμολογία, Αποτελέσματα, Πρόγραμμα, νοκ άουτ)
          ανοίγει την καρτέλα της ομάδας, όπως στην Αναζήτηση. Με φύλαγμα για το σκρολ στο κινητό.
          Προηγούμενη: 22/11/2026 β΄ — Σκόρερ στο live με νέα διάταξη, λεπτά με κόμμα («8', 52'»),
          σε πλήρη καθρέφτη όπως το Gazzetta: αριστερά «Κυρτζαλιώτης Ν. 8', 52' ⚽», δεξιά «⚽ 8', 52' Κυρτζαλιώτης Ν.»,
@@ -5537,8 +5539,11 @@ function showToast(message, type = 'success') {
         //    Τα ονόματα μπήκαν σε <span class="tm-n"> (ίδια εμφάνιση).
         //  - Σκρολ: στο κινητό η καρτέλα δεν ανοίγει όταν το δάχτυλο σταματά σκρολ που τρέχει,
         //    όταν σκρολάρει η σελίδα ή ο πίνακας στο πλάι, μετά από >10px κίνηση ή πάτημα >0,7".
-        //  - Υπολογιστής: χεράκι και λεπτή υπογράμμιση στο όνομα. Κινητό: καμία αλλαγή στην όψη.
+        //  - Υπολογιστής: μόνο χεράκι (η υπογράμμιση βγήκε στη β΄). Κινητό: καμία αλλαγή στην όψη.
         //  - Κώδικας: τέλος του μπλοκ «ΑΝΑΖΗΤΗΣΗ — 9/11/2026» (tmTeamAt, tmKnown) + CSS εκεί.
+        //  - β΄ (24/11): «Νέα» στην καρτέλα. Όλυμπος: όλα τα νέα. Άλλη ομάδα: μόνο όσα γράφουν
+        //    ολόκληρο το όνομά της, σε ολόκληρες λέξεις (teamSig, textMentions, teamNews).
+        //    Πριν, τα 4 γράμματα «sind» του «Σίνδου» έπιαναν το «συνδυασμό» → λάθος είδηση.
         // =========================================================
         // ΑΛΛΑΓΗ 9/11/2026 — ΑΝΑΖΗΤΗΣΗ
         //  - Κινητό: πεδίο στην κορυφή του μενού (3 παύλες). Όσο γράφεις, τα κουμπιά του μενού
@@ -12490,14 +12495,11 @@ async function refreshLikeCounts() {
   .nav-menu{overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:40px}
   .nav-menu.searching > li:not(.srch-li-mobile){display:none}
 }
-/* Σήμα + όνομα ομάδας → καρτέλα (24/11/2026). Χεράκι και υπογράμμιση μόνο με ποντίκι· στο κινητό τίποτα δεν αλλάζει όψη. */
+/* Σήμα + όνομα ομάδας → καρτέλα (24/11/2026). Μόνο χεράκι με ποντίκι, χωρίς υπογράμμιση (απόφαση 24/11)· στο κινητό τίποτα δεν αλλάζει όψη. */
 @media (hover:hover) and (pointer:fine){
   #standingsTable .team-cell, #knockoutContainer .ko-crest, #knockoutContainer .ko-name,
   #resultsContainer .match-row .tm-n, #resultsContainer .match-row .crest-mini,
   #fixturesContainer .match-row .tm-n, #fixturesContainer .match-row .crest-mini{cursor:pointer}
-  #standingsTable .team-cell:hover > span, #knockoutContainer .ko-team:has(.ko-crest:hover,.ko-name:hover) .ko-name,
-  .match-row .team-left:has(.tm-n:hover,.crest-mini:hover) .tm-n, .match-row .team-right:has(.tm-n:hover,.crest-mini:hover) .tm-n{
-    text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:rgba(128,128,128,.7)}
 }
 @media (prefers-color-scheme:dark){
   .srch-box{background:#2a2a2a}.srch-box svg{color:#fff;opacity:.3}.srch-box input{color:#eee}
@@ -12638,12 +12640,34 @@ function render(el, raw) {
 }
 
 // ---- Καρτέλα ομάδας ----
-function teamNews(team) {   // η πιο χαρακτηριστική λέξη του ονόματος, χωρίς την κατάληξη
-  const stop = new Set(['ae','ao','aok','ams','pao','nea','neon','agiu','agios','akadimia','atlitiki']);
-  const ws = srchSkel(team).split(' ').filter(w => w.length >= 4 && !stop.has(w)).sort((a, b) => b.length - a.length);
-  const key = ws[0] ? ws[0].slice(0, Math.max(4, ws[0].length - 2)) : srchSkel(team);
-  return (data.news || []).filter(n => srchSkel(n.title + ' ' + n.content).includes(key));
+// Νέα της καρτέλας (24/11/2026 β΄).
+//  - Όλυμπος: ΟΛΑ τα νέα, νεότερο πρώτο (όλα αφορούν τον Όλυμπο).
+//  - Άλλη ομάδα: μόνο όσα γράφουν το όνομά της ολόκληρο, λέξεις στη σειρά, ως ΟΛΟΚΛΗΡΕΣ λέξεις,
+//    με ανοχή στην κατάληξη (Σίνδου/Σίνδος, Κουφαλίων/Κουφάλια, Φοίνικας Πολίχνης/Φοίνικα Πολίχνης).
+//    «ΑΕ», «ΝΕΑ», «ΠΑΕ» κ.λπ. και τα νούμερα δεν μετράνε· οι συντομογραφίες με τελεία («ΑΚΑΔ.») ταιριάζουν
+//    με όποια λέξη αρχίζει έτσι. Πριν έψαχνε 4 γράμματα οπουδήποτε: το «Σίνδου» έπιανε το «συνδυασμό».
+const TN_STOP = new Set(['ΑΕ','ΑΟ','ΑΟΚ','ΑΜΣ','ΠΑΟ','ΠΑΕ','ΠΟΤ','ΠΟ','ΓΣ','ΑΣ','ΑΠΣ','ΠΑΣ','ΜΑΣ','ΑΦΣ','ΝΕΑ','ΝΕΑΣ','ΝΕΟΣ','ΝΕΩΝ',
+  'ΑΓΙΟΥ','ΑΓΙΟΣ','ΑΓΙΑΣ','ΑΚΑΔΗΜΙΑ','ΑΘΛΗΤΙΚΗ','ΠΟΔΟΣΦΑΙΡΙΚΗ','FC'].map(srchSkel));
+function teamSig(team) {
+  return (String(team || '').match(/[^\s.]+\.?/g) || []).map(tok => {
+    const abbr = tok.endsWith('.'), w = srchSkel(tok).replace(/ /g, '');
+    if (!w || /\d/.test(w) || (abbr ? w.length < 2 : (w.length < 3 || TN_STOP.has(w)))) return null;
+    return { s: abbr || w.length <= 4 ? w : w.slice(0, Math.max(4, w.length - (/on$/.test(w) ? 2 : 1))), abbr };
+  }).filter(Boolean);
 }
+function textMentions(text, sig) {
+  const ws = srchSkel(String(text).replace(/<[^>]+>/g, ' ')).split(' ').filter(w => w.length > 1);
+  const fits = (w, p) => w.startsWith(p.s) && (p.abbr || w.length - p.s.length <= 3);
+  for (let i = 0; i + sig.length <= ws.length; i++) if (sig.every((p, k) => fits(ws[i + k], p))) return true;
+  return false;
+}
+function teamNews(team) {
+  const byDate = arr => arr.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+  if (isMyTeam(team)) return byDate(data.news || []);
+  const sig = teamSig(team); if (!sig.length) return [];
+  return byDate((data.news || []).filter(n => textMentions(n.title + ' ' + n.content, sig)));
+}
+window.teamNewsFor = teamNews;   // για έλεγχο από την κονσόλα: teamNewsFor('ΑΕ ΝΕΩΝ ΣΙΝΔΟΥ')
 let teamMatches = [], teamNewsList = [];
 function openTeam(team) {
   const T = (() => { try { return calculateStandings(); } catch (e) { return []; } })();
