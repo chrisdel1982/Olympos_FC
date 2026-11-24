@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <!-- ΕΚΔΟΣΗ 22/11/2026 β΄ — Σκόρερ στο live με νέα διάταξη, λεπτά με κόμμα («8', 52'»),
+    <!-- ΕΚΔΟΣΗ 24/11/2026 — Πάτημα σε σήμα ή όνομα ομάδας (Βαθμολογία, Αποτελέσματα, Πρόγραμμα, νοκ άουτ)
+         ανοίγει την καρτέλα της ομάδας, όπως στην Αναζήτηση. Με φύλαγμα για το σκρολ στο κινητό.
+         Προηγούμενη: 22/11/2026 β΄ — Σκόρερ στο live με νέα διάταξη, λεπτά με κόμμα («8', 52'»),
          σε πλήρη καθρέφτη όπως το Gazzetta: αριστερά «Κυρτζαλιώτης Ν. 8', 52' ⚽», δεξιά «⚽ 8', 52' Κυρτζαλιώτης Ν.»,
          λεπτά και μπάλα στη μέση, ονόματα προς τα έξω, χρονολογικά, μπάλα περίγραμμα (κάρτα και εικόνα share).
          Η ίδια γραφή και στα Αποτελέσματα: «⚽ Κυρτζαλιώτης Ν. 8', 52'».
@@ -5526,6 +5528,18 @@ function showToast(message, type = 'success') {
         //    (.res-save-bar, sticky), για να μη χρειάζεται σκρολ ως το τέλος για έναν αγώνα.
         // =========================================================
         // =========================================================
+        // ΑΛΛΑΓΗ 24/11/2026 — ΣΗΜΑ ΟΜΑΔΑΣ → ΚΑΡΤΕΛΑ
+        //  - Πάτημα σε σήμα ή όνομα ομάδας στη Βαθμολογία, στα Αποτελέσματα, στο Πρόγραμμα και στο
+        //    νοκ άουτ ανοίγει την ίδια καρτέλα με την Αναζήτηση (openTeam). Και για τον Όλυμπο.
+        //  - ΟΧΙ στην κάρτα Live / Επόμενος αγώνας (κουμπιά share δίπλα) και ΟΧΙ στο Ιστορικό
+        //    (η καρτέλα δείχνει μόνο την τρέχουσα σεζόν).
+        //  - Στους αγώνες μετράει μόνο το όνομα και το σήμα (+6px), όχι το κενό της στήλης.
+        //    Τα ονόματα μπήκαν σε <span class="tm-n"> (ίδια εμφάνιση).
+        //  - Σκρολ: στο κινητό η καρτέλα δεν ανοίγει όταν το δάχτυλο σταματά σκρολ που τρέχει,
+        //    όταν σκρολάρει η σελίδα ή ο πίνακας στο πλάι, μετά από >10px κίνηση ή πάτημα >0,7".
+        //  - Υπολογιστής: χεράκι και λεπτή υπογράμμιση στο όνομα. Κινητό: καμία αλλαγή στην όψη.
+        //  - Κώδικας: τέλος του μπλοκ «ΑΝΑΖΗΤΗΣΗ — 9/11/2026» (tmTeamAt, tmKnown) + CSS εκεί.
+        // =========================================================
         // ΑΛΛΑΓΗ 9/11/2026 — ΑΝΑΖΗΤΗΣΗ
         //  - Κινητό: πεδίο στην κορυφή του μενού (3 παύλες). Όσο γράφεις, τα κουμπιά του μενού
         //    κρύβονται και φαίνονται τα αποτελέσματα. Κλείνοντας το μενού, η αναζήτηση καθαρίζει.
@@ -6574,9 +6588,9 @@ function displayResults() {
 
                 let mainMatchHTML = `
                     <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; padding: 1rem;">
-                        <div class="team-left">${esc(match.home)}${crestMini(match.home)}</div>
+                        <div class="team-left"><span class="tm-n">${esc(match.home)}</span>${crestMini(match.home)}</div>
                         <div>${centerContent}</div>
-                        <div class="team-right">${crestMini(match.away)}${esc(match.away)}</div>
+                        <div class="team-right">${crestMini(match.away)}<span class="tm-n">${esc(match.away)}</span></div>
                     </div>`;
 
                 // --- ΕΜΦΑΝΙΣΗ ΣΤΑΤΙΣΤΙΚΩΝ ---
@@ -6660,9 +6674,9 @@ function displayFixtures() {
                 const awayTeam = match.away || '—';
 
                 div.innerHTML = `
-                    <div class="team-left">${esc(homeTeam)}${crestMini(homeTeam)}</div>
+                    <div class="team-left"><span class="tm-n">${esc(homeTeam)}</span>${crestMini(homeTeam)}</div>
                     <div class="match-vs-box">VS</div>
-                    <div class="team-right">${crestMini(awayTeam)}${esc(awayTeam)}</div>
+                    <div class="team-right">${crestMini(awayTeam)}<span class="tm-n">${esc(awayTeam)}</span></div>
                 `;
                 section.appendChild(div);
             });
@@ -12476,6 +12490,15 @@ async function refreshLikeCounts() {
   .nav-menu{overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:40px}
   .nav-menu.searching > li:not(.srch-li-mobile){display:none}
 }
+/* Σήμα + όνομα ομάδας → καρτέλα (24/11/2026). Χεράκι και υπογράμμιση μόνο με ποντίκι· στο κινητό τίποτα δεν αλλάζει όψη. */
+@media (hover:hover) and (pointer:fine){
+  #standingsTable .team-cell, #knockoutContainer .ko-crest, #knockoutContainer .ko-name,
+  #resultsContainer .match-row .tm-n, #resultsContainer .match-row .crest-mini,
+  #fixturesContainer .match-row .tm-n, #fixturesContainer .match-row .crest-mini{cursor:pointer}
+  #standingsTable .team-cell:hover > span, #knockoutContainer .ko-team:has(.ko-crest:hover,.ko-name:hover) .ko-name,
+  .match-row .team-left:has(.tm-n:hover,.crest-mini:hover) .tm-n, .match-row .team-right:has(.tm-n:hover,.crest-mini:hover) .tm-n{
+    text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:rgba(128,128,128,.7)}
+}
 @media (prefers-color-scheme:dark){
   .srch-box{background:#2a2a2a}.srch-box svg{color:#fff;opacity:.3}.srch-box input{color:#eee}
   .srch-ic{color:var(--accent-color)}
@@ -12755,6 +12778,52 @@ document.addEventListener('keydown', e => {
   if (e.key === '/' && !typing && !adminOpen && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); openOverlay(); }
   if (e.key === 'Escape') { if ($('srchTeam').classList.contains('open')) closeTeam(); else $('srchOverlay').classList.remove('open'); }
 });
+// ---- Σήμα + όνομα ομάδας → καρτέλα (24/11/2026) ----
+// Βαθμολογία, Αποτελέσματα, Πρόγραμμα, νοκ άουτ. ΟΧΙ στην κάρτα Live/Επόμενος αγώνας και στο Ιστορικό.
+// Φύλαγμα για το κινητό: η καρτέλα ΔΕΝ ανοίγει αν το δάχτυλο σταμάτησε σκρολ που έτρεχε,
+// αν σκρόλαρε κάτι (σελίδα ή πίνακας στο πλάι) όσο ακουμπούσε, αν μετακινήθηκε >10px ή αν κράτησε >0,7".
+const TM_SCOPE = '#standingsTable, #resultsContainer, #fixturesContainer, #knockoutContainer';
+let tmDown = null, tmLastScroll = -1e9;
+document.addEventListener('scroll', () => { tmLastScroll = performance.now(); }, { capture: true, passive: true });
+document.addEventListener('pointerdown', e => {
+  const now = performance.now();
+  tmDown = { x: e.clientX, y: e.clientY, t: now, touch: e.pointerType !== 'mouse', flinging: now - tmLastScroll < 150 };
+}, { capture: true, passive: true });
+function tmTeamAt(e) {
+  const t = e.target; if (!t || !t.closest || !t.closest(TM_SCOPE)) return '';
+  const cell = t.closest('.team-cell');
+  if (cell) { const n = cell.querySelector(':scope > span'); return n ? n.textContent : ''; }
+  const ko = t.closest('.ko-team');
+  if (ko) return t.closest('.ko-crest, .ko-name') ? (ko.querySelector('.ko-name') || {}).title || '' : '';
+  const side = t.closest('.match-row .team-left, .match-row .team-right'); if (!side) return '';
+  // Μόνο πάνω στο όνομα ή στο σήμα (με 6px περιθώριο για το δάχτυλο), όχι στο κενό της στήλης
+  let L = 1e9, T = 1e9, R = -1e9, B = -1e9;
+  side.querySelectorAll('.tm-n, .crest-mini').forEach(p => { for (const r of p.getClientRects()) { L = Math.min(L, r.left); T = Math.min(T, r.top); R = Math.max(R, r.right); B = Math.max(B, r.bottom); } });
+  const pad = 6;
+  if (e.clientX < L - pad || e.clientX > R + pad || e.clientY < T - pad || e.clientY > B + pad) return '';
+  const n = side.querySelector('.tm-n'); return n ? n.textContent : '';
+}
+function tmKnown(team) {
+  if (!team || !team.trim() || team.trim() === '—') return false;
+  return (data.teams || []).some(x => same(x, team)) || allRounds().some(r => (r.matches || []).some(m => same(m.home, team) || same(m.away, team)));
+}
+document.addEventListener('click', e => {
+  if (e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+  const team = tmTeamAt(e); if (!team) return;
+  const d = tmDown;
+  if (d && d.touch) {
+    if (d.flinging) return;                                    // σταμάτησε σκρολ που έτρεχε
+    if (tmLastScroll > d.t) return;                            // σκρόλαρε κάτι όσο ακουμπούσε
+    if (Math.hypot(e.clientX - d.x, e.clientY - d.y) > 10) return;
+    if (performance.now() - d.t > 700) return;                 // παρατεταμένο πάτημα
+  }
+  const sel = window.getSelection && window.getSelection();
+  if (sel && !sel.isCollapsed && String(sel).trim()) return;   // επέλεγε κείμενο
+  if (!tmKnown(team)) return;
+  openTeam(team.trim());
+});
+window.openTeamCard = team => { if (tmKnown(team)) openTeam(team); };
+
 // Το μενού κλείνει → καθαρίζει και η αναζήτηση, για να ξαναβρείς το μενού όπως ήταν
 const hb = document.querySelector('.hamburger');
 if (hb) hb.addEventListener('click', () => { if (!menu.classList.contains('active')) { const i = $('srchInputM'); if (i.value) { i.value = ''; i.dispatchEvent(new Event('input')); } i.blur(); } });
