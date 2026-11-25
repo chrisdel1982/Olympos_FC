@@ -1184,9 +1184,9 @@
         {
           "home": "ΜΑΚΕΔΟΝΙΚΟΣ",
           "away": "ΠΑΝΑΘΗΝΑΪΚΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
-          "homeScore": null,
-          "awayScore": null,
-          "isPostponed": true
+          "homeScore": 2,
+          "awayScore": 3,
+          "isPostponed": false
         },
         {
           "home": "ΣΚΙΟΥΡΟΙ",
