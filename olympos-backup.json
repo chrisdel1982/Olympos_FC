@@ -1096,20 +1096,20 @@
           "away": "ΑΝΑΓΕΝΝΗΣΗ ΝΕΩΝ ΕΠΙΒΑΤΩΝ 2021",
           "homeScore": null,
           "awayScore": null,
-          "isPostponed": false
+          "isPostponed": true
         },
         {
           "home": "ΑΧΙΛΛΕΑΣ ΤΡΙΑΝΔΡΙΑΣ",
           "away": "ΧΑΝΘ",
           "homeScore": null,
           "awayScore": null,
-          "isPostponed": false
+          "isPostponed": true
         },
         {
           "home": "ΑΕ ΠΥΛΑΙΑΣ",
           "away": "ΜΠΕΜΠΗΔΕΣ 2000",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 0,
           "isPostponed": false
         },
         {
@@ -1186,7 +1186,7 @@
           "away": "ΠΑΝΑΘΗΝΑΪΚΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
           "homeScore": null,
           "awayScore": null,
-          "isPostponed": false
+          "isPostponed": true
         },
         {
           "home": "ΣΚΙΟΥΡΟΙ",
@@ -1228,7 +1228,7 @@
           "away": "ΚΕΝΤΑΥΡΟΣ ΛΑΓΚΑΔΑ",
           "homeScore": null,
           "awayScore": null,
-          "isPostponed": false
+          "isPostponed": true
         },
         {
           "home": "ΠΡΩΤΕΑΣ",
