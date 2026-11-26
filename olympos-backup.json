@@ -1094,9 +1094,10 @@
         {
           "home": "ΑΝΑΓΕΝΝΗΣΗ ΑΓ. ΙΩΑΝΝΗ",
           "away": "ΑΝΑΓΕΝΝΗΣΗ ΝΕΩΝ ΕΠΙΒΑΤΩΝ 2021",
-          "homeScore": null,
-          "awayScore": null,
-          "isPostponed": true
+          "homeScore": 3,
+          "awayScore": 0,
+          "isPostponed": false,
+          "isAwarded": true
         },
         {
           "home": "ΑΧΙΛΛΕΑΣ ΤΡΙΑΝΔΡΙΑΣ",
@@ -1226,9 +1227,9 @@
         {
           "home": "ΑΚΑΔ. ΠΟΔ. ΘΕΣΣΑΛΟΝΙΚΗΣ 2020",
           "away": "ΚΕΝΤΑΥΡΟΣ ΛΑΓΚΑΔΑ",
-          "homeScore": null,
-          "awayScore": null,
-          "isPostponed": true
+          "homeScore": 15,
+          "awayScore": 0,
+          "isPostponed": false
         },
         {
           "home": "ΠΡΩΤΕΑΣ",
@@ -1259,10 +1260,10 @@
         {
           "home": "ΓΕΡΜΑΝΙΚΗ ΑΚΑΔΗΜΙΑ",
           "away": "ΑΝΑΓΕΝΝΗΣΗ ΕΠΑΝΟΜΗΣ",
-          "homeScore": null,
-          "awayScore": null,
-          "isPostponed": true,
-          "isCancelled": true
+          "homeScore": 3,
+          "awayScore": 0,
+          "isPostponed": false,
+          "isAwarded": true
         },
         {
           "home": "ΑΣΤΕΡΙΑ",
