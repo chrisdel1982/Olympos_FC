@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <!-- ΕΚΔΟΣΗ 26/11/2026 — Χρονόμετρο του live με δευτερόλεπτα («22:14», μετά το 40' συνεχίζει «41:23»),
+    <!-- ΕΚΔΟΣΗ 27/11/2026 — Φωτογραφία σε είδηση που υπάρχει ήδη: κουμπί 📷 δίπλα στο 🎬 στο admin
+         (Τρέχουσες Ειδήσεις). Χωρίς φωτογραφία ανοίγει κατευθείαν την επιλογή· με φωτογραφία δείχνει
+         μικρογραφία με «Αλλαγή» / «Αφαίρεση». Ίδια συμπίεση (1280px, JPEG 78%), το αρχείο κατεβαίνει αμέσως,
+         κίτρινη υπενθύμιση για το ανέβασμα στο photos/. Η είδηση κρατά ημερομηνία, θέση, link και likes.
+         Προηγούμενη: 26/11/2026 — Χρονόμετρο του live με δευτερόλεπτα («22:14», μετά το 40' συνεχίζει «41:23»),
          λευκά νούμερα σε κόκκινη ταμπέλα με τελεία που αναβοσβήνει (επιλογή «Α» του διαχειριστή).
          Η «▶ Σέντρα» κρατά πια και τα δευτερόλεπτα της ώρας έναρξης («12:30:17»).
          Το λεπτό του γκολ, η εικόνα και η λεζάντα του share μένουν σε λεπτά («23'»).
@@ -1393,6 +1397,24 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
 .nv-hint { margin-top: 4px; font-size: .78rem; min-height: 1.1em; }
 .nv-hint.ok { color: #2e7d32; }
 .nv-hint.bad { color: #c62828; }
+/* Admin: φωτογραφία σε είδηση που υπάρχει ήδη (27/11/2026) */
+.np-panel { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: -0.3rem 0 0.6rem;
+            padding: .6rem .7rem; background: #f1f8e9; border-left: 4px solid var(--primary-color);
+            border-radius: var(--r-sm); font-size: .82rem; color: #333; }
+.np-panel img { width: 84px; height: 63px; object-fit: cover; border-radius: var(--r-sm); background: #ddd; }
+.np-panel .np-txt { flex: 1 1 140px; }
+.np-panel .np-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.np-remind { background: #fff8e1; border-left: 4px solid #f9a825; padding: 10px; font-size: .82rem;
+             margin: 0 0 .6rem; color: #333; border-radius: var(--r-sm); }
+.np-remind code { background: #fff; color: #333; padding: 2px 6px; border-radius: var(--r-sm); word-break: break-all; }
+.np-remind ul { margin: 6px 0 0; padding-left: 1.1rem; }
+.np-remind li { margin: 4px 0; }
+.np-remind .btn { margin-left: 4px; }
+@media (prefers-color-scheme: dark) {
+    .np-panel { background: #1f2a1f; color: #e0e0e0; }
+    .np-remind { background: #3a3220; color: #f1e6c8; }
+    .np-remind code { background: #222; color: #ffe082; }
+}
 @media (prefers-color-scheme: dark) { .nv-hint.ok { color: #81c784; } .nv-hint.bad { color: #ff8a80; } }
 
 .news-toggle {
@@ -5046,6 +5068,8 @@ function showToast(message, type = 'success') {
 
                 <div style="margin-top: 1.5rem;">
                     <label style="font-weight: 600; margin-bottom: 0.5rem; display: block;">Τρέχουσες Ειδήσεις:</label>
+                    <div id="newsPhotoEditReminder" aria-live="polite"></div>
+                    <input type="file" id="newsPhotoEdit" accept="image/*" hidden onchange="onNewsPhotoEdit(event)">
                     <div id="newsList" class="roster-list"></div>
                 </div>
 
@@ -7500,6 +7524,147 @@ function removeNewsPhoto() {
         showToast(item.video ? 'Το βίντεο μπήκε στην είδηση. Μην ξεχάσεις Export!' : 'Το βίντεο αφαιρέθηκε.');
     }
 
+    // ===== Admin: φωτογραφία σε είδηση που υπάρχει ήδη (27/11/2026) =====
+    // Κρατά ημερομηνία, θέση στη λίστα, link κοινοποίησης και likes (ίδιο id).
+    // Ίδια συμπίεση με τις νέες ειδήσεις· το αρχείο κατεβαίνει αμέσως για το photos/ του GitHub.
+    let newsPhotoEditId  = null;   // σε ποια είδηση πάει η φωτογραφία που διαλέγεται
+    let newsPhotoPanelId = null;   // ποια είδηση έχει ανοιχτό το «Αλλαγή / Αφαίρεση»
+    const pendingEditPhotos = [];  // [{ path, blob, title, old }] για την κίτρινη υπενθύμιση
+
+    function findNews(id) { return (data.news || []).find(n => String(n.id) === String(id)); }
+
+    function setNewsPhoto(id) {
+        const item = findNews(id);
+        if (!item) return;
+        if (item.photo) {           // έχει ήδη: δείξε τη και ρώτα αλλαγή ή αφαίρεση
+            newsPhotoPanelId = (newsPhotoPanelId === String(id)) ? null : String(id);
+            updateNewsList();
+            return;
+        }
+        pickNewsPhoto(id);          // δεν έχει: κατευθείαν επιλογή
+    }
+
+    function pickNewsPhoto(id) {
+        const inp = document.getElementById('newsPhotoEdit');
+        if (!inp) return;
+        newsPhotoEditId = String(id);
+        inp.value = '';
+        inp.click();
+    }
+
+    function downloadBlob(blob, name) {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    }
+
+    // Όνομα που δεν το έχει ήδη άλλη φωτογραφία (δύο φωτό στο ίδιο δευτερόλεπτο → «-2»)
+    function freePhotoPath() {
+        const taken = new Set([...(data.news || []).map(n => n.photo), ...pendingEditPhotos.map(p => p.path), newsPhotoPath]);
+        const base = buildPhotoPath();
+        let path = base, k = 2;
+        while (taken.has(path)) path = base.replace(/\.jpg$/, `-${k++}.jpg`);
+        return path;
+    }
+
+    async function onNewsPhotoEdit(event) {
+        const file = event.target.files && event.target.files[0];
+        const item = findNews(newsPhotoEditId);
+        event.target.value = '';
+        newsPhotoEditId = null;
+        if (!file || !item) return;
+
+        if (!file.type.startsWith('image/')) { showToast('Παρακαλώ επίλεξε μόνο εικόνες!', 'error'); return; }
+        if (file.size > 12 * 1024 * 1024) { showToast('Η φωτογραφία είναι υπερβολικά μεγάλη (>12MB).', 'error'); return; }
+
+        try {
+            const b64  = await compressImage(file);
+            const blob = dataUrlToBlob(b64);
+            const path = freePhotoPath();
+            const old  = item.photo || null;
+
+            item.photo = path;
+            if (!saveData(data)) { if (old) item.photo = old; else delete item.photo; return; }
+
+            downloadBlob(blob, path.split('/').pop());
+            forgetPendingPhoto(old);
+            const oldFile = (old && !old.startsWith('data:') && !(data.news || []).some(n => n.photo === old)) ? old : null;
+            pendingEditPhotos.push({ path, blob, title: item.title, old: oldFile });
+
+            newsPhotoPanelId = null;
+            displayNews();
+            updateNewsList();
+            renderEditPhotoReminder();
+            showToast(`Φωτογραφία ${old ? 'άλλαξε' : 'μπήκε'} στην είδηση: ${Math.round(file.size / 1024)} KB → ${Math.round(blob.size / 1024)} KB. Κατέβηκε το αρχείο.`);
+        } catch (err) {
+            console.error(err);
+            showToast('Δεν διαβάστηκε η φωτογραφία: ' + err.message, 'error');
+        }
+    }
+
+    function removePhotoFromNews(id) {
+        const item = findNews(id);
+        if (!item || !item.photo) return;
+        if (!confirm('Να φύγει η φωτογραφία από την είδηση;\n«' + item.title + '»')) return;
+        const old = item.photo;
+        delete item.photo;
+        if (!saveData(data)) { item.photo = old; return; }
+        forgetPendingPhoto(old);
+        newsPhotoPanelId = null;
+        displayNews();
+        updateNewsList();
+        renderEditPhotoReminder();
+        showToast('Η φωτογραφία αφαιρέθηκε. Μην ξεχάσεις Export!');
+    }
+
+    // Φωτογραφία που μόλις ανέβηκε εδώ και αντικαταστάθηκε/σβήστηκε: δεν χρειάζεται πια ανέβασμα
+    function forgetPendingPhoto(path) {
+        if (!path) return;
+        for (let i = pendingEditPhotos.length - 1; i >= 0; i--)
+            if (pendingEditPhotos[i].path === path) pendingEditPhotos.splice(i, 1);
+    }
+
+    function downloadPendingPhoto(i) {
+        const p = pendingEditPhotos[i];
+        if (p) downloadBlob(p.blob, p.path.split('/').pop());
+    }
+
+    function renderEditPhotoReminder() {
+        const box = document.getElementById('newsPhotoEditReminder');
+        if (!box) return;
+        if (!pendingEditPhotos.length) { box.innerHTML = ''; return; }
+        const items = pendingEditPhotos.map((p, i) => `
+            <li><code>${esc(p.path)}</code> για «${esc(p.title)}»
+                <button class="btn btn-small" onclick="downloadPendingPhoto(${i})" title="Ξανακατέβασέ το">⬇️</button>
+                ${p.old ? `<br><small>Το παλιό <code>${esc(p.old)}</code> δεν το χρειάζεται πια· σβήσ' το από το GitHub αν θες (όχι υποχρεωτικά).</small>` : ''}
+            </li>`).join('');
+        box.innerHTML = `
+            <div class="np-remind">
+                <strong>📤 Μην ξεχάσεις να ${pendingEditPhotos.length > 1 ? 'τα' : 'το'} ανεβάσεις στο GitHub:</strong>
+                <ul>${items}</ul>
+                Στον φάκελο <code>photos/</code>, μαζί με το <code>olympos-backup.json</code>, στο ίδιο commit.
+            </div>`;
+    }
+
+    function closeNewsPhotoPanel() { newsPhotoPanelId = null; updateNewsList(); }
+
+    function newsPhotoPanelHTML(item) {
+        const sid = esc(item.id);
+        return `<div class="np-panel">
+                <img src="${esc(item.photo)}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('span'), {textContent: '⚠️ δεν φαίνεται (λείπει το αρχείο;)'}))">
+                <div class="np-txt">Η είδηση έχει ήδη φωτογραφία.</div>
+                <div class="np-btns">
+                    <button class="btn btn-secondary btn-small" data-id="${sid}" onclick="pickNewsPhoto(this.dataset.id)">🔄 Αλλαγή</button>
+                    <button class="btn btn-danger btn-small" data-id="${sid}" onclick="removePhotoFromNews(this.dataset.id)">🗑️ Αφαίρεση</button>
+                    <button class="btn btn-small" onclick="closeNewsPhotoPanel()" aria-label="Κλείσιμο">✕</button>
+                </div>
+            </div>`;
+    }
+
     async function displayNews() {
     const container = document.getElementById('newsContainer');
     container.innerHTML = '';
@@ -7676,16 +7841,22 @@ function removeNewsPhoto() {
                 
                 div.innerHTML = `
                     <div>
-                        <strong>${newsItem.video ? '🎬 ' : ''}${esc(newsItem.title)}</strong><br>
+                        <strong>${newsItem.photo ? '📷 ' : ''}${newsItem.video ? '🎬 ' : ''}${esc(newsItem.title)}</strong><br>
                         <span style="color: #666; font-size: 0.85rem;">${esc(shortContent)}</span>
                     </div>
                     <div style="display:flex; gap:6px; flex:none;">
+                        <button class="btn btn-secondary btn-small" data-id="${esc(newsItem.id)}" onclick="setNewsPhoto(this.dataset.id)"
+                                title="${newsItem.photo ? 'Αλλαγή ή αφαίρεση φωτογραφίας' : 'Προσθήκη φωτογραφίας'}"
+                                aria-label="${newsItem.photo ? 'Αλλαγή ή αφαίρεση φωτογραφίας' : 'Προσθήκη φωτογραφίας'}">📷</button>
                         <button class="btn btn-secondary btn-small" data-id="${esc(newsItem.id)}" onclick="setNewsVideo(this.dataset.id)"
                                 title="${newsItem.video ? 'Αλλαγή ή αφαίρεση βίντεο' : 'Προσθήκη βίντεο YouTube'}">🎬</button>
                         <button class="btn btn-danger btn-small" data-id="${esc(newsItem.id)}" onclick="deleteNews(this.dataset.id)">🗑️</button>
                     </div>
                 `;
                 container.appendChild(div);
+                if (newsItem.photo && newsPhotoPanelId === String(newsItem.id)) {
+                    container.insertAdjacentHTML('beforeend', newsPhotoPanelHTML(newsItem));
+                }
             });
         }
 
