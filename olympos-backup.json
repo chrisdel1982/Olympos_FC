@@ -4410,11 +4410,18 @@
       "date": "2026-11-21T15:23:50.327Z",
       "season": "2026-27",
       "photo": null,
-      "video": {
-        "id": "hAhAereEtJE",
-        "short": true,
-        "start": 0
-      }
+      "video": [
+        {
+          "id": "hAhAereEtJE",
+          "short": true,
+          "start": 0
+        },
+        {
+          "id": "66aMSSI4reQ",
+          "short": false,
+          "start": 5
+        }
+      ]
     }
   ]
 }
