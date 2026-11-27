@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <!-- ΕΚΔΟΣΗ 27/11/2026 — Φωτογραφία σε είδηση που υπάρχει ήδη: κουμπί 📷 δίπλα στο 🎬 στο admin
+    <!-- ΕΚΔΟΣΗ 27/11/2026 β΄ — Δύο (ή περισσότερα) βίντεο YouTube στην ίδια είδηση, το ένα κάτω από το άλλο.
+         Στο JSON: "video" μένει αντικείμενο όταν είναι ένα (όπως πριν) και γίνεται λίστα [{…},{…}] όταν είναι πολλά.
+         Admin: το 🎬 ανοίγει πλαίσιο με τα βίντεο της είδησης (➕ Προσθήκη, ⬆️ σειρά, 🗑️ ανά βίντεο).
+         Νέα είδηση: ένα link ανά γραμμή στο πεδίο του βίντεο.
+         α΄ (27/11/2026): Φωτογραφία σε είδηση που υπάρχει ήδη: κουμπί 📷 δίπλα στο 🎬 στο admin
          (Τρέχουσες Ειδήσεις). Χωρίς φωτογραφία ανοίγει κατευθείαν την επιλογή· με φωτογραφία δείχνει
          μικρογραφία με «Αλλαγή» / «Αφαίρεση». Ίδια συμπίεση (1280px, JPEG 78%), το αρχείο κατεβαίνει αμέσως,
          κίτρινη υπενθύμιση για το ανέβασμα στο photos/. Η είδηση κρατά ημερομηνία, θέση, link και likes.
@@ -1397,6 +1401,19 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
 .nv-hint { margin-top: 4px; font-size: .78rem; min-height: 1.1em; }
 .nv-hint.ok { color: #2e7d32; }
 .nv-hint.bad { color: #c62828; }
+/* Admin: βίντεο σε είδηση που υπάρχει ήδη, ένα ή πολλά (27/11/2026 β΄) */
+.nv-panel { margin: -0.3rem 0 0.6rem; padding: .6rem .7rem; background: #f1f8e9;
+            border-left: 4px solid var(--primary-color); border-radius: var(--r-sm); font-size: .82rem; color: #333; }
+.nv-panel .nv-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px dashed rgba(0,0,0,.12); }
+.nv-panel .nv-row img { width: 64px; height: 36px; object-fit: cover; border-radius: var(--r-sm); background: #ddd; flex: none; }
+.nv-panel .nv-row .np-txt { flex: 1 1 auto; min-width: 0; line-height: 1.3; }
+.nv-panel .nv-row .np-txt a { color: inherit; font-weight: 600; }
+.nv-panel .nv-row .np-btns { display: flex; gap: 6px; flex: none; }
+.nv-panel .nv-foot { display: flex; gap: 6px; flex-wrap: wrap; justify-content: space-between; align-items: center; padding-top: 8px; }
+@media (prefers-color-scheme: dark) {
+    .nv-panel { background: #1f2a1f; color: #e0e0e0; }
+    .nv-panel .nv-row { border-bottom-color: rgba(255,255,255,.15); }
+}
 /* Admin: φωτογραφία σε είδηση που υπάρχει ήδη (27/11/2026) */
 .np-panel { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: -0.3rem 0 0.6rem;
             padding: .6rem .7rem; background: #f1f8e9; border-left: 4px solid var(--primary-color);
@@ -3667,6 +3684,7 @@ details.round-section:not([open]) > summary.round-header::after { transform: rot
 .hist-news-date { font-weight: 400; color: var(--ink-muted); font-size: .75rem; }
 .hist-news-body { font-size: .85rem; color: var(--ink); margin-top: 8px; white-space: pre-wrap; }
 .hist-news-img  { width: 100%; border-radius: var(--r-sm); margin-top: 8px; }
+.hist-news-video { display: block; margin-top: 8px; font-size: .85rem; } /* πολλά βίντεο: ένα link ανά γραμμή (27/11/2026 β΄) */
 .hist-note { font-size: .85rem; color: var(--ink-muted); margin-bottom: 10px; }
 .hist-warn {
     padding: 10px;
@@ -5041,10 +5059,11 @@ function showToast(message, type = 'success') {
 </div>
 
 <div class="form-group">
-    <label for="newsVideo">Βίντεο από YouTube (Προαιρετικό):</label>
-    <input type="url" id="newsVideo" inputmode="url" autocomplete="off"
-           placeholder="π.χ. https://youtu.be/… ή https://www.youtube.com/shorts/…"
-           oninput="checkNewsVideoInput()">
+    <label for="newsVideo">Βίντεο από YouTube (Προαιρετικό · ένα link ανά γραμμή):</label>
+    <textarea id="newsVideo" rows="2" autocomplete="off" spellcheck="false"
+           placeholder="π.χ. https://youtu.be/…&#10;και στη 2η γραμμή ένα 2ο βίντεο, αν θες"
+           style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: var(--r-sm); font-family: inherit; resize: vertical;"
+           oninput="checkNewsVideoInput()"></textarea>
     <div id="newsVideoHint" class="nv-hint" aria-live="polite"></div>
 </div>
 
@@ -7476,6 +7495,33 @@ function removeNewsPhoto() {
         return v.short ? `https://www.youtube.com/shorts/${v.id}`
                        : `https://www.youtube.com/watch?v=${v.id}${v.start ? '&t=' + v.start + 's' : ''}`;
     }
+    // Πολλά βίντεο σε μία είδηση (27/11/2026 β΄). Στο JSON το "video" είναι αντικείμενο όταν είναι ένα
+    // (όπως πριν, οι παλιές ειδήσεις δεν αλλάζουν) και λίστα όταν είναι δύο ή περισσότερα.
+    function newsVideoList(item) {
+        const v = item && item.video;
+        return (Array.isArray(v) ? v : (v ? [v] : []))
+            .filter(x => x && /^[A-Za-z0-9_-]{11}$/.test(x.id || ''));
+    }
+    function setNewsVideoList(item, list) {
+        if (!list.length) delete item.video;
+        else item.video = list.length === 1 ? list[0] : list;
+    }
+    // Ένα ή περισσότερα links (ανά γραμμή, κενό ή κόμμα). Γυρίζει { videos, bad, dup }.
+    function youtubeInfos(text) {
+        const videos = [], bad = [], seen = new Set();
+        let dup = 0;
+        String(text || '').split(/[\s,]+/).filter(Boolean).forEach(tok => {
+            const v = youtubeInfo(tok);
+            if (!v) { bad.push(tok); return; }
+            const key = v.id + '@' + v.start;
+            if (seen.has(key)) { dup++; return; }
+            seen.add(key); videos.push(v);
+        });
+        return { videos, bad, dup };
+    }
+    function newsVideosHTML(item) {
+        return newsVideoList(item).map(newsVideoHTML).join('');
+    }
     function newsVideoHTML(v) {
         if (!v || !/^[A-Za-z0-9_-]{11}$/.test(v.id || '')) return '';
         return `<div class="news-video${v.short ? ' is-short' : ''}" role="button" tabindex="0"
@@ -7499,29 +7545,95 @@ function removeNewsPhoto() {
     function checkNewsVideoInput() {
         const inp = document.getElementById('newsVideo'), hint = document.getElementById('newsVideoHint');
         if (!inp || !hint) return;
-        const v = youtubeInfo(inp.value);
-        hint.className = 'nv-hint' + (inp.value.trim() ? (v ? ' ok' : ' bad') : '');
-        hint.textContent = !inp.value.trim() ? ''
-            : v ? `✓ Βίντεο YouTube${v.short ? ' (Shorts, κάθετο)' : ''}${v.start ? `, ξεκινά στο ${Math.floor(v.start / 60)}:${String(v.start % 60).padStart(2, '0')}` : ''}`
-                : 'Δεν μοιάζει με link από YouTube.';
+        const r = youtubeInfos(inp.value);
+        const any = inp.value.trim() !== '';
+        hint.className = 'nv-hint' + (any ? (r.bad.length || !r.videos.length ? ' bad' : ' ok') : '');
+        if (!any) { hint.textContent = ''; return; }
+        if (r.bad.length) { hint.textContent = `Δεν μοιάζει με link από YouTube: «${r.bad[0].slice(0, 40)}»`; return; }
+        const one = v => `${v.short ? 'Shorts, κάθετο' : 'βίντεο'}${v.start ? `, ξεκινά στο ${Math.floor(v.start / 60)}:${String(v.start % 60).padStart(2, '0')}` : ''}`;
+        hint.textContent = r.videos.length === 1
+            ? `✓ Βίντεο YouTube (${one(r.videos[0])})`
+            : `✓ ${r.videos.length} βίντεο YouTube, το ένα κάτω από το άλλο: ` + r.videos.map((v, i) => `${i + 1}. ${one(v)}`).join(' · ')
+              + (r.dup ? ` (${r.dup} διπλό αγνοείται)` : '');
     }
-    // Admin: βίντεο σε είδηση που υπάρχει ήδη (κρατά likes και ημερομηνία)
+    // Admin: βίντεο σε είδηση που υπάρχει ήδη (κρατά likes και ημερομηνία).
+    // Χωρίς βίντεο: ζητά κατευθείαν link. Με βίντεο: ανοίγει πλαίσιο με όλα (➕ / ⬆️ / 🗑️).
+    let newsVideoPanelId = null;
     function setNewsVideo(id) {
         const item = (data.news || []).find(n => String(n.id) === String(id));
         if (!item) return;
-        const cur = item.video ? youtubeWatchUrl(item.video) : '';
-        const ans = prompt('Link βίντεο από YouTube για την είδηση:\n«' + item.title + '»\n\n(άδειο = αφαίρεση βίντεο)', cur);
-        if (ans === null) return;
-        if (!ans.trim()) { delete item.video; }
-        else {
-            const v = youtubeInfo(ans);
-            if (!v) { showToast('Δεν μοιάζει με link από YouTube.', 'error'); return; }
-            item.video = v;
-        }
-        saveData(data);
+        if (!newsVideoList(item).length) { addVideoToNews(id); return; }
+        newsVideoPanelId = newsVideoPanelId === String(id) ? null : String(id);
+        updateNewsList();
+    }
+    function addVideoToNews(id) {
+        const item = (data.news || []).find(n => String(n.id) === String(id));
+        if (!item) return;
+        const list = newsVideoList(item);
+        const ans = prompt(`Link βίντεο από YouTube για την είδηση:\n«${item.title}»`
+            + (list.length ? `\n\nΈχει ήδη ${list.length} · το νέο μπαίνει από κάτω.` : '')
+            + '\n\n(Μπορείς να βάλεις και δύο links, χωρισμένα με κενό.)', '');
+        if (ans === null || !ans.trim()) return;
+        const r = youtubeInfos(ans);
+        if (r.bad.length || !r.videos.length) { showToast('Δεν μοιάζει με link από YouTube.', 'error'); return; }
+        const have = new Set(list.map(v => v.id + '@' + (Number(v.start) || 0)));
+        const fresh = r.videos.filter(v => !have.has(v.id + '@' + v.start));
+        if (!fresh.length) { showToast('Αυτό το βίντεο υπάρχει ήδη στην είδηση.', 'error'); return; }
+        const backup = item.video;
+        setNewsVideoList(item, list.concat(fresh));
+        if (saveData(data) === false) { if (backup) item.video = backup; else delete item.video; return; }
+        newsVideoPanelId = String(id);
         displayNews();
         updateNewsList();
-        showToast(item.video ? 'Το βίντεο μπήκε στην είδηση. Μην ξεχάσεις Export!' : 'Το βίντεο αφαιρέθηκε.');
+        const n = newsVideoList(item).length;
+        showToast(n > 1 ? `Η είδηση έχει τώρα ${n} βίντεο. Μην ξεχάσεις Export!` : 'Το βίντεο μπήκε στην είδηση. Μην ξεχάσεις Export!');
+    }
+    function removeVideoFromNews(id, idx) {
+        const item = (data.news || []).find(n => String(n.id) === String(id));
+        if (!item) return;
+        const list = newsVideoList(item);
+        if (!list[idx]) return;
+        if (!confirm(`Να φύγει το ${list.length > 1 ? (idx + 1) + 'ο ' : ''}βίντεο από την είδηση;\n«${item.title}»`)) return;
+        const backup = item.video;
+        list.splice(idx, 1);
+        setNewsVideoList(item, list);
+        if (saveData(data) === false) { if (backup) item.video = backup; else delete item.video; return; }
+        if (!list.length) newsVideoPanelId = null;
+        displayNews();
+        updateNewsList();
+        showToast(list.length ? `Έμεινε${list.length > 1 ? 'ν' : ''} ${list.length} βίντεο. Μην ξεχάσεις Export!` : 'Το βίντεο αφαιρέθηκε. Μην ξεχάσεις Export!');
+    }
+    function moveNewsVideoUp(id, idx) {
+        const item = (data.news || []).find(n => String(n.id) === String(id));
+        if (!item) return;
+        const list = newsVideoList(item);
+        if (idx < 1 || !list[idx]) return;
+        const backup = item.video;
+        [list[idx - 1], list[idx]] = [list[idx], list[idx - 1]];
+        setNewsVideoList(item, list);
+        if (saveData(data) === false) { item.video = backup; return; }
+        displayNews();
+        updateNewsList();
+    }
+    function closeNewsVideoPanel() { newsVideoPanelId = null; updateNewsList(); }
+    function newsVideoPanelHTML(item) {
+        const sid = esc(item.id), list = newsVideoList(item);
+        const rows = list.map((v, i) => `
+            <div class="nv-row">
+                <img src="https://i.ytimg.com/vi/${esc(v.id)}/default.jpg" alt="" loading="lazy">
+                <div class="np-txt"><strong>${i + 1}.</strong>
+                    <a href="${esc(youtubeWatchUrl(v))}" target="_blank" rel="noopener">${v.short ? 'Shorts' : 'Βίντεο'} ↗</a>${v.start ? `<br><small>ξεκινά στο ${Math.floor(v.start / 60)}:${String(v.start % 60).padStart(2, '0')}</small>` : ''}</div>
+                <div class="np-btns">
+                    ${i > 0 ? `<button class="btn btn-secondary btn-small" data-id="${sid}" onclick="moveNewsVideoUp(this.dataset.id, ${i})" title="Πιο πάνω" aria-label="Πιο πάνω">⬆️</button>` : ''}
+                    <button class="btn btn-danger btn-small" data-id="${sid}" onclick="removeVideoFromNews(this.dataset.id, ${i})" title="Αφαίρεση" aria-label="Αφαίρεση βίντεο ${i + 1}">🗑️</button>
+                </div>
+            </div>`).join('');
+        return `<div class="nv-panel">${rows}
+                <div class="nv-foot">
+                    <button class="btn btn-secondary btn-small" data-id="${sid}" onclick="addVideoToNews(this.dataset.id)">➕ Προσθήκη βίντεο</button>
+                    <button class="btn btn-small" onclick="closeNewsVideoPanel()" aria-label="Κλείσιμο">✕</button>
+                </div>
+            </div>`;
     }
 
     // ===== Admin: φωτογραφία σε είδηση που υπάρχει ήδη (27/11/2026) =====
@@ -7735,7 +7847,7 @@ function removeNewsPhoto() {
             </div>
             <div class="news-content">${esc(newsItem.content).replace(/\n/g, '<br>')}</div>
             ${imageHTML}
-            ${newsVideoHTML(newsItem.video)}
+            ${newsVideosHTML(newsItem)}
 
           <div class="news-actions">
              ${database ? `<button type="button" class="like-btn" data-id="${safeId}"
@@ -7771,11 +7883,13 @@ function removeNewsPhoto() {
                 return;
             }
             const videoRaw = (document.getElementById('newsVideo') || {}).value || '';
-            const video = youtubeInfo(videoRaw);
-            if (videoRaw.trim() && !video) {
-                showToast('Το link του βίντεο δεν μοιάζει με YouTube. Διόρθωσέ το ή σβήσ\' το.', 'error');
+            const vr = youtubeInfos(videoRaw);
+            if (vr.bad.length) {
+                showToast('Ένα link βίντεο δεν μοιάζει με YouTube. Διόρθωσέ το ή σβήσ\' το.', 'error');
                 return;
             }
+            // ένα βίντεο → αντικείμενο (όπως πάντα), δύο ή περισσότερα → λίστα
+            const video = vr.videos.length > 1 ? vr.videos : (vr.videos[0] || null);
 
             if (!data.news) {
                 data.news = [];
@@ -7841,7 +7955,7 @@ function removeNewsPhoto() {
                 
                 div.innerHTML = `
                     <div>
-                        <strong>${newsItem.photo ? '📷 ' : ''}${newsItem.video ? '🎬 ' : ''}${esc(newsItem.title)}</strong><br>
+                        <strong>${newsItem.photo ? '📷 ' : ''}${newsVideoList(newsItem).length > 1 ? '🎬×' + newsVideoList(newsItem).length + ' ' : (newsVideoList(newsItem).length ? '🎬 ' : '')}${esc(newsItem.title)}</strong><br>
                         <span style="color: #666; font-size: 0.85rem;">${esc(shortContent)}</span>
                     </div>
                     <div style="display:flex; gap:6px; flex:none;">
@@ -7849,13 +7963,17 @@ function removeNewsPhoto() {
                                 title="${newsItem.photo ? 'Αλλαγή ή αφαίρεση φωτογραφίας' : 'Προσθήκη φωτογραφίας'}"
                                 aria-label="${newsItem.photo ? 'Αλλαγή ή αφαίρεση φωτογραφίας' : 'Προσθήκη φωτογραφίας'}">📷</button>
                         <button class="btn btn-secondary btn-small" data-id="${esc(newsItem.id)}" onclick="setNewsVideo(this.dataset.id)"
-                                title="${newsItem.video ? 'Αλλαγή ή αφαίρεση βίντεο' : 'Προσθήκη βίντεο YouTube'}">🎬</button>
+                                title="${newsVideoList(newsItem).length ? 'Βίντεο της είδησης (προσθήκη, σειρά, αφαίρεση)' : 'Προσθήκη βίντεο YouTube'}"
+                                aria-label="${newsVideoList(newsItem).length ? 'Βίντεο της είδησης' : 'Προσθήκη βίντεο YouTube'}">🎬</button>
                         <button class="btn btn-danger btn-small" data-id="${esc(newsItem.id)}" onclick="deleteNews(this.dataset.id)">🗑️</button>
                     </div>
                 `;
                 container.appendChild(div);
                 if (newsItem.photo && newsPhotoPanelId === String(newsItem.id)) {
                     container.insertAdjacentHTML('beforeend', newsPhotoPanelHTML(newsItem));
+                }
+                if (newsVideoPanelId === String(newsItem.id) && newsVideoList(newsItem).length) {
+                    container.insertAdjacentHTML('beforeend', newsVideoPanelHTML(newsItem));
                 }
             });
         }
@@ -9774,8 +9892,8 @@ function renderHistorySeason(d) {
                 <summary>${esc(item.title)}<div class="hist-news-date">${dt}</div></summary>
                 <div class="hist-news-body">${esc(item.content)}</div>
                 ${img}
-                ${item.video && item.video.id ? `<a class="hist-news-video" href="${esc(youtubeWatchUrl(item.video))}"
-                    target="_blank" rel="noopener">▶ Δες το βίντεο στο YouTube</a>` : ''}
+                ${newsVideoList(item).map((v, i, all) => `<a class="hist-news-video" href="${esc(youtubeWatchUrl(v))}"
+                    target="_blank" rel="noopener">▶ Δες το ${all.length > 1 ? (i + 1) + 'ο ' : ''}βίντεο στο YouTube</a>`).join('')}
               </details>`;
         });
     }
