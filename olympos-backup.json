@@ -10,11 +10,11 @@
     "goals": ""
   },
   "announcement": "",
-  "matchDate": "Σάββατο 28/11",
-  "matchTime": "12:30",
-  "matchStadium": "Γήπεδο Νέας Μεσημβρίας ",
-  "matchMapLink": "https://maps.app.goo.gl/VvqF6JxWkt31QcLE6?g_st=ic",
-  "countdownTarget": "2026-11-28T12:30",
+  "matchDate": "Σάββατο 5/12",
+  "matchTime": "10:45",
+  "matchStadium": "Γήπεδο «Κωνσταντίνος Μηγκοτζίδης»",
+  "matchMapLink": "https://maps.app.goo.gl/hFKV8oTjYwN4URjv9?g_st=ic",
+  "countdownTarget": "2026-12-05T10:45",
   "specialMatch": {
     "type": "ΦΙΛΙΚΟΣ ΑΓΩΝΑΣ",
     "home": null,
@@ -107,13 +107,7 @@
       "venue": "Πλαστικό Γήπεδο Μηγκοτζίδης"
     }
   ],
-  "trainingExceptions": [
-    {
-      "date": "2026-10-13",
-      "slotId": "tr1788293642915",
-      "reason": "Κακοκαιρία"
-    }
-  ],
+  "trainingExceptions": [],
   "season": "2026-27",
   "category": "Κ15",
   "group": "LEAGUE 1",
@@ -1375,7 +1369,7 @@
           "away": "ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ",
           "homeScore": null,
           "awayScore": null,
-          "isPostponed": false
+          "isPostponed": true
         },
         {
           "home": "Μ.ΑΛΕΞΑΝΔΡΟΣ ΜΕΛΙΣΣΟΧΩΡΙΟΥ",
