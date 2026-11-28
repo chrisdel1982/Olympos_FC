@@ -1276,29 +1276,29 @@
         {
           "home": "ΜΑΡΑΘΩΝΑΣ",
           "away": "ΑΓΙΟΣ ΓΕΩΡΓΙΟΣ Ν.ΚΡΗΝΗΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 6,
+          "awayScore": 2,
           "isPostponed": false
         },
         {
           "home": "ΜΕΝΤΕΚΑΣ",
           "away": "ΠΑΝΟΡΑΜΑ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 4,
           "isPostponed": false
         },
         {
           "home": "ΦΟΙΝΙΚΑΣ ΤΟΥΜΠΑΣ",
           "away": "ΑΣ ΠΟΔ. ΤΟΥΜΠΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 4,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
           "home": "Μ.ΑΛΕΞΑΝΔΡΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
           "away": "ΑΝΑΓΕΝΝΗΣΗ ΑΓ. ΙΩΑΝΝΗ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 2,
           "isPostponed": false
         },
         {
@@ -1318,8 +1318,8 @@
         {
           "home": "ΧΑΝΘ",
           "away": "ΜΠΕΜΠΗΔΕΣ 2000",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 5,
           "isPostponed": false
         },
         {
@@ -1332,15 +1332,15 @@
         {
           "home": "ΑΕ ΦΙΛΥΡΟΥ",
           "away": "ΑΟΚ ΑΓΙΟΥ ΑΘΑΝΑΣΙΟΥ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
           "home": "ΗΡΑΚΛΗΣ ΑΜΠΕΛΟΚΗΠΩΝ",
           "away": "ΑΕ ΝΕΩΝ ΣΙΝΔΟΥ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 3,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
@@ -1381,8 +1381,8 @@
         {
           "home": "ΦΟΙΝΙΚΑΣ ΠΟΛΙΧΝΗΣ",
           "away": "ΝΤΙΝΟΣ ΚΟΥΗΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
@@ -1416,43 +1416,43 @@
         {
           "home": "ΔΟΞΑ ΠΕΡΙΒΟΛΑΚΙΟΥ",
           "away": "ΑΠΟΛΛΩΝ ΚΑΛΑΜΑΡΙΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 2,
           "isPostponed": false
         },
         {
           "home": "ΑΚΑΔ. Γ. ΚΟΥΔΑΣ",
           "away": "ΑΚΑΔ. ΠΟΔ. ΘΕΣΣΑΛΟΝΙΚΗΣ 2020",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 10,
           "isPostponed": false
         },
         {
           "home": "ΑΘΛΗΤΙΚΗ ΑΚΑΔΗΜΙΑ ΓΙΑΝΝΙΤΣΩΝ",
           "away": "ΠΡΩΤΕΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 2,
           "isPostponed": false
         },
         {
           "home": "ΚΕΝΤΑΥΡΟΣ ΛΑΓΚΑΔΑ",
           "away": "ΠΡΩΤΑΘΛΗΤΕΣ ΠΕΥΚΩΝ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 1,
+          "awayScore": 8,
           "isPostponed": false
         },
         {
           "home": "ΖΗΤΑ ΕΠΤΑ",
           "away": "ΑΛΕΞΑΝΔΡΟΣ ΚΙΛΚΙΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 3,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
           "home": "ΠΑΝΣΕΡΡΑΪΚΟΣ",
           "away": "ΠΟ ΜΑΛΑΚΟΠΗΣ ΠΥΛΑΙΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 0,
           "isPostponed": false
         }
       ]
