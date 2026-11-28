@@ -1262,15 +1262,15 @@
         {
           "home": "ΑΣΤΕΡΙΑ",
           "away": "ΑΝΑΓΕΝΝΗΣΗ ΡΥΣΙΟΥ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 3,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
           "home": "ΕΛΠΙΔΑ ΤΟΥΜΠΑΣ",
           "away": "ΠΟΣΕΙΔΩΝΑΣ ΜΗΧΑΝΙΩΝΑΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 0,
+          "awayScore": 6,
           "isPostponed": false
         },
         {
@@ -1346,8 +1346,8 @@
         {
           "home": "ΑΙΑΣ ΕΥΟΣΜΟΥ",
           "away": "ΑΜΣ ΝΙΚΟΠΟΛΗ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 1,
           "isPostponed": false
         },
         {
@@ -1395,15 +1395,15 @@
         {
           "home": "ΠΑΝΑΘΗΝΑΪΚΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
           "away": "ΠΙΕΡΙΚΟΣ 1961",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 2,
+          "awayScore": 2,
           "isPostponed": false
         },
         {
           "home": "ΠΑΕ ΠΑΟΚ Κ14",
           "away": "ΟΛΥΜΠΙΑΚΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ",
-          "homeScore": null,
-          "awayScore": null,
+          "homeScore": 11,
+          "awayScore": 3,
           "isPostponed": false
         },
         {
